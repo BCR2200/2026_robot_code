@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
@@ -16,8 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final double incrementPercentage = 0.05; // percent
 
     public ShooterSubsystem() {
-        // These numbers are placeholders, we don't actually know what they should be
-        // yet
+        // These numbers are placeholders, we don't actually know what they should be yet
         shootPIDMotor = PIDMotor.makeMotor(Constants.SHOOTER_MOTOR_ID, "shooter", 1.0, 0.0, 0.1,
                 0.25, 0.1, 0.01, 100.0, 300.0, 0.00);
         shootPIDMotor.setCurrentLimit(30);
@@ -52,10 +52,12 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param increment
      */
     public void incrementShooterSpeed() {
-        if (velocityMode)
+        if (velocityMode) {
             shooterSpeed += incrementRPS;
-        else
+        }
+        else {
             shooterPercentage = ExtraMath.clamp(shooterPercentage + incrementPercentage, -1, 1);
+        }
     }
 
     /**
@@ -63,14 +65,25 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param increment
      */
     public void decrementShooterSpeed() {
-        if (velocityMode)
+        if (velocityMode) {
             shooterSpeed -= incrementRPS;
-        else
+        }
+        else {
             shooterPercentage = ExtraMath.clamp(shooterPercentage - incrementPercentage, -1, 1);
+        }
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Shooter Speed", shooterSpeed);
+        SmartDashboard.putNumber("Shooter Percentage", shooterPercentage);
+        SmartDashboard.putBoolean("Shooter VelocityMode", velocityMode);
+        SmartDashboard.putBoolean("Is Shooting", isShooting);
+        SmartDashboard.putNumber("Shooter Actual Speed", shootPIDMotor.getVelocity());
+
+        isShooting = SmartDashboard.getBoolean("Is Shooting", isShooting);
+        velocityMode = SmartDashboard.getBoolean("Shooter VelocityMode", velocityMode);
+        
         if (velocityMode) {
             if (isShooting)
                 shootPIDMotor.setVelocityTarget(shooterSpeed);

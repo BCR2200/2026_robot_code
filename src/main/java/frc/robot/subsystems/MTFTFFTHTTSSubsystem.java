@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.ExtraMath;
@@ -12,18 +13,13 @@ public class MTFTFFTHTTSSubsystem extends SubsystemBase {
     private boolean velocityMode = true;
     public PIDMotor feedPIDMotor;
 
-
-
     private final double incrementRPS = 4.0; // rps
     private final double incrementPercentage = 0.05; // percent
 
     public MTFTFFTHTTSSubsystem() {
-        // These numbers are placeholders, we don't actually know what they should be
-        // yet
-        feedPIDMotor = PIDMotor.makeMotor(Constants.FEEDER_MOTOR_ID,
-                "feeder", 1.0, 0.0, 0.1,
-                0.25, 0.1, 0.01,
-                100.0, 300.0, 0.00);
+        // These numbers are placeholders, we don't actually know what they should be yet
+        feedPIDMotor = PIDMotor.makeMotor(Constants.FEEDER_MOTOR_ID, "feeder", 1.0, 0.0, 0.1,
+                0.25, 0.1, 0.01, 100.0, 300.0, 0.00);
         feedPIDMotor.setCurrentLimit(30);
         feedPIDMotor.setIdleCoastMode();
     }
@@ -49,10 +45,12 @@ public class MTFTFFTHTTSSubsystem extends SubsystemBase {
      * @param increment
      */
     public void incrementFeedingSpeed() {
-        if (velocityMode)
+        if (velocityMode) {
             feederSpeed += incrementRPS;
-        else
+        }
+        else {
             feederPercentage = ExtraMath.clamp(feederPercentage + incrementPercentage, -1, 1);
+        }
     }
     
     /**
@@ -60,14 +58,25 @@ public class MTFTFFTHTTSSubsystem extends SubsystemBase {
      * @param increment
      */
     public void decrementFeedingSpeed() {
-        if (velocityMode)
+        if (velocityMode) {
             feederSpeed -= incrementRPS;
-        else
+        }
+        else {
             feederPercentage = ExtraMath.clamp(feederPercentage - incrementPercentage, -1, 1);
+        }
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Feeder Speed", feederSpeed);
+        SmartDashboard.putNumber("Feeder Percentage", feederPercentage);
+        SmartDashboard.putBoolean("Feeder VelocityMode", velocityMode);
+        SmartDashboard.putBoolean("Is Feeding", isFeeding);
+        SmartDashboard.putNumber("Feeder Actual Speed", feedPIDMotor.getVelocity());
+
+        isFeeding = SmartDashboard.getBoolean("Is Feeding", isFeeding);
+        velocityMode = SmartDashboard.getBoolean("Feeder VelocityMode", velocityMode);
+
         if (velocityMode) {
             if (isFeeding)
                 feedPIDMotor.setVelocityTarget(feederSpeed);
