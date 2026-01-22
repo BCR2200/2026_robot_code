@@ -45,14 +45,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_shooterSubsystem.incrementShooterSpeed(0.1)));
-    m_driverController.b().onTrue(new InstantCommand(() -> m_shooterSubsystem.incrementShooterSpeed(-0.1)));
+    m_driverController.a().onTrue(new InstantCommand(() -> m_shooterSubsystem.incrementShooterSpeed()));
+    m_driverController.b().onTrue(new InstantCommand(() -> m_shooterSubsystem.decrementShooterSpeed()));
 
     m_driverController.rightTrigger().whileTrue(new InstantCommand(() -> m_shooterSubsystem.setIsShooting(true)))
                                       .whileFalse(new InstantCommand(() -> m_shooterSubsystem.setIsShooting(false)));
 
-    m_driverController.y().onTrue(new InstantCommand(() -> m_feederSubsystem.incrementFeedingSpeed(0.1)));
-    m_driverController.x().onTrue(new InstantCommand(() -> m_feederSubsystem.incrementFeedingSpeed(-0.1)));
+    m_driverController.y().onTrue(new InstantCommand(() -> m_feederSubsystem.incrementFeedingSpeed()));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_feederSubsystem.decrementFeedingSpeed()));
 
     m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_feederSubsystem.setIsFeeding(true)))
                                      .whileFalse(new InstantCommand(() -> m_feederSubsystem.setIsFeeding(false)));
