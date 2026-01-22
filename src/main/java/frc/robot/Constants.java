@@ -19,5 +19,6 @@ public final class Constants {
 
   public static final int SHOOTER_MOTOR_ID = 1;
   public static final int FEEDER_MOTOR_ID = 2;
+  public static final int LINEAR_ACTUATOR_CHANNEL = 0;
 
 }

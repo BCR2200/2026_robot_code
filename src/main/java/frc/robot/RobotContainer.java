@@ -23,6 +23,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final MTFTFFTHTTSSubsystem m_feederSubsystem = new MTFTFFTHTTSSubsystem();
+  private final LinearActuator m_linearActuator = new LinearActuator(Constants.LINEAR_ACTUATOR_CHANNEL, 100, 20);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -45,17 +46,23 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    // Shooter Speed Controls
     m_driverController.a().onTrue(new InstantCommand(() -> m_shooterSubsystem.incrementShooterSpeed()));
     m_driverController.b().onTrue(new InstantCommand(() -> m_shooterSubsystem.decrementShooterSpeed()));
-
+    // Shooter On/off Controls
     m_driverController.rightTrigger().whileTrue(new InstantCommand(() -> m_shooterSubsystem.setIsShooting(true)))
                                       .whileFalse(new InstantCommand(() -> m_shooterSubsystem.setIsShooting(false)));
 
+    // Feeder Speed Controls
     m_driverController.y().onTrue(new InstantCommand(() -> m_feederSubsystem.incrementFeedingSpeed()));
     m_driverController.x().onTrue(new InstantCommand(() -> m_feederSubsystem.decrementFeedingSpeed()));
-
+    // Feeder On/off Controls
     m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_feederSubsystem.setIsFeeding(true)))
                                      .whileFalse(new InstantCommand(() -> m_feederSubsystem.setIsFeeding(false)));
+
+    // Linear Actuator Controls, 0-100 mm
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> m_linearActuator.incrementPosition(-5)));
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_linearActuator.incrementPosition(5)));
 
   }
   
