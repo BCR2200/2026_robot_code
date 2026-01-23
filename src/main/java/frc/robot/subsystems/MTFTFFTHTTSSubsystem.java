@@ -42,8 +42,7 @@ public class MTFTFFTHTTSSubsystem extends SubsystemBase {
     }
 
     /**
-     * will increase speed by the constant value incrementRPS and incrementPercentage
-     * @param increment
+     * will increase speed by the constant value INCREMENT_FACTOR or RPS_STEP up to max of MAX_RPS
      */
     public void incrementFeedingSpeed() {
         if (velocityMode) {
@@ -55,8 +54,7 @@ public class MTFTFFTHTTSSubsystem extends SubsystemBase {
     }
     
     /**
-     * will decrease speed by the constant value incrementRPS and incrementPercentage
-     * @param increment
+     * will decrease speed by the constant value INCREMENT_FACTOR or RPS_STEP up to max of MAX_RPS
      */
     public void decrementFeedingSpeed() {
         if (velocityMode) {

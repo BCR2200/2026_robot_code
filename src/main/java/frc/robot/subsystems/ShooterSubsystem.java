@@ -41,17 +41,8 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterSpeed = speed;
     }
 
-    public double getShooterSpeedFactor() {
-        return shooterSpeedFactor;
-    }
-
-    public void setShooterSpeedFactor(double percentage) {
-        shooterSpeedFactor = percentage;
-    }
-
     /**
-     * will increase speed by the constant value incrementRPS and incrementPercentage
-     * @param increment
+     * will increase speed by the constant value INCREMENT_FACTOR or RPS_STEP up to max of MAX_RPS
      */
     public void incrementShooterSpeed() {
         if (velocityMode) {
@@ -63,8 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /**
-     * will decrease speed by the constant value incrementRPS and incrementPercentage
-     * @param increment
+     * will decrease speed by the constant value INCREMENT_FACTOR or RPS_STEP up to max of MAX_RPS
      */
     public void decrementShooterSpeed() {
         if (velocityMode) {
