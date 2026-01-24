@@ -212,10 +212,10 @@ public class PIDMotor {
                 SmartDashboard.getNumber(name + " S", s),
                 SmartDashboard.getNumber(name + " V", v),
                 SmartDashboard.getNumber(name + " A", a),
-                SmartDashboard.getNumber(name + " maxA", maxA),
-                SmartDashboard.getNumber(name + " maxV", maxV),
-                SmartDashboard.getNumber(name + " maxJerk", maxJerk)
-                );
+                SmartDashboard.getNumber(name + " MaxV", maxV),
+                SmartDashboard.getNumber(name + " MaxA", maxA),
+                SmartDashboard.getNumber(name + " MaxJ", maxJerk)
+        );
     }
 
     /**
@@ -242,6 +242,8 @@ public class PIDMotor {
         StatusCode code = motor.getConfigurator().apply(talonFXConfigs);
         if (!code.isOK()) {
             System.err.printf("Error updating PIDF (%s): %s\n", name, code.getDescription());
+        } else {
+            System.err.println("Updated PIDF values");
         }
     }
 

@@ -3,14 +3,17 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LinearActuator extends Servo {
 
-    double m_speed;
-    double m_length;
-    double setPos;
-    double curPos;
-    double lastTime = 0;
+    private final double m_speed;
+    private final double m_length;
+    private double setPos;
+    private double curPos;
+    private double lastTime = 0;
+
+    private final String name;
 
     /**
      * Parameters for L16-R Actuonix Linear Actuators
@@ -19,8 +22,9 @@ public class LinearActuator extends Servo {
      * @param length  max length of the servo [mm]
      * @param speed   max speed of the servo [mm/second]
      */
-    public LinearActuator(int channel, int length, int speed) {
+    public LinearActuator(int channel, int length, int speed, String name) {
         super(channel);
+        this.name = name;
         // The example has setBounds(), which takes milliseconds, but this function uses microseconds, so we've converted the values
         setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
         m_length = length;
@@ -77,4 +81,9 @@ public class LinearActuator extends Servo {
     public boolean isFinished() {
         return curPos == setPos;
     }
+
+    public void dashboardPutPosition() {
+        SmartDashboard.putNumber(this.name + " position", this.curPos);
+    }
+
 }
