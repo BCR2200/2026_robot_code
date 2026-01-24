@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,9 +22,8 @@ public class RobotContainer {
   private static final double ACTUATOR_STEP = 0.05;
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final TTFTFFTHTTSSubsystem m_feederSubsystem = new TTFTFFTHTTSSubsystem();
+  private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
   public final LinearActuatorSubsystem m_linearActuatorSubsystem = new LinearActuatorSubsystem(Constants.LINEAR_ACTUATOR_CHANNEL, "Actuator");
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -84,6 +82,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return null;
   }
 }

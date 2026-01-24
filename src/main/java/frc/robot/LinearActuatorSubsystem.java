@@ -18,7 +18,7 @@ public class LinearActuatorSubsystem extends SubsystemBase {
 
         // The example has setBounds(), which takes milliseconds, but this function uses microseconds, so we've converted the values
         servo.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
-        
+
     }
 
     /**
@@ -27,8 +27,9 @@ public class LinearActuatorSubsystem extends SubsystemBase {
      */
     public void setPosition(double setpoint) {
         target = ExtraMath.clamp(setpoint, -0.000, 1);
+        servo.setPosition(target);
     }
-
+    
     /**
      * Get the current position target.
      * @return current target position
@@ -36,17 +37,14 @@ public class LinearActuatorSubsystem extends SubsystemBase {
     public double getPosition() {
         return target;
     }
-
+    
     @Override
     public void periodic() {
-        super.periodic();
-        servo.setPosition(target);
         this.dashboardPutPosition();
     }
 
     public void dashboardPutPosition() {
         SmartDashboard.putNumber(this.name + " position", this.servo.getPosition());
-        SmartDashboard.putNumber(this.name + " target", this.target);
     }
 
 }
