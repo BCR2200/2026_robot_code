@@ -22,7 +22,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final MTFTFFTHTTSSubsystem m_feederSubsystem = new MTFTFFTHTTSSubsystem();
+  private final TTFTFFTHTTSSubsystem m_feederSubsystem = new TTFTFFTHTTSSubsystem();
   private final LinearActuator m_linearActuator = new LinearActuator(Constants.LINEAR_ACTUATOR_CHANNEL, 100, 20);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed

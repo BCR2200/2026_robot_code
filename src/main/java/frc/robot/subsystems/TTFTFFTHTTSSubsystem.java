@@ -6,7 +6,7 @@ import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.PIDMotor;
 
-public class MTFTFFTHTTSSubsystem extends SubsystemBase {
+public class TTFTFFTHTTSSubsystem extends SubsystemBase {
     private boolean isFeeding = false;
     private double feederSpeed; // in rps
     private double feederSpeedFactor; // from -1.0 to 1.0
@@ -17,7 +17,7 @@ public class MTFTFFTHTTSSubsystem extends SubsystemBase {
     private static final double INCREMENT_FACTOR = 0.05; // 5 percent
     private static final double MAX_RPS = 84.0; // 5000 rpm in rps
 
-    public MTFTFFTHTTSSubsystem() {
+    public TTFTFFTHTTSSubsystem() {
         // These numbers are placeholders, we don't actually know what they should be yet
         feedPIDMotor = PIDMotor.makeMotor(Constants.FEEDER_MOTOR_ID, "feeder", 1.0, 0.0, 0.1,
                 0.25, 0.1, 0.01, 100.0, 300.0, 0.00);
