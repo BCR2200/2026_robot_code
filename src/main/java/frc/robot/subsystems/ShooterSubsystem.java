@@ -8,20 +8,20 @@ import frc.robot.PIDMotor;
 
 public class ShooterSubsystem extends SubsystemBase {
     private boolean isShooting = false;
-    private double shooterSpeed; // in rps
+    private double shooterSpeed = 84; // in rps
     private double shooterSpeedFactor; // from -1.0 to 1.0
     private boolean velocityMode = true;
     public PIDMotor shootPIDMotor;
     
     private static final double RPS_STEP = 4.0; // rps
     private static final double INCREMENT_FACTOR = 0.05; // 5 percent
-    private static final double MAX_RPS = 84.0; // 5000 rpm in rps
+    private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps
 
     public ShooterSubsystem() {
         // These numbers are placeholders, we don't actually know what they should be yet
         shootPIDMotor = PIDMotor.makeMotor(Constants.SHOOTER_MOTOR_ID, "shooter", 1.0, 0.0, 0.1,
-                0.25, 0.1, 0.01, 100.0, 300.0, 0.00);
-        shootPIDMotor.setCurrentLimit(30);
+                0.25, 0.1, 0.01, 100.0, 10.0, 0.00);
+        shootPIDMotor.setCurrentLimit(60);
         shootPIDMotor.setIdleCoastMode();
     }
 
