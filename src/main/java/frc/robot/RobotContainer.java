@@ -36,6 +36,11 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public void disableMotors() {
+    m_shooterSubsystem.setIsShooting(false);;
+    m_feederSubsystem.setIsFeeding(false);
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary

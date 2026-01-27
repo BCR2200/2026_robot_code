@@ -434,6 +434,7 @@ public class PIDMotor {
 
         var velocityControl = new VelocityVoltage(targetVelocity);
         velocityControl.withEnableFOC(false);
+        velocityControl.Acceleration = maxA;
 
         StatusCode code = motor.setControl(velocityControl);
         if (!code.isOK()) {

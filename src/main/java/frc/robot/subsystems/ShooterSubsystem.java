@@ -20,7 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem() {
         // These numbers are placeholders, we don't actually know what they should be yet
         shootPIDMotor = PIDMotor.makeMotor(Constants.SHOOTER_MOTOR_ID, "shooter", 1.0, 0.0, 0.1,
-                0.25, 0.1, 0.01, 100.0, 10.0, 0.00);
+                0.25, 0.1, 0.01, 100.0, 0.01, 0.00);
         shootPIDMotor.setCurrentLimit(60);
         shootPIDMotor.setIdleCoastMode();
     }
