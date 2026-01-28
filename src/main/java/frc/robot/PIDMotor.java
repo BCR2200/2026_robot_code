@@ -2,14 +2,19 @@ package frc.robot;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.controls.*;
-import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -42,6 +47,7 @@ public class PIDMotor {
 
     private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
     private final MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0);
+    private final MotionMagicVelocityVoltage motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0);
     private final DynamicMotionMagicVoltage dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0, 0, 0);
 
     final TalonFXConfiguration talonFXConfigs;
@@ -63,6 +69,7 @@ public class PIDMotor {
 
         dutyCycleOut.withEnableFOC(true);
         motionMagicVoltage.withEnableFOC(enableFOC);
+        motionMagicVelocityVoltage.withEnableFOC(enableFOC);
         dynamicMotionMagicVoltage.withEnableFOC(true);
 
         motor = new TalonFX(deviceID, "*");
@@ -437,24 +444,13 @@ public class PIDMotor {
     // Sets the velocity target of the motor.
     public void setVelocityTarget(double targetVelocity) {
 
-        if (targetVelocity == 0) {
-            currentVelocity = 0;
-        } else if (targetVelocity > currentVelocity) {
-            currentVelocity += maxA; // rps
-            currentVelocity = Math.min(currentVelocity, targetVelocity);
-        } else if (targetVelocity < currentVelocity) {
-            currentVelocity -= maxA; // rps
-            currentVelocity = Math.max(currentVelocity, targetVelocity);
-        }
-
         catchUninit();
-        this.target = currentVelocity;
+        this.target = targetVelocity;
 
-        var velocityControl = new VelocityVoltage(currentVelocity);
-        velocityControl.withEnableFOC(false);
-        // velocityControl.Acceleration = maxA;
+        motionMagicVelocityVoltage.withVelocity(targetVelocity);
+        motionMagicVelocityVoltage.withAcceleration(maxA);
 
-        StatusCode code = motor.setControl(velocityControl);
+        StatusCode code = motor.setControl(motionMagicVelocityVoltage);
         if (!code.isOK()) {
             System.err.printf("error setting velocity target (%s): %s\n", name, code.getDescription());
         }
