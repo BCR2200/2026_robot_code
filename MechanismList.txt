@@ -1,0 +1,8 @@
+3 Shooter motors
+3 elevator (feed) motors (1 per shooter)
+3 Actuators (1 per shooter)
+2 intake motors (1 for feed, 1 for tilt)
+1 Floor motor
+Drivetrain
+2 Limelights (1 front, 1 back)
+LEDs!!!!!!!!!!!!! :)

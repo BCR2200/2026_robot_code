@@ -22,8 +22,7 @@ public class RobotContainer {
   private static final double ACTUATOR_STEP = 0.05;
 
   // The robot's subsystems and commands are defined here...
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(Constants.SHOOTER_MOTOR_ID, Constants.FEEDER_MOTOR_ID);
   public final LinearActuatorSubsystem m_linearActuatorSubsystem = new LinearActuatorSubsystem(Constants.LINEAR_ACTUATOR_CHANNEL, "Actuator");
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -37,8 +36,8 @@ public class RobotContainer {
   }
 
   public void disableMotors() {
-    m_shooterSubsystem.setIsShooting(false);;
-    m_feederSubsystem.setIsFeeding(false);
+    m_shooterSubsystem.setIsShooting(false);
+    m_shooterSubsystem.setIsFeeding(false);
   }
 
   /**
@@ -62,12 +61,12 @@ public class RobotContainer {
                                      .whileFalse(new InstantCommand(() -> m_shooterSubsystem.setIsShooting(false)));
 
     // Feeder Speed Controls
-    m_driverController.y().onTrue(new InstantCommand(() -> m_feederSubsystem.incrementFeedingSpeed()));
-    m_driverController.x().onTrue(new InstantCommand(() -> m_feederSubsystem.decrementFeedingSpeed()));
+    m_driverController.y().onTrue(new InstantCommand(() -> m_shooterSubsystem.incrementFeederSpeed()));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_shooterSubsystem.decrementFeederSpeed()));
+    
     // Feeder On/off Controls
-    m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_feederSubsystem.setIsFeeding(true)))
-                                    .whileFalse(new InstantCommand(() -> m_feederSubsystem.setIsFeeding(false)));
-
+    m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_shooterSubsystem.setIsFeeding(true)))
+                                    .whileFalse(new InstantCommand(() -> m_shooterSubsystem.setIsFeeding(false)));
     // Linear Actuator Controls, 0.0-1.0 (total length)
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> 
         m_linearActuatorSubsystem.setPosition(m_linearActuatorSubsystem.getPosition() - ACTUATOR_STEP)));
