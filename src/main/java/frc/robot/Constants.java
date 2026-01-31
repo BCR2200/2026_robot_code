@@ -17,8 +17,18 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static final int SHOOTER_MOTOR_ID = 1;
-  public static final int FEEDER_MOTOR_ID = 2;
-  public static final int LINEAR_ACTUATOR_CHANNEL = 0;
+  // placeholder motor IDs and channels
+  public static final int JOHN_SHOOTER_MOTOR_ID = 3;
+  public static final int JOHN_FEEDER_MOTOR_ID = 4;
+  public static final int JOHN_LINEAR_ACTUATOR_CHANNEL = 1;
+
+  public static final int JAWBREAKER_SHOOTER_MOTOR_ID = 1;
+  public static final int JAWBREAKER_FEEDER_MOTOR_ID = 2;
+  public static final int JAWBREAKER_LINEAR_ACTUATOR_CHANNEL = 0;
+
+  // placeholder motor IDs and channels
+  public static final int TAYLOR_SHOOTER_MOTOR_ID = 5;
+  public static final int TAYLOR_FEEDER_MOTOR_ID = 6;
+  public static final int TAYLOR_LINEAR_ACTUATOR_CHANNEL = 2;
 
 }
