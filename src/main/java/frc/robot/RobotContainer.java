@@ -56,6 +56,11 @@ public class RobotContainer {
     )
   );
 
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
+    Constants.INTAKE_MOTOR_ID,
+    Constants.TILT_MOTOR_ID
+  );
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -83,6 +88,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Back button is 2 squares
     // Start button is 3 horizontal lines
+    // POV is the D-pad
 
     // Shooter Speed Controls
     m_driverController.a().onTrue(new InstantCommand(() -> {
@@ -96,17 +102,25 @@ public class RobotContainer {
       m_shooterSubsystemTaylor.decrementShooterSpeed();
     }));
 
-    // Shooter On/off Controls
+    // Shooter and Feeder On/off Controls
     m_driverController.rightTrigger()
     .whileTrue(new InstantCommand(() -> {
       m_shooterSubsystemJohn.setIsShooting(true);
       m_shooterSubsystemJawbreaker.setIsShooting(true);
       m_shooterSubsystemTaylor.setIsShooting(true);
+
+      m_shooterSubsystemJohn.setIsFeeding(true);
+      m_shooterSubsystemJawbreaker.setIsFeeding(true);
+      m_shooterSubsystemTaylor.setIsFeeding(true);
     }))
     .whileFalse(new InstantCommand(() -> {
       m_shooterSubsystemJohn.setIsShooting(false);
       m_shooterSubsystemJawbreaker.setIsShooting(false);
       m_shooterSubsystemTaylor.setIsShooting(false);
+
+      m_shooterSubsystemJohn.setIsFeeding(false);
+      m_shooterSubsystemJawbreaker.setIsFeeding(false);
+      m_shooterSubsystemTaylor.setIsFeeding(false);
     }));
 
     // Feeder Speed Controls
@@ -121,19 +135,6 @@ public class RobotContainer {
       m_shooterSubsystemTaylor.decrementFeederSpeed();
     }));
 
-    // Feeder On/off Controls
-    m_driverController.leftTrigger()
-    .whileTrue(new InstantCommand(() -> {
-      m_shooterSubsystemJohn.setIsFeeding(true);
-      m_shooterSubsystemJawbreaker.setIsFeeding(true);
-      m_shooterSubsystemTaylor.setIsFeeding(true);
-    }))
-    .whileFalse(new InstantCommand(() -> {
-      m_shooterSubsystemJohn.setIsFeeding(false);
-      m_shooterSubsystemJawbreaker.setIsFeeding(false);
-      m_shooterSubsystemTaylor.setIsFeeding(false);
-    }));
-
     // Linear Actuator Controls, 0.0-1.0 (total length)
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> {
       m_shooterSubsystemJohn.setActuatorPosition(m_shooterSubsystemJohn.getActuatorPosition() - ACTUATOR_STEP);
@@ -146,7 +147,7 @@ public class RobotContainer {
       m_shooterSubsystemTaylor.setActuatorPosition(m_shooterSubsystemTaylor.getActuatorPosition() + ACTUATOR_STEP);
     }));
 
-    // PID Tuning Controls for jawbreaker shooter motor
+    // PID Tuning Controls for all shooter motors
     m_driverController.start().onTrue(new InstantCommand(() -> {
       m_shooterSubsystemJohn.shootPIDMotor.putPIDF();
       m_shooterSubsystemJawbreaker.shootPIDMotor.putPIDF();
@@ -157,6 +158,23 @@ public class RobotContainer {
       m_shooterSubsystemJohn.shootPIDMotor.fetchPIDFFromDashboard();
       m_shooterSubsystemJawbreaker.shootPIDMotor.fetchPIDFFromDashboard();
       m_shooterSubsystemTaylor.shootPIDMotor.fetchPIDFFromDashboard();
+    }));
+
+    // Intake speed controls with d-pad up and down
+    m_driverController.povUp().onTrue(new InstantCommand(() -> {
+      m_intakeSubsystem.incrementIntakeSpeed();
+    }));
+    m_driverController.povDown().onTrue(new InstantCommand(() -> {
+      m_intakeSubsystem.decrementIntakeSpeed();
+    }));
+
+    // Intake on/off control with left trigger
+    m_driverController.leftTrigger()
+    .whileTrue(new InstantCommand(() -> {
+      m_intakeSubsystem.setIsIntaking(true);
+    }))
+    .whileFalse(new InstantCommand(() -> {
+      m_intakeSubsystem.setIsIntaking(false);
     }));
 
   }
