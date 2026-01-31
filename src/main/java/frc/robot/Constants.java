@@ -31,6 +31,10 @@ public final class Constants {
   public static final int TAYLOR_FEEDER_MOTOR_ID = 6;
   public static final int TAYLOR_LINEAR_ACTUATOR_CHANNEL = 2;
 
+  // placeholder motor IDs
+  public static final int INTAKE_MOTOR_ID = 7;
+  public static final int TILT_MOTOR_ID = 8;
+
   // also a placeholder
   public static final int FLOOR_FEED_MOTOR_ID = 7;
 
