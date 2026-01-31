@@ -35,7 +35,8 @@ public final class Constants {
   public static final int INTAKE_MOTOR_ID = 7;
   public static final int TILT_MOTOR_ID = 8;
 
-  // also a placeholder
-  public static final int FLOOR_FEED_MOTOR_ID = 7;
-
+  // also placeholders
+  public static final int FLOOR_FEED_MOTOR_ID = 9;
+  public static final int CLIMB_MOTOR_ID = 10;
+  
 }

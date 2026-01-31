@@ -62,6 +62,7 @@ public class RobotContainer {
   );
 
   private final FloorFeedSubsystem m_floorFeedSubsystem = new FloorFeedSubsystem();
+  private final ClimbSubsystem m_climberSubsystem = new ClimbSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -182,6 +183,8 @@ public class RobotContainer {
     .whileFalse(new InstantCommand(() -> {
       m_intakeSubsystem.setIsIntaking(false);
     }));
+
+    // TODO: Bind climb controls
 
   }
   
