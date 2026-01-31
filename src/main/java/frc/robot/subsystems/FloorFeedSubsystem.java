@@ -8,7 +8,7 @@ import frc.robot.PIDMotor;
 public class FloorFeedSubsystem extends SubsystemBase {
     
     private boolean isFeeding = false;
-    private double motorSpeed = 50; // in rps
+    private double motorSpeed = 0; // in rps
     private PIDMotor motor;
 
     private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps

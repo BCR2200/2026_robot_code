@@ -114,6 +114,8 @@ public class RobotContainer {
       m_shooterSubsystemJohn.setIsFeeding(true);
       m_shooterSubsystemJawbreaker.setIsFeeding(true);
       m_shooterSubsystemTaylor.setIsFeeding(true);
+
+      m_floorFeedSubsystem.setIsFeeding(true);
     }))
     .whileFalse(new InstantCommand(() -> {
       m_shooterSubsystemJohn.setIsShooting(false);
@@ -123,6 +125,8 @@ public class RobotContainer {
       m_shooterSubsystemJohn.setIsFeeding(false);
       m_shooterSubsystemJawbreaker.setIsFeeding(false);
       m_shooterSubsystemTaylor.setIsFeeding(false);
+
+      m_floorFeedSubsystem.setIsFeeding(false);
     }));
 
     // Feeder Speed Controls
