@@ -4,6 +4,6 @@
 2 Intake motors (1 for feed, 1 for tilt) (REALLY LOW CURRENT LIMIT) ✅
 1 Floor motor ✅
 1 Climb motor (Fairly low current limit) ✅
-Drivetrain ❌
+Drivetrain (´。＿。｀)
 2 Limelights (1 front, 1 back) ❌
 LEDs!!!!!!!!!!!!! :) ❌
