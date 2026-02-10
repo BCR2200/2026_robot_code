@@ -49,15 +49,15 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param intakeMotorID The motor ID for the fuel-moving intake motor.
      * @param tiltMotorID The motor ID for the tilt motor.
      */
-    public IntakeSubsystem(int intakeMotorID, int tiltMotorID) {
+    public IntakeSubsystem(int intakeMotorID, int tiltMotorID, int intakeCurrentLimit, int tiltCurrentLimit) {
         intakePIDMotor = PIDMotor.makeMotor(intakeMotorID, "intake", 0.11, 0.0, 0.0,
                 0.25, 1.2, 0.01, INTAKE_MAX_RPS, INTAKE_MAX_RPS / 5, 0.00);
-        intakePIDMotor.setCurrentLimit(60);
+        intakePIDMotor.setCurrentLimit(intakeCurrentLimit);
         intakePIDMotor.setIdleCoastMode();
 
         tiltPIDMotor = PIDMotor.makeMotor(tiltMotorID, "tilt", 0.11, 0.0, 0.0,
                 0.25, 1.2, 0.01, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL, 0.00);
-        tiltPIDMotor.setCurrentLimit(20);
+        tiltPIDMotor.setCurrentLimit(tiltCurrentLimit);
         tiltPIDMotor.setIdleCoastMode();
 
         this.intakeMotorSpeed = intakePIDMotor.getPosition();

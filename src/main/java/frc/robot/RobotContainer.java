@@ -21,20 +21,28 @@ public class RobotContainer {
   
   private static final double ACTUATOR_STEP = 0.05;
 
+  
+  private static final int climbCurrentLimit = 30;
+  private static final int floorCurrentLimit = 30;
+  private static final int intakeCurrentLimit = 30;
+  private static final int tiltCurrentLimit = 20;
+  private static final int shooterCurrentLimit = 30;
+  private static final int feederCurrentLimit = 30;
+  
   // The robot's subsystems and commands are defined here...
   private final ShooterSubsystem m_shooterSubsystemJohn = new ShooterSubsystem( "John",
-    Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL,
+    Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
     new Interpolator(
       new double[] {2, 4, 10, 20}, 
-      new double[] {0.5, 3, 10, 70}
+      new double[] {0, 0.25, 0.5, 1}
     ),
     new Interpolator(
       new double[] {2, 4, 10, 20}, 
-      new double[] {30, 50, 80, 110}  
+      new double[] {0, 0.25, 0.5, 1}  
     )
   );
   private final ShooterSubsystem m_shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
-    Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL,
+    Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
     new Interpolator(
       new double[] {2, 4, 10, 20}, 
       new double[] {0.5, 3, 10, 70}
@@ -45,7 +53,7 @@ public class RobotContainer {
     )
   );
   private final ShooterSubsystem m_shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
-    Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL,
+    Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
     new Interpolator(
       new double[] {2, 4, 10, 20}, 
       new double[] {0.5, 3, 10, 70}
@@ -58,11 +66,12 @@ public class RobotContainer {
 
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
     Constants.INTAKE_MOTOR_ID,
-    Constants.TILT_MOTOR_ID
+    Constants.TILT_MOTOR_ID, 
+    intakeCurrentLimit, tiltCurrentLimit
   );
 
-  private final FloorFeedSubsystem m_floorFeedSubsystem = new FloorFeedSubsystem();
-  private final ClimbSubsystem m_climberSubsystem = new ClimbSubsystem();
+  private final FloorFeedSubsystem m_floorFeedSubsystem = new FloorFeedSubsystem(floorCurrentLimit);
+  private final ClimbSubsystem m_climberSubsystem = new ClimbSubsystem(climbCurrentLimit);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =

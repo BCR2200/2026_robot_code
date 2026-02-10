@@ -41,10 +41,10 @@ public class FloorFeedSubsystem extends SubsystemBase {
     private static final double PARAM_MA = MAX_RPS * 2;
     private static final double PARAM_MJ = 0.00;
 
-    public FloorFeedSubsystem() {
+    public FloorFeedSubsystem(int currentLimit) {
         motor = PIDMotor.makeMotor(Constants.FLOOR_FEED_MOTOR_ID, "Floor Feed",
             PARAM_P, PARAM_I, PARAM_D, PARAM_S, PARAM_V, PARAM_A, PARAM_MV, PARAM_MA, PARAM_MJ);
-        motor.setCurrentLimit(60);
+        motor.setCurrentLimit(currentLimit);
         motor.setIdleCoastMode();
     }
 
