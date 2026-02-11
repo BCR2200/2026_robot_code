@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.DetectFuel;
+import frc.robot.commands.DetectFuelCmd;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.drive.Telemetry;
 import frc.robot.drive.TunerConstantsComp;
@@ -47,33 +47,57 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ShooterSubsystem m_shooterSubsystemJohn = new ShooterSubsystem( "John",
     Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL,
-    new Interpolator(
-      new double[] {2, 4, 10, 20}, 
-      new double[] {0.5, 3, 10, 70}
+    new Interpolator( // Placeholders for shoot angles
+      new double[] {2, 4, 10, 20},
+      new double[] {1, 0.75, 0.5, 0.25}
     ),
-    new Interpolator(
+    new Interpolator( // Placeholders for shoot velocities
+      new double[] {2, 4, 10, 20}, 
+      new double[] {30, 50, 80, 110}  
+    ),
+    new Interpolator( // Placeholders for pass angles
+      new double[] {2, 4, 10, 20},
+      new double[] {1, 0.75, 0.5, 0.25}
+    ),
+    new Interpolator( // Placeholders for pass velocities
       new double[] {2, 4, 10, 20}, 
       new double[] {30, 50, 80, 110}  
     )
   );
   private final ShooterSubsystem m_shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
     Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL,
-    new Interpolator(
-      new double[] {2, 4, 10, 20}, 
-      new double[] {0.5, 3, 10, 70}
+    new Interpolator( // Placeholders for shoot angles
+      new double[] {2, 4, 10, 20},
+      new double[] {1, 0.75, 0.5, 0.25}
     ),
-    new Interpolator(
+    new Interpolator( // Placeholders for shoot velocities
+      new double[] {2, 4, 10, 20}, 
+      new double[] {30, 50, 80, 110}  
+    ),
+    new Interpolator( // Placeholders for pass angles
+      new double[] {2, 4, 10, 20},
+      new double[] {1, 0.75, 0.5, 0.25}
+    ),
+    new Interpolator( // Placeholders for pass velocities
       new double[] {2, 4, 10, 20}, 
       new double[] {30, 50, 80, 110}  
     )
   );
   private final ShooterSubsystem m_shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
     Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL,
-    new Interpolator(
-      new double[] {2, 4, 10, 20}, 
-      new double[] {0.5, 3, 10, 70}
+    new Interpolator( // Placeholders for shoot angles
+      new double[] {2, 4, 10, 20},
+      new double[] {1, 0.75, 0.5, 0.25}
     ),
-    new Interpolator(
+    new Interpolator( // Placeholders for shoot velocities
+      new double[] {2, 4, 10, 20}, 
+      new double[] {30, 50, 80, 110}  
+    ),
+    new Interpolator( // Placeholders for pass angles
+      new double[] {2, 4, 10, 20},
+      new double[] {1, 0.75, 0.5, 0.25}
+    ),
+    new Interpolator( // Placeholders for pass velocities
       new double[] {2, 4, 10, 20}, 
       new double[] {30, 50, 80, 110}  
     )
@@ -117,7 +141,7 @@ public class RobotContainer {
     // Start button is 3 horizontal lines
     // POV is the D-pad
 
-    m_driverController.leftBumper().whileTrue(new DetectFuel(drivetrain));
+    m_driverController.leftBumper().whileTrue(new DetectFuelCmd(drivetrain));
     m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_intakeSubsystem.setIsIntaking(true))).whileFalse(new InstantCommand(() -> m_intakeSubsystem.setIsIntaking(false)));
     m_driverController.rightBumper().whileTrue(new InstantCommand(() -> {})); // TODO: implement pass
     m_driverController.rightTrigger().whileTrue(new InstantCommand(() -> {})); // TODO: implement shoot-to-goal
@@ -163,6 +187,11 @@ public class RobotContainer {
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled().whileTrue(
         drivetrain.applyRequest(() -> idle).ignoringDisable(true));
+
+    // reset the field-centric heading on left bumper press
+    m_driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    m_driverController.leftBumper().whileTrue(new DetectFuelCmd(drivetrain));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

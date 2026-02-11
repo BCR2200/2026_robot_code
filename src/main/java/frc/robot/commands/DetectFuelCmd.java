@@ -13,12 +13,12 @@ import frc.robot.OURLimelightHelpers;
 import frc.robot.drive.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DetectFuel extends Command {
+public class DetectFuelCmd extends Command {
   /** Creates a new Drive. */
   CommandSwerveDrivetrain driveSubsystem;
   double[] johnJawbreakerTaylorPercentages;
 
-  public DetectFuel(CommandSwerveDrivetrain driveSystem) {
+  public DetectFuelCmd(CommandSwerveDrivetrain driveSystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;
@@ -30,8 +30,6 @@ public class DetectFuel extends Command {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  // Setting the values here instead of in initialize feeds the watchdog on the
-  // arcade drive object
   @Override
   public void execute() {
     driveSubsystem.applyRequest(() -> new RobotCentric().withVelocityX(0).withVelocityY(0).withRotationalRate(0));
