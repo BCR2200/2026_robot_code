@@ -14,6 +14,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private boolean isFeeding = false;
     public double feederSpeed = 100; // in rps
 
+    private boolean isPreloading = false;
+
     public PIDMotor shootPIDMotor;
     public PIDMotor feedPIDMotor;
     public LinearActuator linearActuator;
@@ -71,6 +73,13 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setFeederSpeed(double speed) {
         feederSpeed = speed;
+    }
+
+    public boolean getIsPreloading() {
+        return isPreloading;
+    }
+    public void setIsPreloading(boolean preloading) {
+        isPreloading = preloading;
     }
 
     /**
@@ -132,14 +141,19 @@ public class ShooterSubsystem extends SubsystemBase {
         isShooting = SmartDashboard.getBoolean("Is Shooting", isShooting);
         isFeeding = SmartDashboard.getBoolean("Is Feeding", isFeeding);
 
-        if (isShooting)
+        if (isShooting) {
             shootPIDMotor.setVelocityTarget(shooterSpeed);
+        }
         else {
             shootPIDMotor.setPercentOutput(0);
         }
 
-        if (isFeeding)
+        if (isPreloading) {
+            feedPIDMotor.setVelocityTarget(5);
+        }
+        else if (isFeeding) {
             feedPIDMotor.setVelocityTarget(feederSpeed);
+        }
         else {
             feedPIDMotor.setPercentOutput(0);
         }

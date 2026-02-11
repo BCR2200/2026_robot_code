@@ -40,7 +40,7 @@ public final class Constants {
   public static final int CLIMB_MOTOR_ID = 10;
 
   // Limelight names
-  public static final String shooterLimelightName = "";
-  public static final String feederLimelightName = "";
+  public static final String SHOOTER_LIMELIGHT_NAME = "";
+  public static final String FEEDER_LIMELIGHT_NAME = "";
   
 }
