@@ -13,19 +13,31 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FloorFeedSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PassCmd extends Command {
   /** Creates a new Drive. */
-  ShooterSubsystem shooterSubsystem;
+  ShooterSubsystem shooterSubsystem1;
+  ShooterSubsystem shooterSubsystem2;
+  ShooterSubsystem shooterSubsystem3;
   CommandSwerveDrivetrain driveSubsystem;
+  FloorFeedSubsystem floorFeedSubsystem;
 
-  public PassCmd(CommandSwerveDrivetrain driveSubsystem, ShooterSubsystem shooterSubsystem) {
+  public PassCmd(CommandSwerveDrivetrain driveSubsystem,
+                 ShooterSubsystem shooterSubsystem1,
+                 ShooterSubsystem shooterSubsystem2,
+                 ShooterSubsystem shooterSubsystem3,
+                 FloorFeedSubsystem floorFeedSubsystem
+  ) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem, driveSubsystem);
-    this.shooterSubsystem = shooterSubsystem;
+    addRequirements(shooterSubsystem1, shooterSubsystem2, shooterSubsystem3, driveSubsystem, floorFeedSubsystem);
+    this.shooterSubsystem1 = shooterSubsystem1;
+    this.shooterSubsystem2 = shooterSubsystem2;
+    this.shooterSubsystem3 = shooterSubsystem3;
     this.driveSubsystem = driveSubsystem;
+    this.floorFeedSubsystem = floorFeedSubsystem;
   }
 
   // Called when the command is initially scheduled.
@@ -38,6 +50,7 @@ public class PassCmd extends Command {
   public void execute() {
     driveSubsystem.applyRequest(() -> new FieldCentricFacingAngle().withTargetDirection(new Rotation2d(Math.PI)));
 
+    // Only allow passing when in the neutral zone
     double distance;
     if (Robot.alliance == Alliance.Blue) {
       distance = LimelightHelpers.getBotPose2d_wpiBlue(Constants.SHOOTER_LIMELIGHT_NAME).getX();
@@ -45,16 +58,34 @@ public class PassCmd extends Command {
     else {
       distance = LimelightHelpers.getBotPose2d_wpiRed(Constants.SHOOTER_LIMELIGHT_NAME).getX();
     }
-    if (distance > 5 && distance < 15) { // TODO GET VALUES
-      shooterSubsystem.setActuatorToPassPosition(distance);
+    if (distance > 4.625 && distance < 11.916) { // Neutral zone
+      shooterSubsystem1.setActuatorToPassPosition(distance);
+      shooterSubsystem2.setActuatorToPassPosition(distance);
+      shooterSubsystem3.setActuatorToPassPosition(distance);
     }
-    new ShootCmd(shooterSubsystem);
+
+    shooterSubsystem1.setIsShooting(true);
+    shooterSubsystem2.setIsShooting(true);
+    shooterSubsystem3.setIsShooting(true);
+    if (shooterSubsystem1.isShooterAtSpeed()) {
+      shooterSubsystem1.setIsFeeding(true);
+      shooterSubsystem2.setIsFeeding(true);
+      shooterSubsystem3.setIsFeeding(true);
+      floorFeedSubsystem.setIsFeeding(true);
+    }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    shooterSubsystem1.setIsShooting(false);
+    shooterSubsystem1.setIsFeeding(false);
+    shooterSubsystem2.setIsShooting(false);
+    shooterSubsystem2.setIsFeeding(false);
+    shooterSubsystem3.setIsShooting(false);
+    shooterSubsystem3.setIsFeeding(false);
+    floorFeedSubsystem.setIsFeeding(false);
   }
 
   // Returns true when the command should end.
