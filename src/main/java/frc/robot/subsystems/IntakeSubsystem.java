@@ -139,8 +139,8 @@ public class IntakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Is Intaking", isIntaking);
         SmartDashboard.putNumber("Intake Actual Speed", intakePIDMotor.getVelocity());
 
-        SmartDashboard.putNumber("Tilt Position Absolute", tiltPositionAbsolute);
-        SmartDashboard.putNumber("Tilt Actual Speed", tiltPIDMotor.getVelocity());
+        SmartDashboard.putNumber("Tilt Position Target", tiltPositionAbsolute);
+        SmartDashboard.putNumber("Tilt Actual Position", tiltPIDMotor.getPosition());
 
         isIntaking = SmartDashboard.getBoolean("Is Intaking", isIntaking);
 
