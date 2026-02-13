@@ -20,10 +20,10 @@ public class ShooterSubsystem extends SubsystemBase {
     public PIDMotor feedPIDMotor;
     public LinearActuator linearActuator;
     
-    private Interpolator shooterAngleInterpolator;
-    private Interpolator shooterVelocityInterpolator;
-    private Interpolator passAngleInterpolator;
-    private Interpolator passVelocityInterpolator;
+    private final Interpolator shooterAngleInterpolator;
+    private final Interpolator shooterVelocityInterpolator;
+    private final Interpolator passAngleInterpolator;
+    private final Interpolator passVelocityInterpolator;
     
     private static final double RPS_STEP = 4.0; // rps
     private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps
@@ -131,6 +131,15 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setActuatorToPassPosition(double distance) {
         linearActuator.setPosition(passAngleInterpolator.interpolate(distance));
         shootPIDMotor.setVelocityTarget(passVelocityInterpolator.interpolate(distance));
+    }
+
+    /**
+     * use this to determine if the shooter is at speed before spinning up the feeder motor
+     *
+     * @return if the shooter motor is at or above the expected speed
+     */
+    public boolean isShooterAtSpeed() {
+        return shootPIDMotor.getVelocity() >= shooterSpeed - 5;
     }
 
     @Override

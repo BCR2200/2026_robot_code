@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DetectFuelCmd;
+import frc.robot.commands.PassCmd;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.drive.Telemetry;
 import frc.robot.drive.TunerConstantsComp;
@@ -31,8 +32,8 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
 
-  private double MaxSpeed = TunerConstantsComp.kSpeedAt12Volts.in(MetersPerSecond) * 0.2; // kSpeedAt12Volts desired top speed
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  private final double MaxSpeed = TunerConstantsComp.kSpeedAt12Volts.in(MetersPerSecond) * 0.2; // kSpeedAt12Volts desired top speed
+  private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
   private boolean isManualMode = false;
 
   /* Setting up bindings for necessary control of the swerve drive platform */
@@ -153,7 +154,7 @@ public class RobotContainer {
 
     m_driverController.leftBumper().whileTrue(new DetectFuelCmd(drivetrain));
     m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_intakeSubsystem.setIsIntaking(true))).whileFalse(new InstantCommand(() -> m_intakeSubsystem.setIsIntaking(false)));
-    m_driverController.rightBumper().whileTrue(new InstantCommand(() -> {})); // TODO: implement pass
+    m_driverController.rightBumper().whileTrue(new PassCmd(drivetrain, m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor, m_floorFeedSubsystem));
     m_driverController.rightTrigger().whileTrue(new InstantCommand(() -> {})); // TODO: implement shoot-to-goal
 
     m_driverController.b().whileTrue(new InstantCommand(() -> {})); // TODO: implement right climb

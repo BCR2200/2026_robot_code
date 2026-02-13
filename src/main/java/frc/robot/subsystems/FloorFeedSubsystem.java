@@ -11,7 +11,7 @@ public class FloorFeedSubsystem extends SubsystemBase {
      * Call updateTargets() on change.
      * Actual speed will oscillate around this.
      */
-    private double motorSpeedCentre = 0; // in rps
+    private double motorSpeedCentre = 10; // in rps. i just randomly picked this value. TODO TUNE THIS
     private boolean isFeeding = false;
 
     private PIDMotor motor;
