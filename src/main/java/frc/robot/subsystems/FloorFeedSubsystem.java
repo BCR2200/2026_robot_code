@@ -40,10 +40,12 @@ public class FloorFeedSubsystem extends SubsystemBase {
     private static final double PARAM_MV = MAX_RPS;
     private static final double PARAM_MA = MAX_RPS * 2;
     private static final double PARAM_MJ = 0.00;
+    private ShooterSubsystem[] shooters;
 
-    public FloorFeedSubsystem(int currentLimit) {
+    public FloorFeedSubsystem(int currentLimit, ShooterSubsystem... shooters) {
+        this.shooters = shooters;
         motor = PIDMotor.makeMotor(Constants.FLOOR_FEED_MOTOR_ID, "Floor Feed",
-            PARAM_P, PARAM_I, PARAM_D, PARAM_S, PARAM_V, PARAM_A, PARAM_MV, PARAM_MA, PARAM_MJ);
+        PARAM_P, PARAM_I, PARAM_D, PARAM_S, PARAM_V, PARAM_A, PARAM_MV, PARAM_MA, PARAM_MJ);
         motor.setCurrentLimit(currentLimit);
         motor.setIdleCoastMode();
     }
@@ -97,8 +99,23 @@ public class FloorFeedSubsystem extends SubsystemBase {
         
         // this.motorSpeedCentre = SmartDashboard.getNumber("Floor Feed motor speed centre", this.motorSpeedCentre);
 
+        // check if any shooter needs the floor to run (or if isFeeding is manually set to true)
+        // |= (or-equals)
+        boolean needsToRun = isFeeding;
+        for (int i = 0; i < shooters.length; i++) {
+            needsToRun |= shooters[i].needsFloorFeed();
+            SmartDashboard.putBoolean("shooter " + i + " needs floor", shooters[i].needsFloorFeed());
+        }
+            SmartDashboard.putBoolean("needs floor", needsToRun);
+
+        if (needsToRun) {
+            motor.setPercentOutput(-1);
+        }else {
+            motor.setPercentOutput(0);
+        }
+
         // This method will be called once per scheduler run
-        if (isFeeding) {
+        if (false) {
 
             if (isAccelerating) { // targeting high point
 
@@ -142,7 +159,7 @@ public class FloorFeedSubsystem extends SubsystemBase {
 
         } else {
             // kill motor
-            motor.setPercentOutput(0);
+            // motor.setPercentOutput(0);
         }
 
         SmartDashboard.putBoolean("Floor Feed is feeding", isFeeding);

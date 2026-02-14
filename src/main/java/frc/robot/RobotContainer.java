@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DetectFuelCmd;
+import frc.robot.commands.JustShootCmd;
 import frc.robot.commands.PassCmd;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.drive.Telemetry;
@@ -121,7 +122,7 @@ public class RobotContainer {
     intakeCurrentLimit, tiltCurrentLimit
   );
 
-  private final FloorFeedSubsystem m_floorFeedSubsystem = new FloorFeedSubsystem(floorCurrentLimit);
+  private final FloorFeedSubsystem m_floorFeedSubsystem = new FloorFeedSubsystem(floorCurrentLimit, m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor);
   private final ClimbSubsystem m_climberSubsystem = new ClimbSubsystem(climbCurrentLimit);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -157,8 +158,8 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(new DetectFuelCmd(drivetrain));
     m_driverController.leftTrigger().whileTrue(new InstantCommand(() -> m_intakeSubsystem.setIsIntaking(true))).whileFalse(new InstantCommand(() -> m_intakeSubsystem.setIsIntaking(false))); 
     m_driverController.rightBumper().whileTrue(new PassCmd(drivetrain, m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor, m_floorFeedSubsystem)); // TODONE
-    m_driverController.rightTrigger().whileTrue(new InstantCommand(() -> {})); // TODO: implement shoot-to-goal
-
+    m_driverController.rightTrigger().whileTrue(new JustShootCmd(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
+    
 
     m_driverController.b().whileTrue(new InstantCommand(() -> {})); // TODO: implement right climb
     m_driverController.a().whileTrue(new InstantCommand(()-> {
