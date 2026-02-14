@@ -221,6 +221,10 @@ public class RobotContainer {
   }
 
   public void updateDrivetrainRobotPerspective() {
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Robot.LIMELIGHTS[0]);
+    if (llMeasurement != null){
+      drivetrain.resetPose(llMeasurement.pose);
+    }
     Rotation2d forward;
     if (Robot.alliance == Alliance.Red) {
       forward = new Rotation2d(Math.PI);
@@ -229,10 +233,6 @@ public class RobotContainer {
     }
     drivetrain.setOperatorPerspectiveForward(forward);
 
-    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Robot.LIMELIGHTS[0]);
-    if (llMeasurement != null){
-      drivetrain.resetPose(llMeasurement.pose);
-    }
   }
   
   /**

@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private final Field2d m_limelightField;
 
   // Default to blue alliance
-  public static Alliance alliance = Alliance.Blue;
+  public static Alliance alliance = Alliance.Red;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
    * Update the alliance color from the DriverStation.
    */
   public static void updateAlliance() {
-    alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+    alliance = DriverStation.getAlliance().orElse(Alliance.Red);
   }
   @Override
   public void robotInit() {
