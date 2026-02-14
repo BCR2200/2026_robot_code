@@ -54,7 +54,7 @@ public class RobotContainer {
   private static final int floorCurrentLimit = 30;
   private static final int intakeCurrentLimit = 60;
   private static final int tiltCurrentLimit = 8;
-  private static final int shooterCurrentLimit = 30;
+  private static final int shooterCurrentLimit = 60;
   private static final int feederCurrentLimit = 30;
   
   // The robot's subsystems and commands are defined here...
@@ -75,7 +75,7 @@ public class RobotContainer {
     new Interpolator( // Placeholders for pass velocities
       new double[] {2, 4, 10, 20}, 
       new double[] {0, 0.25, 0.5, 1}  
-    )
+    ), false
   );
   private final ShooterSubsystem m_shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
     Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
@@ -94,7 +94,7 @@ public class RobotContainer {
     new Interpolator( // Placeholders for pass velocities
       new double[] {2, 4, 10, 20}, 
       new double[] {30, 50, 80, 110}  
-    )
+    ), false
   );
   private final ShooterSubsystem m_shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
     Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
@@ -113,7 +113,7 @@ public class RobotContainer {
     new Interpolator( // Placeholders for pass velocities
       new double[] {2, 4, 10, 20}, 
       new double[] {30, 50, 80, 110}  
-    )
+    ), true
   );
 
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
@@ -228,6 +228,11 @@ public class RobotContainer {
       forward = new Rotation2d(0);
     }
     drivetrain.setOperatorPerspectiveForward(forward);
+
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Robot.LIMELIGHTS[0]);
+    if (llMeasurement != null){
+      drivetrain.resetPose(llMeasurement.pose);
+    }
   }
   
   /**

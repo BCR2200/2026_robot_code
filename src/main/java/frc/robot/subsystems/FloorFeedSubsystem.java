@@ -11,7 +11,7 @@ public class FloorFeedSubsystem extends SubsystemBase {
      * Call updateTargets() on change.
      * Actual speed will oscillate around this.
      */
-    private double motorSpeedCentre = 10; // in rps. i just randomly picked this value. TODO TUNE THIS
+    private double motorSpeedCentre = 20; // in rps. i just randomly picked this value. TODO TUNE THIS
     private boolean isFeeding = false;
 
     private PIDMotor motor;
@@ -19,9 +19,9 @@ public class FloorFeedSubsystem extends SubsystemBase {
     private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps
     private static final double RPS_STEP = 4.0; // rps
 
-    private static final double SECONDS_TO_HIGH_POINT = 0.5; // time from min to max speed in seconds  
-    private static final double TIME_FACTOR_TO_LOW_POINT = 3; // how much longer high-to-low takes (factor)
-    private static final double SPEED_CHANGE_FACTOR = 0.5; // total height of the wave, as a factor of the setpoint (50% means 75-125%)
+    private static final double SECONDS_TO_HIGH_POINT = 0.2; // time from min to max speed in seconds  
+    private static final double TIME_FACTOR_TO_LOW_POINT = 4; // how much longer high-to-low takes (factor)
+    private static final double SPEED_CHANGE_FACTOR = 1.0; // total height of the wave, as a factor of the setpoint (50% means 75-125%)
 
     // have to be constants for the periodic acceleration changes
     private static final double PARAM_P = 0.11;
@@ -108,9 +108,10 @@ public class FloorFeedSubsystem extends SubsystemBase {
             SmartDashboard.putBoolean("shooter " + i + " needs floor", shooters[i].needsFloorFeed());
         }
         SmartDashboard.putBoolean("needs floor", needsToRun);
+        motor.putCurrent();
 
         if (needsToRun) {
-            motor.setVelocityTarget(getVelocityAtTime(System.currentTimeMillis() / 1_000.0d));
+            motor.setVelocityTarget(-getVelocityAtTime(System.currentTimeMillis() / 1_000.0d));
         } else {
             motor.setPercentOutput(0);
         }

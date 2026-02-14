@@ -7,8 +7,21 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.LimelightHelpers.PoseEstimate;
+
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -17,9 +30,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+  /**
+   * do not modify
+   */
+  public static final String[] LIMELIGHTS = {"limelight"};
+  
   private Command m_autonomousCommand;
-
   private final RobotContainer m_robotContainer;
+  private final Field2d m_botField;
+  private final Field2d m_objectField;
+  private final Field2d m_limelightField;
 
   // Default to blue alliance
   public static Alliance alliance = Alliance.Blue;
@@ -33,6 +53,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     updateAlliance();
+    this.m_botField = new Field2d();
+    this.m_limelightField = new Field2d();
+    this.m_objectField = new Field2d();
   }
 
   /**
@@ -40,6 +63,15 @@ public class Robot extends TimedRobot {
    */
   public static void updateAlliance() {
     alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+  }
+  @Override
+  public void robotInit() {
+    m_objectField.setRobotPose(new Pose2d(
+      Distance.ofBaseUnits(12.512294, Meters),
+      Distance.ofBaseUnits(4.03479, Meters),
+      Rotation2d.kZero
+    ));
+    SmartDashboard.putData("Object Field", this.m_objectField);
   }
 
   /**
@@ -57,6 +89,28 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("Is Manual Mode", m_robotContainer.isManualMode);
+    var botState = m_robotContainer.drivetrain.getState();
+    double omegarps = Units.radiansToRotations(botState.Speeds.omegaRadiansPerSecond);
+
+    for (int i = 0; i < LIMELIGHTS.length; ++i) {
+      LimelightHelpers.SetRobotOrientation(LIMELIGHTS[i], botState.Pose.getRotation().getDegrees(), 0, 0, 0, 0,
+          0);
+      PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMELIGHTS[i]);
+      if (poseEstimate != null && poseEstimate.pose != null) {
+        m_limelightField.setRobotPose(poseEstimate.pose);
+      }
+      if (DriverStation.isEnabled()) {
+        if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
+          m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
+              VecBuilder.fill(.9, .9, 999999));
+        }
+      }
+    }
+    
+    m_botField.setRobotPose(botState.Pose);
+
+    SmartDashboard.putData("Bot Field", m_botField);
+    SmartDashboard.putData("Limelight Field", m_limelightField);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
