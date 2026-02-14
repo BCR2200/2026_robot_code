@@ -16,19 +16,12 @@ public class FloorFeedSubsystem extends SubsystemBase {
 
     private PIDMotor motor;
     
-    private double lowHighAccel, highLowAccel;
-    private double lowPoint, highPoint;
-    private boolean isAccelerating = true;
-    // force a retarget, i.e. reset velocity targets
-    private boolean forceRetarget = false;
-
     private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps
     private static final double RPS_STEP = 4.0; // rps
 
     private static final double SECONDS_TO_HIGH_POINT = 0.5; // time from min to max speed in seconds  
     private static final double TIME_FACTOR_TO_LOW_POINT = 3; // how much longer high-to-low takes (factor)
     private static final double SPEED_CHANGE_FACTOR = 0.5; // total height of the wave, as a factor of the setpoint (50% means 75-125%)
-    private static final double TOLERANCE_FACTOR = 0.05; // tolerance to consider the target hit (5%)
 
     // have to be constants for the periodic acceleration changes
     private static final double PARAM_P = 0.11;
@@ -50,19 +43,6 @@ public class FloorFeedSubsystem extends SubsystemBase {
         motor.setIdleCoastMode();
     }
 
-    /**
-     * Based on the currently-set motor speed centre, update setpoints and
-     * acceleration values. Also forces a retarget of the motor (re-set the
-     * speed setpoint outside of an oscillation target hit).
-     */
-    private void updateTargets() {
-        lowHighAccel = (1 / SECONDS_TO_HIGH_POINT) * SPEED_CHANGE_FACTOR * motorSpeedCentre; // in rps/s
-        highLowAccel = lowHighAccel * TIME_FACTOR_TO_LOW_POINT;
-        lowPoint = motorSpeedCentre * (1 - SPEED_CHANGE_FACTOR / 2);
-        highPoint = motorSpeedCentre * (1 + SPEED_CHANGE_FACTOR / 2);
-        this.forceRetarget = true;
-    }
-
     public boolean getIsFeeding() {
         return isFeeding;
     }
@@ -75,23 +55,44 @@ public class FloorFeedSubsystem extends SubsystemBase {
     }
     public void setMotorSpeedCentre(double speed) {
         motorSpeedCentre = speed;
-        this.updateTargets();
     }
 
     public void incrementMotorSpeed() {
         motorSpeedCentre += RPS_STEP;
         motorSpeedCentre = Math.min(motorSpeedCentre, MAX_RPS);
-        this.updateTargets();
     }
     public void decrementMotorSpeed() {
         motorSpeedCentre -= RPS_STEP;
         motorSpeedCentre = Math.max(motorSpeedCentre, -MAX_RPS);
-        this.updateTargets();
     }
 
     public void updateParameters(){
         motorSpeedCentre = SmartDashboard.getNumber("Floor Feed motor speed centre", motorSpeedCentre);
         motor.fetchPIDFFromDashboard();
+    }
+
+    private double getVelocityAtTime(double t) {
+        double highSlope, lowSlope, highPoint, lowPoint, speedDelta;
+
+        // find parameters
+        highPoint = motorSpeedCentre * (1 + (SPEED_CHANGE_FACTOR / 2));
+        lowPoint = motorSpeedCentre * (1 - (SPEED_CHANGE_FACTOR / 2));
+        speedDelta = highPoint - lowPoint;
+        
+        highSlope = speedDelta / SECONDS_TO_HIGH_POINT;
+        lowSlope = -(speedDelta / (SECONDS_TO_HIGH_POINT * TIME_FACTOR_TO_LOW_POINT));
+
+        // low-high takes SECONDS_TO_HIGH_POINT, high-low takes SECONDS_TO_HIGH_POINT * TIME_FACTOR_TO_LOW_POINT
+        double x = t % (SECONDS_TO_HIGH_POINT + SECONDS_TO_HIGH_POINT * TIME_FACTOR_TO_LOW_POINT);
+        // find value
+        if (x < SECONDS_TO_HIGH_POINT) {
+            // upwards slope
+            return highSlope * x + lowPoint;
+        } else {
+            // downwards slope
+            return lowSlope * (x - SECONDS_TO_HIGH_POINT) + highPoint;
+        }
+
     }
 
     @Override
@@ -106,60 +107,12 @@ public class FloorFeedSubsystem extends SubsystemBase {
             needsToRun |= shooters[i].needsFloorFeed();
             SmartDashboard.putBoolean("shooter " + i + " needs floor", shooters[i].needsFloorFeed());
         }
-            SmartDashboard.putBoolean("needs floor", needsToRun);
+        SmartDashboard.putBoolean("needs floor", needsToRun);
 
         if (needsToRun) {
-            motor.setPercentOutput(-1);
-        }else {
-            motor.setPercentOutput(0);
-        }
-
-        // This method will be called once per scheduler run
-        if (false) {
-
-            if (isAccelerating) { // targeting high point
-
-                // set a new velocity if requested
-                if (this.forceRetarget) {
-                    motor.setVelocityTarget(highPoint);
-                    this.forceRetarget = false;
-                }
-
-                // check if the target has been reached
-                if (motor.getVelocity() > highPoint * (1 - TOLERANCE_FACTOR)) {
-                    // swap parameters
-                    motor.setPIDF(PARAM_P, PARAM_I, PARAM_D, PARAM_S, PARAM_V, 
-                        highLowAccel /* A */, PARAM_MV, highLowAccel /* max A */, PARAM_MJ);
-                    motor.setVelocityTarget(lowPoint);
-                    isAccelerating = false;
-                }
-
-                // otherwise wait
-
-            } else { // targeting low point
-
-                // set a new velocity if requested
-                if (this.forceRetarget) {
-                    motor.setVelocityTarget(lowPoint);
-                    this.forceRetarget = false;
-                }
-
-                // check if the target has been reached
-                if (motor.getVelocity() > lowPoint * (1 + TOLERANCE_FACTOR)) {
-                    // swap parameters
-                    motor.setPIDF(PARAM_P, PARAM_I, PARAM_D, PARAM_S, PARAM_V, 
-                        lowHighAccel /* A */, PARAM_MV, lowHighAccel /* max A */, PARAM_MJ);
-                    motor.setVelocityTarget(highPoint);
-                    isAccelerating = true;
-                }
-
-                // otherwise wait
-
-            }
-
+            motor.setVelocityTarget(getVelocityAtTime(System.currentTimeMillis() / 1_000.0d));
         } else {
-            // kill motor
-            // motor.setPercentOutput(0);
+            motor.setPercentOutput(0);
         }
 
         SmartDashboard.putBoolean("Floor Feed is feeding", isFeeding);
