@@ -58,7 +58,7 @@ public class RobotContainer {
   
   // The robot's subsystems and commands are defined here...
   private final ShooterSubsystem m_shooterSubsystemJohn = new ShooterSubsystem( "John",
-    Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
+    Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
     new Interpolator( // Placeholders for shoot angles
       new double[] {2, 4, 10, 20},
       new double[] {1, 0.75, 0.5, 0.25}
@@ -77,7 +77,7 @@ public class RobotContainer {
     )
   );
   private final ShooterSubsystem m_shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
-    Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
+    Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
     new Interpolator( // Placeholders for shoot angles
       new double[] {2, 4, 10, 20},
       new double[] {1, 0.75, 0.5, 0.25}
@@ -96,7 +96,7 @@ public class RobotContainer {
     )
   );
   private final ShooterSubsystem m_shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
-    Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
+    Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
     new Interpolator( // Placeholders for shoot angles
       new double[] {2, 4, 10, 20},
       new double[] {1, 0.75, 0.5, 0.25}

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ExtraMath;
@@ -8,6 +9,8 @@ import frc.robot.Interpolator;
 import frc.robot.LinearActuator;
 
 public class ShooterSubsystem extends SubsystemBase {
+    private String name;
+
     private boolean isShooting = false;
     public double shooterSpeed = 84; // in rps
 
@@ -19,6 +22,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public PIDMotor shootPIDMotor;
     public PIDMotor feedPIDMotor;
     public LinearActuator linearActuator;
+
+    private DigitalInput BeamBreak;
+    
     
     private final Interpolator shooterAngleInterpolator;
     private final Interpolator shooterVelocityInterpolator;
@@ -28,10 +34,13 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double RPS_STEP = 4.0; // rps
     private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps
 
-    public ShooterSubsystem(String name, int shooterMotorID, int feederMotorID, int actuatorChannel, int shootCurrentLimit, int feedCurrentLimit, 
+    public ShooterSubsystem(String name, int shooterMotorID, int feederMotorID, int beambreakChannel, int actuatorChannel, int shootCurrentLimit, int feedCurrentLimit, 
                             Interpolator shooterAngleInterpolator, Interpolator shooterVelocityInterpolator,
                             Interpolator passAngleInterpolator, Interpolator passVelocityInterpolator) {
-        // These numbers are placeholders, we don't actually know what they should be yet
+        this.name = name;
+        BeamBreak = new DigitalInput(beambreakChannel);
+        
+                                // These numbers are placeholders, we don't actually know what they should be yet
         shootPIDMotor = PIDMotor.makeMotor(shooterMotorID, name + " shooter", 0.11, 0.0, 0.0,
                 0.25, 1.2, 0.01, MAX_RPS, MAX_RPS / 5, 0.00);
         shootPIDMotor.setCurrentLimit(shootCurrentLimit);
@@ -154,6 +163,8 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Is Feeding", isFeeding);
         SmartDashboard.putNumber("Feeder Actual Speed", feedPIDMotor.getVelocity());
         SmartDashboard.putNumber("Feeder Accel", feedPIDMotor.getAcceleration());
+
+        SmartDashboard.putBoolean(name + " Beambreak", BeamBreak.get());
 
         // isShooting = SmartDashboard.getBoolean("Is Shooting", isShooting);
         // isFeeding = SmartDashboard.getBoolean("Is Feeding", isFeeding);
