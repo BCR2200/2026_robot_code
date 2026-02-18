@@ -1,20 +1,15 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LinearActuator {
 
     private double target;
-    private final String name;
-    
     private final Servo servo;
 
     public LinearActuator(int channel, String name) {
 
         this.servo = new Servo(channel);
-        this.name = name;
-
         // The example has setBounds(), which takes milliseconds, but this function uses microseconds, so we've converted the values
         servo.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
 
