@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.JustShootCmd;
@@ -65,7 +66,7 @@ public class RobotContainer {
   @NotLogged
   private static final int intakeCurrentLimit = 60;
   @NotLogged
-  private static final int tiltCurrentLimit = 8;
+  private static final int tiltCurrentLimit = 25;
   @NotLogged
   private static final int shooterCurrentLimit = 60;
   @NotLogged
@@ -167,8 +168,10 @@ public class RobotContainer {
               m_intakeSubsystem.setIsIntaking(false);
             }));
     m_driverController.rightBumper().whileTrue(new PassCmd(drivetrain, m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor, m_floorFeedSubsystem)); // TODONE
-    m_driverController.rightTrigger().onTrue(new SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
-                                     .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
+    // m_driverController.rightTrigger().onTrue(new SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
+    //                                  .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
+    m_driverController.rightTrigger().onTrue(JustShootCmd.getStartCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor))
+                                         .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
 
 
     m_driverController.b().whileTrue(new InstantCommand(() -> {})); // TODO: implement right climb
@@ -183,8 +186,8 @@ public class RobotContainer {
     m_driverController.x().whileTrue(new InstantCommand(() -> {})); // TODO: implement left climb
     m_driverController.y().onTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective()));
 
-    m_driverController.povLeft().whileTrue(new InstantCommand(() -> {})); // TODO: implement reset alliance - possibly reseed field-centric?
-    m_driverController.povRight().whileTrue(new InstantCommand(() -> {})); // TODO: implement reset facing angle
+    m_driverController.povLeft().onTrue(new InstantCommand(() -> {m_intakeSubsystem.setTiltPosition(m_intakeSubsystem.getTiltPosition() + 10);})); // TODO: implement reset alliance - possibly reseed field-centric?
+    m_driverController.povRight().onTrue(new InstantCommand(() -> {m_intakeSubsystem.setTiltPosition(m_intakeSubsystem.getTiltPosition() - 10);})); // TODO: implement reset facing angle
     m_driverController.povUp().whileTrue(new InstantCommand(() -> {
       if (isManualMode) {
         m_shooterSubsystemJohn.setActuatorTargetPosition(m_shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);

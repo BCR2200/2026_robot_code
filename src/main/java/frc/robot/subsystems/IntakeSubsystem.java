@@ -4,6 +4,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ExtraMath;
 import frc.robot.PIDMotor;
 
 @Logged
@@ -11,7 +12,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Logged automatically by Epilogue
     private boolean isIntaking = false;
-    private double tiltPositionAbsolute = 0.0; // 0.0 to 1.0
     private boolean isJiggling = false;
 
     @Logged(name = "IntakeMotor")
@@ -23,6 +23,14 @@ public class IntakeSubsystem extends SubsystemBase {
     private double tiltMaxSpeed = 140.0;
     @NotLogged
     private double tiltMaxAccel = 140.0 / 5.0;
+
+    @NotLogged
+    private static final double tiltMaxExtensionPos = -38;
+    @NotLogged
+    private static final double tiltMinExtensionPos = 0;
+
+    @Logged
+    private double tiltPos = 0;
 
     @NotLogged
     private static final double TILT_ABSOLUTE_MAX_RPS = 140.0;
@@ -51,8 +59,8 @@ public class IntakeSubsystem extends SubsystemBase {
         intakePIDMotor.setCurrentLimit(intakeCurrentLimit);
         intakePIDMotor.setIdleCoastMode();
 
-        tiltPIDMotor = PIDMotor.makeMotor(tiltMotorID, "tilt", 0.11, 0.0, 0.0,
-                0.25, 1.2, 0.01, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL, 0.00);
+        tiltPIDMotor = PIDMotor.makeMotor(tiltMotorID, "tilt", 0.6, 0.0, 0.0,
+                0.25, 0.3, 0.01, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL, 0.00);
         tiltPIDMotor.setCurrentLimit(tiltCurrentLimit);
         tiltPIDMotor.setIdleCoastMode();
     }
@@ -105,17 +113,17 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return the tilt position in full rotations
      */
     public double getTiltPosition() {
-        return tiltPositionAbsolute;
+        return tiltPIDMotor.getPosition();
     }
 
     /**
-     * Set the target absolute tilt position, in full rotations.
+     * Set the target tilt position, in full rotations.
      * 
      * @param position the tilt position in full rotations
      */
     public void setTiltPosition(double position) { // We want an Up, Middle and Down preset
-        // tiltPositionAbsolute = position;
-        // tiltPIDMotor.setTarget(tiltPositionAbsolute, tiltMaxSpeed, tiltMaxAccel);
+        tiltPos = ExtraMath.clamp(position, tiltMinExtensionPos, tiltMaxExtensionPos);
+        tiltPIDMotor.setTarget(tiltPos, tiltMaxSpeed, tiltMaxAccel);
     }
 
     public void updateParameters() {
@@ -133,11 +141,11 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
 
-        //horrible untested garbage jiggle function
+        // Horrible untested garbage jiggle function
         /*
         if (isJiggling) {
-            double positionDown = 0.10; // Placeholder for Intake Down Position (idfk what the number will actually be or anything at all really)
-            double positionUp = 0.35; // Placeholder for Intake Up Position
+            double positionDown = -30; // Placeholder for Intake Down Position 
+            double positionUp = -15; // Placeholder for Intake Up Position
             double speed = 8.0; // How fast it cycles
 
             // Find midpoint and the range (amplitude)
@@ -145,14 +153,14 @@ public class IntakeSubsystem extends SubsystemBase {
             double range = (positionUp - positionDown) / 2.0;
 
             // This moves the target smoothly between Up and Down
-            double targetPos = midpoint + (Math.sin(Timer.getFPGATimestamp() * speed) * range); //should clamp or smth to prevent crushing intake
+            double targetPos = midpoint + (Math.sin(Timer.getFPGATimestamp() * speed) * range); // Should clamp or smth to prevent crushing intake
 
             // If too violent, lower TILT_ABSOLUTE_MAX_ACCEL
             tiltPIDMotor.setTarget(targetPos, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL);
 
         } else {
-            // Return to and stay in down position when jiggle is turned off (still no idea how positions work)
-            //probably doesn't need to continuously target the down pos but meh
+            // Return to and stay in down position when jiggle is turned off
+            // Probably doesn't need to continuously target the down pos but meh
             tiltPIDMotor.setTarget(positionDown, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL);
         }
         */
