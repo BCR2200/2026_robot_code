@@ -185,8 +185,8 @@ public class RobotContainer {
     m_driverController.x().whileTrue(new InstantCommand(() -> {})); // TODO: implement left climb
     m_driverController.y().onTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective()));
 
-    m_driverController.povLeft().onTrue(new InstantCommand(() -> {m_intakeSubsystem.setTiltPosition(m_intakeSubsystem.getTiltPosition() + 10);})); // TODO: implement reset alliance - possibly reseed field-centric?
-    m_driverController.povRight().onTrue(new InstantCommand(() -> {m_intakeSubsystem.setTiltPosition(m_intakeSubsystem.getTiltPosition() - 10);})); // TODO: implement reset facing angle
+    m_driverController.povLeft().onTrue(new InstantCommand(() -> {m_intakeSubsystem.setTiltPosition(m_intakeSubsystem.getTiltPosition() + 4);})); // TODO: implement reset alliance - possibly reseed field-centric?
+    m_driverController.povRight().onTrue(new InstantCommand(() -> {m_intakeSubsystem.setTiltPosition(m_intakeSubsystem.getTiltPosition() - 3);})); // TODO: implement reset facing angle
     m_driverController.povUp().whileTrue(new InstantCommand(() -> {
       if (isManualMode) {
         m_shooterSubsystemJohn.setActuatorTargetPosition(m_shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);
