@@ -132,11 +132,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (isIntaking) {
+        if (isIntaking || floorSubsystem.getNeedToRun()) {
             intakePIDMotor.setPercentOutput(1);
-        } else if (floorSubsystem.getNeedToRun()) {
-            intakePIDMotor.setVelocityTarget(floorSubsystem.getCurrentSpeed());
-        } else {
+        }
+        else {
             intakePIDMotor.setPercentOutput(0);
         }
 
