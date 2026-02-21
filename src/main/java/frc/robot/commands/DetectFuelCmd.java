@@ -61,7 +61,7 @@ public class DetectFuelCmd extends Command {
       driveSubsystem.applyRequest(() ->
               new SwerveRequest.RobotCentric()
                       // .withVelocityX(forwardSpeed) 
-                      .withRotationalRate(-radsPerSecond) // negative for clockwise
+                      .withRotationalRate(radsPerSecond) // not negative for clockwise, but it's upside-down
       );
     }
   }
