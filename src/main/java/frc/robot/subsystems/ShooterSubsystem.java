@@ -59,8 +59,8 @@ public class ShooterSubsystem extends SubsystemBase {
         breamBake = new DigitalInput(beambreakChannel);
         
                                 // These numbers are placeholders, we don't actually know what they should be yet
-        shootPIDMotor = PIDMotor.makeMotor(shooterMotorID, name + " shooter", 1, 0.0, 0.0,
-                0.2, 0.0988, 100.0, MAX_RPS, MAX_RPS*2, 0.00);
+        shootPIDMotor = PIDMotor.makeMotor(shooterMotorID, name + " shooter", 0.1, 0.0, 0.0,
+                0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
         shootPIDMotor.setInverted(isMountedIncorrectly ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive);
         shootPIDMotor.setCurrentLimit(shootCurrentLimit);
         shootPIDMotor.setIdleCoastMode();
