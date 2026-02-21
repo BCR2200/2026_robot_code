@@ -22,16 +22,16 @@ public class PIDMotorLogger extends ClassSpecificLogger<PIDMotor> {
 
     @Override
     public void update(EpilogueBackend backend, PIDMotor motor) {
-        if (positionName == null) {
-            positionName = motor.name + " Position";
-            velocityName = motor.name + " Velocity";
-            currentName = motor.name + " Current";
-            targetName = motor.name + " Target";
-        }
+        // if (positionName == null) {
+        //     positionName = motor.name + " Position";
+        //     velocityName = motor.name + " Velocity";
+        //     currentName = motor.name + " Current";
+        //     targetName = motor.name + " Target";
+        // }
 
-        backend.log(positionName, motor.getPosition());
-        backend.log(velocityName, motor.getVelocity());
-        backend.log(currentName, motor.getCurrent());
-        backend.log(targetName, motor.target);
+        backend.log(motor.name + " position", motor.getPosition());
+        backend.log(motor.name + " velocity", motor.getVelocity());
+        backend.log(motor.name + " current", motor.getCurrent());
+        backend.log(motor.name + " target", motor.target);
     }
 }

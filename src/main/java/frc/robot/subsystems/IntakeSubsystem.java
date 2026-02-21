@@ -36,6 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private static final double TILT_ABSOLUTE_MAX_RPS = 140.0;
     @NotLogged
     private static final double TILT_ABSOLUTE_MAX_ACCEL = TILT_ABSOLUTE_MAX_RPS * 2;
+    @NotLogged
     private FloorFeedSubsystem floorSubsystem;
 
     // Functions:

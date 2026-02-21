@@ -65,7 +65,7 @@ public class RobotContainer {
   @NotLogged
   private static final int intakeCurrentLimit = 60;
   @NotLogged
-  private static final int tiltCurrentLimit = 10; // Normally 25
+  private static final int tiltCurrentLimit = 35; // Normally 25
   @NotLogged
   private static final int shooterCurrentLimit = 60;
   @NotLogged

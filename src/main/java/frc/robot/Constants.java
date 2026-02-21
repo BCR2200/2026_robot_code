@@ -19,7 +19,7 @@ public final class Constants {
 
   // Limelight names
   public static final String SHOOTER_LIMELIGHT_NAME = "limelight";
-  public static final String FEEDER_LIMELIGHT_NAME = "";
+  public static final String FEEDER_LIMELIGHT_NAME = "limelight";
 
   // left shooter IDs and channel
   public static final int JOHN_SHOOTER_MOTOR_ID = 3;

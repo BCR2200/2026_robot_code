@@ -7,6 +7,8 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ExtraMath;
 import frc.robot.OURLimelightHelpers;
@@ -33,11 +35,11 @@ public class DetectFuelCmd extends Command {
    * Attempts to track a piece of fuel using its detected contour.
    * Drives forward if there is a target, and turns proportionally to its angle error.
    */
+  @Override
   public void execute() {
 
-    // get contour from limelight
-    // has detection flag, x offset in degrees from center and y offset from center
     OURLimelightHelpers.LimelightContour contour = OURLimelightHelpers.getContour();
+    SmartDashboard.putData("contour", contour);
 
     // if there are no targets, don't do anything
     if (!contour.hasTarget()) {
