@@ -2,10 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 
 public class OURLimelightHelpers {
 
-    public record LimelightContour(boolean hasTarget, double degreesX, double degreesY) {
+    public record LimelightContour(boolean hasTarget, double degreesX, double degreesY) implements Sendable {
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.addBooleanProperty("hasTarget", () -> hasTarget, null);
+            builder.addDoubleProperty("degreesX", () -> degreesX, null);
+            builder.addDoubleProperty("degreesY", () -> degreesY, null);
+        }
     }
 
     /**
