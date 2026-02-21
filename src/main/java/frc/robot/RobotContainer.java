@@ -22,7 +22,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.JustShootCmd;
 import frc.robot.commands.PassCmd;
-import frc.robot.commands.SnapTowardsGoalCmd;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.drive.Telemetry;
 import frc.robot.drive.TunerConstantsComp;
@@ -233,7 +232,7 @@ public class RobotContainer {
   }
 
   public void updateDrivetrainRobotPerspective() {
-    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Robot.LIMELIGHTS[0]);
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.SHOOTER_LIMELIGHT_NAME);
     if (llMeasurement != null){
       drivetrain.resetPose(llMeasurement.pose);
     }

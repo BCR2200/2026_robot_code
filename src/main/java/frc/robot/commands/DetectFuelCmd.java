@@ -29,46 +29,6 @@ public class DetectFuelCmd extends Command {
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  /**
-   * Attempts to track a piece of fuel using yellow percentages
-   * Drives forward if there is a target, and turns proportionally to its angle error.
-   */
-  @SuppressWarnings("unused")
-  public void executeAlt() {
-    driveSubsystem.applyRequest(() -> new RobotCentric().withVelocityX(0).withVelocityY(0).withRotationalRate(0));
-
-    johnJawbreakerTaylorPercentages = OURLimelightHelpers.getJohnJawbreakerTaylorPercentages();
-
-    // If the largest percentage is greater than 1, we know that we have a valid target
-    if (Math.max(johnJawbreakerTaylorPercentages[0],
-        Math.max(johnJawbreakerTaylorPercentages[1], johnJawbreakerTaylorPercentages[2])) > 1) {
-
-      // Left
-      if (johnJawbreakerTaylorPercentages[0] > johnJawbreakerTaylorPercentages[1]
-          && johnJawbreakerTaylorPercentages[0] > johnJawbreakerTaylorPercentages[2]) {
-        driveSubsystem.applyRequest(() -> 
-          new RobotCentric().withVelocityX(0).withRotationalRate(1)
-        );
-      }
-      // Right
-      else if (johnJawbreakerTaylorPercentages[2] > johnJawbreakerTaylorPercentages[0]
-          && johnJawbreakerTaylorPercentages[2] > johnJawbreakerTaylorPercentages[1]) {
-        driveSubsystem.applyRequest(() -> 
-          new RobotCentric().withVelocityX(0).withRotationalRate(-1)
-        );
-      } 
-      // Centre
-      else {
-        driveSubsystem.applyRequest(() -> 
-          new RobotCentric().withVelocityX(0.5).withRotationalRate(0)
-        );
-      }
-    }
-
-  }
-
-
   /**
    * Attempts to track a piece of fuel using its detected contour.
    * Drives forward if there is a target, and turns proportionally to its angle error.
@@ -77,13 +37,13 @@ public class DetectFuelCmd extends Command {
 
     // get contour from limelight
     // has detection flag, x offset from center and y offset from center in pixels
-    // TODO: use correct limelight key
-    OURLimelightHelpers.LimelightContour contour = OURLimelightHelpers.getLargestFuelContour("limelight"); 
+    OURLimelightHelpers.LimelightContour contour = OURLimelightHelpers.getContour();
 
     // if there are no targets, don't do anything
     if (!contour.hasTarget()) {
       driveSubsystem.applyRequest(SwerveRequest.Idle::new);
-    } else {
+    } 
+    else {
       // otherwise, drive towards the contour center
       // do not rotate tiny amounts (deadzone), otherwise rotate at a speed that achieves the correct angle in 1/3s
       // the 54/160 converts the pixels to degrees (assuming 320x240 resolution and 54 degree FOV)
@@ -96,7 +56,6 @@ public class DetectFuelCmd extends Command {
                       .withRotationalRate(rotationalRate) // negative for clockwise
       );
     }
-
   }
 
   // Called once the command ends or is interrupted.

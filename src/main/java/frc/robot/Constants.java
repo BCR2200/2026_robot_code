@@ -17,6 +17,10 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  // Limelight names
+  public static final String SHOOTER_LIMELIGHT_NAME = "limelight";
+  public static final String FEEDER_LIMELIGHT_NAME = "";
+
   // left shooter IDs and channel
   public static final int JOHN_SHOOTER_MOTOR_ID = 3;
   public static final int JOHN_FEEDER_MOTOR_ID = 4;
@@ -42,10 +46,6 @@ public final class Constants {
   
   // climb motor ID
   public static final int CLIMB_MOTOR_ID = 10;
-
-  // Limelight names
-  public static final String SHOOTER_LIMELIGHT_NAME = "";
-  public static final String FEEDER_LIMELIGHT_NAME = "";
 
   // left front drive motor IDs
   public static final int LEFT_FRONT_DRIVE = 11;

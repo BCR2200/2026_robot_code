@@ -32,9 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 @Logged
 public class Robot extends TimedRobot {
-  @NotLogged
-  public static final String[] LIMELIGHTS = {"limelight"};
-
+  
   @NotLogged
   private Command m_autonomousCommand;
 
@@ -129,19 +127,17 @@ public class Robot extends TimedRobot {
     var botState = m_robotContainer.drivetrain.getState();
     double omegarps = Units.radiansToRotations(botState.Speeds.omegaRadiansPerSecond);
 
-    for (int i = 0; i < LIMELIGHTS.length; ++i) {
-      // Use NoFlush variant to avoid blocking on NetworkTables sync
-      LimelightHelpers.SetRobotOrientation_NoFlush(LIMELIGHTS[i],
-          botState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMELIGHTS[i]);
-      if (poseEstimate != null && poseEstimate.pose != null) {
-        m_limelightField.setRobotPose(poseEstimate.pose);
-      }
-      if (DriverStation.isEnabled()) {
-        if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
-          m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
-              VecBuilder.fill(.9, .9, 999999));
-        }
+    // Use NoFlush variant to avoid blocking on NetworkTables sync
+    LimelightHelpers.SetRobotOrientation_NoFlush(Constants.SHOOTER_LIMELIGHT_NAME,
+        botState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.SHOOTER_LIMELIGHT_NAME);
+    if (poseEstimate != null && poseEstimate.pose != null) {
+      m_limelightField.setRobotPose(poseEstimate.pose);
+    }
+    if (DriverStation.isEnabled()) {
+      if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
+        m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
+            VecBuilder.fill(.9, .9, 999999));
       }
     }
 
