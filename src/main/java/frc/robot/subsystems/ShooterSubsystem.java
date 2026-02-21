@@ -25,12 +25,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Logged automatically by Epilogue
     private final String name;
+
     private boolean isShooting = false;
     private double shooterSpeed = 54; // in rps. TODO: remove and use the shooterVelocityInterpolator instead
+
     private boolean isPassing = false;
-    private static final double PASSING_SHOOTER_SPEED = 42; // in rps
+    private double passingSpeed = 42; // in rps
+
     private boolean isFeeding = false;
     private double feederSpeed = 100; //in rps
+
+    private boolean canPreload = true;
 
     // Logged via PIDMotorLogger
     @Logged(name = "ShootMotor")
@@ -94,6 +99,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setIsFeeding(boolean feeding) {
         isFeeding = feeding;
+    }
+    public boolean getCanPreload() {
+        return canPreload;
+    }
+    public void setCanPreload(boolean canPreload) {
+        this.canPreload = canPreload;
     }
 
     /**
@@ -159,7 +170,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean needsFloorFeed() {
-        return isFeeding || !isBeamBroken();
+        return isFeeding || (!isBeamBroken() && canPreload);
     }
 
     /**
@@ -178,7 +189,7 @@ public class ShooterSubsystem extends SubsystemBase {
         if (isShooting) {
             shootPIDMotor.setVelocityTarget(shooterSpeed); // TODO: use shooterVelocityInterpolator
         } else if (isPassing) {
-            shootPIDMotor.setVelocityTarget(PASSING_SHOOTER_SPEED);
+            shootPIDMotor.setVelocityTarget(passingSpeed);
         } else {
             shootPIDMotor.setPercentOutput(0);
         }

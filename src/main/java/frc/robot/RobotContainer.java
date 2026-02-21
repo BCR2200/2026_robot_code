@@ -172,6 +172,12 @@ public class RobotContainer {
     //                                  .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
     driverController.rightTrigger().whileTrue(new JustShootCmd(shooterSubsystemJohn, shooterSubsystemJawbreaker, shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
 
+    // Preload
+    driverController.rightStick().onTrue(new InstantCommand(() -> {
+      shooterSubsystemJohn.setCanPreload(true);
+      shooterSubsystemJawbreaker.setCanPreload(true);
+      shooterSubsystemTaylor.setCanPreload(true);
+    }));
 
     driverController.b().whileTrue(new InstantCommand(() -> {})); // TODO: implement right climb
     driverController.a().whileTrue(new InstantCommand(() -> {
