@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ExtraMath;
 import frc.robot.PIDMotor;
@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private double tiltMaxAccel = 140.0 / 5.0;
 
     @NotLogged
-    private static final double tiltMaxExtensionPos = -38;
+    public static final double tiltMaxExtensionPos = -38;
     @NotLogged
     private static final double tiltMinExtensionPos = 0;
 
@@ -140,30 +140,16 @@ public class IntakeSubsystem extends SubsystemBase {
             intakePIDMotor.setPercentOutput(0);
         }
 
-
-        // Horrible untested garbage jiggle function
-        /*
+        // Slightly less Horrible untested garbage jiggle function
+        // This can be graphed as: tiltPos + amplitude * sin(speed * time)
         if (isJiggling) {
-            double positionDown = -30; // Placeholder for Intake Down Position 
-            double positionUp = -15; // Placeholder for Intake Up Position
-            double speed = 8.0; // How fast it cycles
+            double speed = 1.0; // Number of cycles per second
+            double amplitude = 2; // If it goes 2 up 2 down from current pos, then amp is 2
 
-            // Find midpoint and the range (amplitude)
-            double midpoint = (positionUp + positionDown) / 2.0;
-            double range = (positionUp - positionDown) / 2.0;
-
-            // This moves the target smoothly between Up and Down
-            double targetPos = midpoint + (Math.sin(Timer.getFPGATimestamp() * speed) * range); // Should clamp or smth to prevent crushing intake
-
-            // If too violent, lower TILT_ABSOLUTE_MAX_ACCEL
-            tiltPIDMotor.setTarget(targetPos, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL);
-
-        } else {
-            // Return to and stay in down position when jiggle is turned off
-            // Probably doesn't need to continuously target the down pos but meh
-            tiltPIDMotor.setTarget(positionDown, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL);
+            // This moves the intake smoothly up and down with a sin wave
+            double targetPos = tiltPos + (Math.sin(Timer.getFPGATimestamp() * speed) * amplitude);
+            setTiltPosition(targetPos);
         }
-        */
         
     }
 
