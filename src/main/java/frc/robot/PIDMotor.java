@@ -353,7 +353,6 @@ public class PIDMotor {
         dynamicMotionMagicVoltage.withVelocity(velocity);
         dynamicMotionMagicVoltage.withAcceleration(acceleration);
 
-        motor.setControl(dynamicMotionMagicVoltage);
         StatusCode code = motor.setControl(dynamicMotionMagicVoltage);
         if (!code.isOK()) {
             System.err.printf("error setting target with acceleration (%s): %s\n", name, code.getDescription());
