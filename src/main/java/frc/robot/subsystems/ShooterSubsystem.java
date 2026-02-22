@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private boolean isFeeding = false;
     private double feederSpeed = 100; //in rps
 
-    private boolean canPreload = true;
+    private boolean canPreload = false;
 
     // Logged via PIDMotorLogger
     @Logged(name = "ShootMotor")
