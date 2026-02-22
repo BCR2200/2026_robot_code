@@ -72,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * constantly moves/tilts between two points following a sine wave
      * and false means no intake tilt movement.
      * 
-     * @param intaking true to move the intake up and down to promote feeding, false to stop running it
+     * @param jiggling true to move the intake up and down to promote feeding, false to stop running it
      */
     public void setIsJiggling(boolean jiggling) {
         isJiggling = jiggling;
