@@ -79,9 +79,9 @@ public class Robot extends TimedRobot {
     addPeriodic(this::sendFields, 0.080); // 80ms is every 4 loops
     addPeriodic(Robot::updateAlliance, 0.5);
     addPeriodic(() -> SmartDashboard.putNumber("Distance to Target", 
-      OURLimelightHelpers.getDistanceToTarget(targetHub)), 0.1);
+      getDistanceToTarget(targetHub)), 0.1);
     addPeriodic(() -> SmartDashboard.putNumber("Degrees to Target", 
-      OURLimelightHelpers.getDegreesToTarget(targetHub)), 0.1);
+      getDegreesToTarget(targetHub)), 0.1);
     addPeriodic(() -> updateRobotPose(), 0.02);
   }
 
