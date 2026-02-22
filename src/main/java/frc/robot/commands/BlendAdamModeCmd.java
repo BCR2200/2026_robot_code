@@ -59,10 +59,10 @@ public class BlendAdamModeCmd extends Command {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private CommandXboxController m_driverController;
 
-    private Distance blueHUBBYLine = Distance.ofBaseUnits(245, Units.Inches);
-    private Distance redHUBBYLine = Distance.ofBaseUnits(457, Units.Inches);
-    private Distance wallLFromBXLine = Distance.ofBaseUnits(30, Units.Inches);
-    private Distance wallRFromBXLine = Distance.ofBaseUnits(287.69, Units.Inches);
+    private Distance blueHUBXLine = Distance.ofBaseUnits(245, Units.Inches);
+    private Distance redHUBXLine = Distance.ofBaseUnits(457, Units.Inches);
+    private Distance wallLFromBYLine = Distance.ofBaseUnits(30, Units.Inches);
+    private Distance wallRFromBYLine = Distance.ofBaseUnits(287.69, Units.Inches);
 
     public BlendAdamModeCmd(RobotContainer robot, CommandSwerveDrivetrain drivetrain, SwerveRequest.RobotCentric swerve,
             CommandXboxController m_driverController) {
@@ -141,13 +141,25 @@ public class BlendAdamModeCmd extends Command {
         if (doneFirstPath) {
             currentPose2d = OURLimelightHelpers.betterGetPose2d(Constants.FEEDER_LIMELIGHT_NAME,
                     Constants.SHOOTER_LIMELIGHT_NAME);
-
-            if(ExtraMath.within(currentPose2d.getY(), redHUBBYLine.in(Units.Meters), 0.5)
-                || ExtraMath.within(currentPose2d.getY(), blueHUBBYLine.in(Units.Meters), 0.5)){
+            /*
+             * If (in a corner, allow driver X and Y)
+             * If (On one of the X lines, only allow Y)
+             * If (On one of the Y lines, only allow X)
+             * If (Not on either, free reign)
+             */
+            if(ExtraMath.within(currentPose2d.getY(), redHUBXLine.in(Units.Meters), 0.5)
+                || ExtraMath.within(currentPose2d.getY(), blueHUBXLine.in(Units.Meters), 0.5) && 
+                ExtraMath.within(currentPose2d.getX(), wallLFromBYLine.in(Units.Meters), 0.5) 
+                || ExtraMath.within(currentPose2d.getX(), wallRFromBYLine.in(Units.Meters), 0.5)){
+                    drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed)
+                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed));
+            }
+            else if(ExtraMath.within(currentPose2d.getX(), redHUBXLine.in(Units.Meters), 0.5)
+                || ExtraMath.within(currentPose2d.getX(), blueHUBXLine.in(Units.Meters), 0.5)){
                     drivetrain.applyRequest(() -> drive.withVelocityY(-m_driverController.getLeftX() * MaxSpeed));
             }
-            else if(ExtraMath.within(currentPose2d.getX(), wallLFromBXLine.in(Units.Meters), 0.5) 
-                || ExtraMath.within(currentPose2d.getX(), wallRFromBXLine.in(Units.Meters), 0.5)){
+            else if(ExtraMath.within(currentPose2d.getY(), wallLFromBYLine.in(Units.Meters), 0.5) 
+                || ExtraMath.within(currentPose2d.getY(), wallRFromBYLine.in(Units.Meters), 0.5)){
                     drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed));
             } else {
                 drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed)
