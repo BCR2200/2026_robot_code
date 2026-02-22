@@ -43,9 +43,6 @@ public class RobotContainer {
   @NotLogged
   public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
-  // Logged automatically
-  public boolean isManualMode = false;
-
   @NotLogged
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
@@ -199,22 +196,18 @@ public class RobotContainer {
     driverController.povLeft().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() + 4);})); // TODO: implement reset alliance - possibly reseed field-centric?
     driverController.povRight().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() - 3);})); // TODO: implement reset facing angle
     driverController.povUp().whileTrue(new InstantCommand(() -> {
-      if (isManualMode) {
         shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);
         shooterSubsystemJawbreaker.setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() + ACTUATOR_STEP);
         shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() + ACTUATOR_STEP);
-      }
     }));
     driverController.povDown().whileTrue(new InstantCommand(() -> {
-      if (isManualMode) {
         shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() - ACTUATOR_STEP);
         shooterSubsystemJawbreaker.setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() - ACTUATOR_STEP);
         shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() - ACTUATOR_STEP);
-      }
     }));
 
     driverController.start().whileTrue(new InstantCommand(() -> {})); // TODO: implement unjam
-    driverController.back().whileTrue(new InstantCommand(() -> this.isManualMode = !this.isManualMode));
+    driverController.back().whileTrue(new InstantCommand(() -> {})); // TODO: Manual Mode?
 
   }
 
