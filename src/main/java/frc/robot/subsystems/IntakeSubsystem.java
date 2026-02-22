@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @NotLogged
     public static final double tiltMaxExtensionPos = -38;
     @NotLogged
-    private static final double tiltMinExtensionPos = 0;
+    public static final double tiltMinExtensionPos = 0;
 
     @Logged
     private double tiltPos = 0;

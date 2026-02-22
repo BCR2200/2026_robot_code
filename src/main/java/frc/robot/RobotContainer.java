@@ -224,6 +224,9 @@ public class RobotContainer {
     driverController.x().onTrue(new InstantCommand(() -> {climberSubsystem.goHome();})); // TODO: implement left climb
 
     driverController.a().whileTrue(new InstantCommand(() -> {
+      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMinExtensionPos);
+    }));
+    driverController.y().onTrue(new InstantCommand(() -> {
       shooterSubsystemJohn.updateParameters();
       shooterSubsystemJawbreaker.updateParameters();
       shooterSubsystemTaylor.updateParameters();
@@ -231,7 +234,6 @@ public class RobotContainer {
       floorFeedSubsystem.updateParameters();
       intakeSubsystem.updateParameters();
     }));
-    driverController.y().onTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective()));
 
     driverController.povLeft().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() + 4);})); // TODO: implement reset alliance - possibly reseed field-centric?
     driverController.povRight().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() - 3);})); // TODO: implement reset facing angle
@@ -247,7 +249,7 @@ public class RobotContainer {
     }));
 
     driverController.start().whileTrue(new InstantCommand(() -> {})); // TODO: implement unjam
-    driverController.back().whileTrue(new InstantCommand(() -> {})); // TODO: Manual Mode?
+    driverController.back().whileTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective())); 
 
   }
 
@@ -291,17 +293,17 @@ public class RobotContainer {
 
   public void updateDrivetrainRobotPerspective() {
     var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.SHOOTER_LIMELIGHT_NAME);
-    if (llMeasurement != null){
+    if (llMeasurement != null) {
       drivetrain.resetPose(llMeasurement.pose);
     }
     Rotation2d forward;
     if (Robot.alliance == Alliance.Red) {
       forward = new Rotation2d(Math.PI);
-    } else {
+    } 
+    else {
       forward = new Rotation2d(0);
     }
     drivetrain.setOperatorPerspectiveForward(forward);
-
   }
 
   /**
