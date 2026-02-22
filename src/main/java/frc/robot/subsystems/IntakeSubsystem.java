@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ExtraMath;
 import frc.robot.PIDMotor;
@@ -144,6 +145,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
             // This moves the intake smoothly up and down with a sin wave
             double targetPos = tiltPos + (Math.sin(Timer.getFPGATimestamp() * speed) * amplitude);
+            SmartDashboard.putNumber("jiggle target", targetPos);
             setTiltPosition(targetPos);
         }
         
