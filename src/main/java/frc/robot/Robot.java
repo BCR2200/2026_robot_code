@@ -78,6 +78,11 @@ public class Robot extends TimedRobot {
     addPeriodic(this::updateTargetHub, 0.5);
     addPeriodic(this::sendFields, 0.080); // 80ms is every 4 loops
     addPeriodic(Robot::updateAlliance, 0.5);
+    addPeriodic(() -> SmartDashboard.putNumber("Distance to Target", 
+      OURLimelightHelpers.getDistanceToTarget(targetHub)), 0.1);
+    addPeriodic(() -> SmartDashboard.putNumber("Degrees to Target", 
+      OURLimelightHelpers.getDegreesToTarget(targetHub)), 0.1);
+    addPeriodic(() -> updateRobotPose(), 0.02);
   }
 
   /**
@@ -105,6 +110,27 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Object Field", this.m_objectField);
   }
 
+  public void updateRobotPose(){
+    var botState = m_robotContainer.drivetrain.getState();
+    LimelightHelpers.SetRobotOrientation(Constants.SHOOTER_LIMELIGHT_NAME, 
+        botState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    
+
+    // Getting the robot's angular velocity in rotations per second
+    double omegarps = Units.radiansToRotations(botState.Speeds.omegaRadiansPerSecond);
+    PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.SHOOTER_LIMELIGHT_NAME);
+
+    if (poseEstimate != null && poseEstimate.pose != null) {
+      m_limelightField.setRobotPose(poseEstimate.pose);
+    }
+    if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
+      m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
+            VecBuilder.fill(.9, .9, 999999));
+    }
+
+    m_botField.setRobotPose(botState.Pose);
+  }
+
   @Override
   public void robotInit() {
   }
@@ -123,25 +149,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
-    var botState = m_robotContainer.drivetrain.getState();
-    double omegarps = Units.radiansToRotations(botState.Speeds.omegaRadiansPerSecond);
-
-    // Use NoFlush variant to avoid blocking on NetworkTables sync
-    LimelightHelpers.SetRobotOrientation_NoFlush(Constants.SHOOTER_LIMELIGHT_NAME,
-        botState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.SHOOTER_LIMELIGHT_NAME);
-    if (poseEstimate != null && poseEstimate.pose != null) {
-      m_limelightField.setRobotPose(poseEstimate.pose);
-    }
-    if (DriverStation.isEnabled()) {
-      if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
-        m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
-            VecBuilder.fill(.9, .9, 999999));
-      }
-    }
-
-    m_botField.setRobotPose(botState.Pose);
+    
   }
 
   public void sendFields() {
