@@ -93,47 +93,38 @@ public class RobotContainer {
   @NotLogged
   private static final int feederCurrentLimit = 30;
 
+  private static final Interpolator HOOD_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
+                  new double[] {0.966, 2.01, 3.00, 4.00},
+                  new double[] {0.050, 0.40, 0.65, 0.90}
+  );
+  private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
+                  new double[] {0.966, 2.01, 3.00, 4.00},
+                  new double[] {50, 54, 58, 64}
+  );
+
   // Subsystems - logged via their @Logged annotations
   @Logged(name = "John")
   public final ShooterSubsystem shooterSubsystemJohn = new ShooterSubsystem( "John",
           Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          new Interpolator( // Placeholders for shoot hood angles
-                  new double[] {2, 4, 10, 20},
-                  new double[] {1, 0.75, 0.5, 0.25}
-          ),
-          new Interpolator( // Placeholders for shoot wheel velocities
-                  new double[] {2, 4, 10, 20},
-                  new double[] {30, 50, 80, 110}
-          ),
-          false
+          HOOD_INTERPOLATOR,
+          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          false, this
   );
 
   @Logged(name = "Jawbreaker")
   public final ShooterSubsystem shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
           Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          new Interpolator( // Placeholders for shoot hood angles
-                  new double[] {2, 4, 10, 20},
-                  new double[] {1, 0.75, 0.5, 0.25}
-          ),
-          new Interpolator( // Placeholders for shoot wheel velocities
-                  new double[] {2, 4, 10, 20},
-                  new double[] {30, 50, 80, 110}
-          ),
-          false
+          HOOD_INTERPOLATOR,
+          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          false, this
   );
 
   @Logged(name = "Taylor")
   public final ShooterSubsystem shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
           Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          new Interpolator( // Placeholders for shoot hood angles
-                  new double[] {2, 4, 10, 20},
-                  new double[] {1, 0.75, 0.5, 0.25}
-          ),
-          new Interpolator( // Placeholders for shoot wheel velocities
-                  new double[] {2, 4, 10, 20},
-                  new double[] {30, 50, 80, 110}
-          ),
-          true
+          HOOD_INTERPOLATOR,
+          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          true, this
   );
 
   @Logged(name = "FloorFeed")

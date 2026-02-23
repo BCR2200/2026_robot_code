@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ExtraMath;
 import frc.robot.PIDMotor;
+import frc.robot.RobotContainer;
 import frc.robot.Interpolator;
 import frc.robot.LinearActuator;
 
@@ -37,6 +38,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private boolean canPreload = false;
 
+    private RobotContainer rc;
+
     // Logged via PIDMotorLogger
     @Logged(name = "ShootMotor")
     public PIDMotor shootPIDMotor;
@@ -59,7 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final Interpolator shooterVelocityInterpolator;
 
     public ShooterSubsystem(String name, int shooterMotorID, int feederMotorID, int beambreakChannel, int actuatorChannel, int shootCurrentLimit, int feedCurrentLimit, 
-                            Interpolator shooterAngleInterpolator, Interpolator shooterVelocityInterpolator, boolean isMountedIncorrectly) {
+                            Interpolator shooterAngleInterpolator, Interpolator shooterVelocityInterpolator, boolean isMountedIncorrectly, RobotContainer rc) {
         this.name = name;
         breamBake = new DigitalInput(beambreakChannel);
         
@@ -80,6 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
         this.linearActuator = new LinearActuator(actuatorChannel, name + " linear actuator");
         setActuatorTargetPosition(0.35d);
         shootPIDMotor.putPIDF();
+        this.rc = rc;
     }
 
     public boolean getIsShooting() {
@@ -105,6 +109,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setCanPreload(boolean canPreload) {
         this.canPreload = canPreload;
+    }
+
+    /**
+     * Interpolate the shooter speed given a distance from the target
+     * @param distance in m
+     */
+    public void interpolateShooterSpeed(double distance) {
+        this.shooterSpeed = ExtraMath.clamp(shooterVelocityInterpolator.interpolate(distance), -MAX_RPS, MAX_RPS);
     }
 
     /**
@@ -139,6 +151,10 @@ public class ShooterSubsystem extends SubsystemBase {
     @Logged
     public double getActuatorPosition() {
         return linearActuator.getTargetPosition();
+    }
+
+    public void interpolateActuatorPosition(double distance) { 
+        linearActuator.setTargetPosition(shooterAngleInterpolator.interpolate(distance));
     }
     
     public void updateParameters(){
@@ -189,9 +205,11 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Control logic only - telemetry handled by Epilogue
+        interpolateActuatorPosition(rc.getDistanceToTarget(rc.targetHub));
 
         if (isShooting) {
-            shootPIDMotor.setVelocityTarget(shooterSpeed); // TODO: use shooterVelocityInterpolator
+            interpolateShooterSpeed(rc.getDistanceToTarget(rc.targetHub));
+            shootPIDMotor.setVelocityTarget(shooterSpeed);
         } 
         else if (isPassing) {
             shootPIDMotor.setVelocityTarget(passingSpeed);
