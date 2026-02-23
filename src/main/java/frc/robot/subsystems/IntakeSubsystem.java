@@ -32,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Logged
     private double tiltPos = 0;
+    @Logged
+    private double jiggleTiltAdjustment = 0;
 
     @NotLogged
     private FloorFeedSubsystem floorSubsystem;
@@ -145,7 +147,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
             // This moves the intake smoothly up and down with a sin wave
             double targetPos = tiltPos + (Math.sin(Timer.getFPGATimestamp() * speed) * amplitude);
-            SmartDashboard.putNumber("jiggle target", targetPos);
+            jiggleTiltAdjustment = targetPos;
             setTiltPosition(targetPos);
         }
         
