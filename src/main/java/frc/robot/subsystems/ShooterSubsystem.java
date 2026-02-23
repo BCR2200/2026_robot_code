@@ -115,7 +115,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * Interpolate the shooter speed given a distance from the target
      * @param distance in m
      */
-    public void interpolateShooterSpeed(double distance) {
+    public void setShooterSpeedViaInterpolatedValue(double distance) {
         this.shooterSpeed = ExtraMath.clamp(shooterVelocityInterpolator.interpolate(distance), -MAX_RPS, MAX_RPS);
     }
 
@@ -153,7 +153,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return linearActuator.getTargetPosition();
     }
 
-    public void interpolateActuatorPosition(double distance) { 
+    public void setActuatorPositionViaInterpolatedValue(double distance) { 
         linearActuator.setTargetPosition(shooterAngleInterpolator.interpolate(distance));
     }
     
@@ -205,10 +205,10 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Control logic only - telemetry handled by Epilogue
-        interpolateActuatorPosition(rc.getDistanceToTarget(rc.targetHub));
+        setActuatorPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.targetHub));
 
         if (isShooting) {
-            interpolateShooterSpeed(rc.getDistanceToTarget(rc.targetHub));
+            setShooterSpeedViaInterpolatedValue(rc.getDistanceToTarget(rc.targetHub));
             shootPIDMotor.setVelocityTarget(shooterSpeed);
         } 
         else if (isPassing) {
