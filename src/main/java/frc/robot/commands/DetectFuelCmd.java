@@ -12,23 +12,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ExtraMath;
 import frc.robot.OURLimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.drive.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DetectFuelCmd extends Command {
   /** Creates a new Drive. */
-  CommandSwerveDrivetrain driveSubsystem;
-  double[] johnJawbreakerTaylorPercentages;
+  private RobotContainer robotContainer;
+  public static double radsPerSecond;
 
-  public DetectFuelCmd(CommandSwerveDrivetrain driveSystem) {
+  public DetectFuelCmd(RobotContainer robotContainer) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveSystem);
-    driveSubsystem = driveSystem;
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
+    this.robotContainer = robotContainer;
   }
 
   /**
@@ -43,40 +38,21 @@ public class DetectFuelCmd extends Command {
 
     // if there are no targets, don't do anything
     if (!contour.hasTarget()) {
-      driveSubsystem.applyRequest(SwerveRequest.Idle::new);
+      robotContainer.fuelTracking = false;
     } 
     else {
       // otherwise, drive towards the contour center
       // do not rotate tiny amounts (deadzone of 1 degree), 
-      // otherwise rotate at a speed that achieves the correct angle in 1/3s
-      // 
 
       double rotationalRadsWithDeadzone = Math.toRadians(ExtraMath.naiveDeadzone(contour.degreesX(), 1));
-      // P constant to convert from relative offset to rotations per second. 
-      // 1 means... will rotate X offset rads in 1 second. 
-      var radsPerSecond = rotationalRadsWithDeadzone / 1.0; 
-      // var forwardSpeed = 0.15; // TODO: how fast should it drive forward?
-
-      // TODO: Maybe add a minimum rotational rate (rads/second)
-
-      // turn proportional to angle, drive forward
-      driveSubsystem.applyRequest(() ->
-              new SwerveRequest.RobotCentric()
-                      // .withVelocityX(forwardSpeed) 
-                      .withRotationalRate(radsPerSecond) // not negative for clockwise, but it's upside-down
-      );
+      radsPerSecond = rotationalRadsWithDeadzone / 0.5; // takes half a second to rotate to target, TODO tune 
+      robotContainer.fuelTracking = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.applyRequest(() -> new RobotCentric().withVelocityX(0).withRotationalRate(0));
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    robotContainer.fuelTracking = false;
   }
 }
