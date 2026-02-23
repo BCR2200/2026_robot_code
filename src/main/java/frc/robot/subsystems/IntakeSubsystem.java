@@ -139,6 +139,14 @@ public class IntakeSubsystem extends SubsystemBase {
             intakePIDMotor.setPercentOutput(0);
         }
 
+        isJiggling = false;
+        for (ShooterSubsystem shooter : floorSubsystem.shooters) {
+            if (shooter.getIsShooting()) {
+                isJiggling = true;
+                break;
+            }
+        }
+
         // Slightly less Horrible untested garbage jiggle function
         // This can be graphed as: tiltPos + amplitude * sin(speed * time)
         if (isJiggling) {
