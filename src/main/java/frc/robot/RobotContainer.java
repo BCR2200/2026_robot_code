@@ -47,9 +47,6 @@ public class RobotContainer {
   public boolean climbing = false;
   private boolean goneToInitialPos = false;
   
-  // Logged - current alliance
-  public static Alliance alliance = Alliance.Red;
-
   public static final Pose2d BLUE_HUB = new Pose2d(
     Distance.ofBaseUnits(4.629, Meters),
     Distance.ofBaseUnits(4.03479, Meters),
@@ -288,7 +285,7 @@ public class RobotContainer {
 
     driverController.b().onTrue(new InstantCommand(() -> {
       climbing = true;
-      if (alliance == Alliance.Red){
+      if (Robot.alliance == Alliance.Red){
         targetClimbFinal = RED_R_CLIMB_FINAL;
         targetClimbInitial = RED_R_CLIMB_INITIAL;
       }
@@ -300,7 +297,7 @@ public class RobotContainer {
 
     driverController.x().onTrue(new InstantCommand(() -> {
       climbing = true;
-      if (alliance == Alliance.Red){
+      if (Robot.alliance == Alliance.Red){
         targetClimbFinal = RED_L_CLIMB_FINAL;
         targetClimbInitial = RED_L_CLIMB_INITIAL;
       }
@@ -425,7 +422,7 @@ public class RobotContainer {
       drivetrain.resetPose(llMeasurement.pose);
     }
     Rotation2d forward;
-    if (alliance == Alliance.Red) {
+    if (Robot.alliance == Alliance.Red) {
       forward = new Rotation2d(Math.PI);
     } 
     else {

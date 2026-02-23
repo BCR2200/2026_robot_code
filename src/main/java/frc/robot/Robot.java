@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
 
     m_robotContainer = new RobotContainer();
-    updateAlliance();
+    updateRAlliance();
     this.m_botField = new Field2d();
     this.m_limelightField = new Field2d();
     this.m_objectField = new Field2d();
@@ -78,7 +78,6 @@ public class Robot extends TimedRobot {
     // Example of periodic task. Calls this.updateTargetHub() every 0.5 seconds
     addPeriodic(this::updateTargetHub, 0.5);
     addPeriodic(this::sendFields, 0.080); // 80ms is every 4 loops
-    addPeriodic(this::updateAlliance, 0.5);
     addPeriodic(Robot::updateRAlliance, 0.5);
     addPeriodic(() -> SmartDashboard.putNumber("Distance to Target", 
       m_robotContainer.getDistanceToTarget(m_robotContainer.targetHub)), 0.1);
@@ -90,19 +89,13 @@ public class Robot extends TimedRobot {
   /**
    * Update the alliance color from the DriverStation.
    */
-  public void updateAlliance() {
-    m_robotContainer.alliance = DriverStation.getAlliance().orElse(Alliance.Red);
-  }
-  /**
-   * Update the alliance color from the DriverStation.
-   */
   public static void updateRAlliance() {
     alliance = DriverStation.getAlliance().orElse(Alliance.Red);
   }
 
 
   private void updateTargetHub() {
-    m_robotContainer.targetHub = m_robotContainer.alliance == Alliance.Red ? m_robotContainer.RED_HUB : m_robotContainer.BLUE_HUB;
+    m_robotContainer.targetHub = alliance == Alliance.Red ? RobotContainer.RED_HUB : RobotContainer.BLUE_HUB;
     m_objectField.setRobotPose(m_robotContainer.targetHub);
     SmartDashboard.putData("Object Field", this.m_objectField);
   }
