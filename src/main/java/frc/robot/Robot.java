@@ -78,7 +78,8 @@ public class Robot extends TimedRobot {
     // Example of periodic task. Calls this.updateTargetHub() every 0.5 seconds
     addPeriodic(this::updateTargetHub, 0.5);
     addPeriodic(this::sendFields, 0.080); // 80ms is every 4 loops
-    addPeriodic(Robot::updateAlliance, 0.5);
+    addPeriodic(this::updateAlliance, 0.5);
+    addPeriodic(Robot::updateRAlliance, 0.5);
     addPeriodic(() -> SmartDashboard.putNumber("Distance to Target", 
       m_robotContainer.getDistanceToTarget(m_robotContainer.targetHub)), 0.1);
     addPeriodic(() -> SmartDashboard.putNumber("Degrees to Target", 
@@ -89,13 +90,19 @@ public class Robot extends TimedRobot {
   /**
    * Update the alliance color from the DriverStation.
    */
-  public static void updateAlliance() {
+  public void updateAlliance() {
+    m_robotContainer.alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+  }
+  /**
+   * Update the alliance color from the DriverStation.
+   */
+  public static void updateRAlliance() {
     alliance = DriverStation.getAlliance().orElse(Alliance.Red);
   }
 
 
   private void updateTargetHub() {
-    m_robotContainer.targetHub = alliance == Alliance.Red ? m_robotContainer.RED_HUB : m_robotContainer.BLUE_HUB;
+    m_robotContainer.targetHub = m_robotContainer.alliance == Alliance.Red ? m_robotContainer.RED_HUB : m_robotContainer.BLUE_HUB;
     m_objectField.setRobotPose(m_robotContainer.targetHub);
     SmartDashboard.putData("Object Field", this.m_objectField);
   }

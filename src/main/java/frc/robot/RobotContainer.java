@@ -44,6 +44,11 @@ public class RobotContainer {
 
   public boolean shootingAtHub = false;
   public boolean fuelTracking = false;
+  public boolean climbing = false;
+  private boolean goneToInitialPos = false;
+  
+  // Logged - current alliance
+  public static Alliance alliance = Alliance.Red;
 
   public static final Pose2d BLUE_HUB = new Pose2d(
     Distance.ofBaseUnits(4.629, Meters),
@@ -56,6 +61,49 @@ public class RobotContainer {
     Rotation2d.kZero
   );
   public Pose2d targetHub = RED_HUB;
+
+  public static final Pose2d BLUE_L_CLIMB_INITIAL = new Pose2d(
+    Distance.ofBaseUnits(15.0, Meters), // TODO: wrong
+    Distance.ofBaseUnits(3.86, Meters),
+    Rotation2d.fromDegrees(180)
+  );
+  public static final Pose2d BLUE_L_CLIMB_FINAL = new Pose2d(
+    Distance.ofBaseUnits(15.18, Meters), // TODO: wrong
+    Distance.ofBaseUnits(3.86, Meters),
+    Rotation2d.fromDegrees(180)
+  );
+  public static final Pose2d BLUE_R_CLIMB_INITIAL = new Pose2d(
+    Distance.ofBaseUnits(15.0, Meters), // TODO: wrong
+    Distance.ofBaseUnits(4.7, Meters),
+    Rotation2d.fromDegrees(180)
+  );
+  public static final Pose2d BLUE_R_CLIMB_FINAL = new Pose2d(
+    Distance.ofBaseUnits(15.18, Meters), // TODO: wrong
+    Distance.ofBaseUnits(4.7, Meters),
+    Rotation2d.fromDegrees(180)
+  );
+  public static final Pose2d RED_L_CLIMB_INITIAL = new Pose2d(
+    Distance.ofBaseUnits(15.0, Meters),
+    Distance.ofBaseUnits(4.7, Meters),
+    Rotation2d.kZero
+  );
+  public static final Pose2d RED_L_CLIMB_FINAL = new Pose2d(
+    Distance.ofBaseUnits(15.18, Meters),
+    Distance.ofBaseUnits(4.7, Meters),
+    Rotation2d.kZero
+  );
+  public static final Pose2d RED_R_CLIMB_INITIAL = new Pose2d(
+    Distance.ofBaseUnits(15.0, Meters),
+    Distance.ofBaseUnits(3.86, Meters),
+    Rotation2d.kZero
+  );
+  public static final Pose2d RED_R_CLIMB_FINAL = new Pose2d(
+    Distance.ofBaseUnits(15.18, Meters),
+    Distance.ofBaseUnits(3.86, Meters),
+    Rotation2d.kZero
+  );
+  public Pose2d targetClimbInitial = RED_R_CLIMB_INITIAL;
+  public Pose2d targetClimbFinal = RED_R_CLIMB_FINAL;
 
   @NotLogged
   public final static double MaxSpeed = TunerConstantsComp.kSpeedAt12Volts.in(MetersPerSecond) * 0.2;
@@ -71,6 +119,11 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentricFacingAngle driveFCFA = new SwerveRequest.FieldCentricFacingAngle()
     .withDeadband(MaxSpeed * 0.1)
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+  @NotLogged
+  private final SwerveRequest.FieldCentricFacingAngle driveFCFAVelocityMode = new SwerveRequest.FieldCentricFacingAngle()
+    .withDeadband(MaxSpeed * 0.1)
+    .withDriveRequestType(DriveRequestType.Velocity);
 
   @NotLogged
   private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -165,12 +218,32 @@ public class RobotContainer {
     return robotPose.getTranslation().getDistance(targetPose.getTranslation()); 
   }
 
-  public double getDegreesToTarget(Pose2d targetPose){
+  public double getDegreesToTarget(Pose2d targetPose) {
     Pose2d robotPose2d = drivetrain.getState().Pose;
     
     // TRIGONOMETRY BABY!!!!!!
     double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
     return Math.toDegrees(angleToTarget);
+  }
+
+  public double getXToTarget(Pose2d targetPose) {
+    Pose2d robotPose2d = drivetrain.getState().Pose;
+    return targetPose.getX() - robotPose2d.getX();
+  }
+
+  public double getYToTarget(Pose2d targetPose) {
+    Pose2d robotPose2d = drivetrain.getState().Pose;
+    return targetPose.getY() - robotPose2d.getY();
+  }
+
+  /**
+   * Returns true if the robot is at the specified postion, false otherwise
+   * @param targetPos the target pos
+   * @param threashold the threashold that the robot can be within to count as there
+   * @return if robot is at the targetPos
+   */
+  public boolean atTargetPos(Pose2d targetPos, double threashold) {
+    return getDistanceToTarget(targetPos) < 0.1;
   }
 
   /**
@@ -213,8 +286,30 @@ public class RobotContainer {
       shooterSubsystemTaylor.setCanPreload(false);
     }));
 
-    driverController.b().onTrue(new InstantCommand(() -> {climberSubsystem.climb();})); // TODO: implement right climb
-    driverController.x().onTrue(new InstantCommand(() -> {climberSubsystem.goHome();})); // TODO: implement left climb
+    driverController.b().onTrue(new InstantCommand(() -> {
+      climbing = true;
+      if (alliance == Alliance.Red){
+        targetClimbFinal = RED_R_CLIMB_FINAL;
+        targetClimbInitial = RED_R_CLIMB_INITIAL;
+      }
+      else {
+        targetClimbFinal = BLUE_R_CLIMB_FINAL;
+        targetClimbFinal = BLUE_R_CLIMB_INITIAL;
+      }
+    })).onFalse(new InstantCommand(() -> {climbing = false; climberSubsystem.goHome();})); // TODO: implement right climb
+
+    driverController.x().onTrue(new InstantCommand(() -> {
+      climbing = true;
+      if (alliance == Alliance.Red){
+        targetClimbFinal = RED_L_CLIMB_FINAL;
+        targetClimbInitial = RED_L_CLIMB_INITIAL;
+      }
+      else {
+        targetClimbFinal = BLUE_L_CLIMB_FINAL;
+        targetClimbFinal = BLUE_L_CLIMB_INITIAL;
+      }
+
+    })).onFalse(new InstantCommand(() -> {climbing = false; climberSubsystem.goHome();})); // TODO: implement left climb
 
     driverController.a().whileTrue(new InstantCommand(() -> {
       intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMinExtensionPos);
@@ -264,6 +359,9 @@ public class RobotContainer {
     // and Y is defined as to the left according to WPILib convention.
 
     driveFCFA.HeadingController.setPID(7, 0, 0);
+    driveFCFAVelocityMode.HeadingController.setPID(7, 0, 0);
+
+    double pt = 2.0; // translational p value
 
     drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -278,10 +376,29 @@ public class RobotContainer {
           // TODO determine velocity x and y
           return driveFC.withRotationalRate(DetectFuelCmd.radsPerSecond);
         }
+        else if (climbing) {
+          if (atTargetPos(targetClimbFinal, 0.03)) { // At final
+            climberSubsystem.climb();
+            return driveFC.withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(0);
+          }
+          else if (atTargetPos(targetClimbInitial, 0.03) || goneToInitialPos) { // Past initial
+            goneToInitialPos = true;
+            return driveFCFAVelocityMode.withVelocityX(ExtraMath.clampedDeadzone(getXToTarget(targetClimbFinal)*-pt, 1, 0.03))
+                    .withVelocityY(ExtraMath.clampedDeadzone(getYToTarget(targetClimbFinal)*-pt, 1, 0.03))
+                    .withTargetDirection(targetClimbFinal.getRotation());
+          }
+          else { // Not at initial
+            return driveFCFAVelocityMode.withVelocityX(ExtraMath.clampedDeadzone(getXToTarget(targetClimbInitial)*-pt, 1, 0.03))
+                    .withVelocityY(ExtraMath.clampedDeadzone(getYToTarget(targetClimbInitial)*-pt, 1, 0.03))
+                    .withTargetDirection(targetClimbInitial.getRotation());
+          }
+        }
         else {
           return driveFC.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y
-          .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X
-          .withRotationalRate(-driverController.getRightX() * MaxAngularRate); // Drive counterclockwise with negative X
+                  .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X
+                  .withRotationalRate(-driverController.getRightX() * MaxAngularRate); // Drive counterclockwise with negative X
         }
         
       })
@@ -308,7 +425,7 @@ public class RobotContainer {
       drivetrain.resetPose(llMeasurement.pose);
     }
     Rotation2d forward;
-    if (Robot.alliance == Alliance.Red) {
+    if (alliance == Alliance.Red) {
       forward = new Rotation2d(Math.PI);
     } 
     else {
