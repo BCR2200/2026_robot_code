@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DetectFuelCmd;
-import frc.robot.commands.JustShootCmd;
+import frc.robot.commands.ShootAtHub;
 import frc.robot.commands.PassCmd;
 import frc.robot.commands.SnapTowardsGoalCmd;
 import frc.robot.drive.CommandSwerveDrivetrain;
@@ -95,47 +95,38 @@ public class RobotContainer {
   @NotLogged
   private static final int feederCurrentLimit = 30;
 
+  private static final Interpolator HOOD_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
+                  new double[] {0.966, 2.01, 3.00, 4.00},
+                  new double[] {0.050, 0.40, 0.65, 0.90}
+  );
+  private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
+                  new double[] {0.966, 2.01, 3.00, 4.00},
+                  new double[] {50, 54, 58, 64}
+  );
+
   // Subsystems - logged via their @Logged annotations
   @Logged(name = "John")
-  private final ShooterSubsystem shooterSubsystemJohn = new ShooterSubsystem( "John",
+  public final ShooterSubsystem shooterSubsystemJohn = new ShooterSubsystem( "John",
           Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          new Interpolator( // Placeholders for shoot hood angles
-                  new double[] {2, 4, 10, 20},
-                  new double[] {1, 0.75, 0.5, 0.25}
-          ),
-          new Interpolator( // Placeholders for shoot wheel velocities
-                  new double[] {2, 4, 10, 20},
-                  new double[] {30, 50, 80, 110}
-          ),
-          false
+          HOOD_INTERPOLATOR,
+          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          false, this
   );
 
   @Logged(name = "Jawbreaker")
-  private final ShooterSubsystem shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
+  public final ShooterSubsystem shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
           Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          new Interpolator( // Placeholders for shoot hood angles
-                  new double[] {2, 4, 10, 20},
-                  new double[] {1, 0.75, 0.5, 0.25}
-          ),
-          new Interpolator( // Placeholders for shoot wheel velocities
-                  new double[] {2, 4, 10, 20},
-                  new double[] {30, 50, 80, 110}
-          ),
-          false
+          HOOD_INTERPOLATOR,
+          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          false, this
   );
 
   @Logged(name = "Taylor")
-  private final ShooterSubsystem shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
+  public final ShooterSubsystem shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
           Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          new Interpolator( // Placeholders for shoot hood angles
-                  new double[] {2, 4, 10, 20},
-                  new double[] {1, 0.75, 0.5, 0.25}
-          ),
-          new Interpolator( // Placeholders for shoot wheel velocities
-                  new double[] {2, 4, 10, 20},
-                  new double[] {30, 50, 80, 110}
-          ),
-          true
+          HOOD_INTERPOLATOR,
+          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          true, this
   );
 
   @Logged(name = "FloorFeed")
@@ -170,16 +161,16 @@ public class RobotContainer {
 
   
   public double getDistanceToTarget(Pose2d targetPose) {
-      Pose2d robotPose = drivetrain.getState().Pose;
-      return robotPose.getTranslation().getDistance(targetPose.getTranslation()); 
+    Pose2d robotPose = drivetrain.getState().Pose;
+    return robotPose.getTranslation().getDistance(targetPose.getTranslation()); 
   }
 
   public double getDegreesToTarget(Pose2d targetPose){
-      Pose2d robotPose2d = drivetrain.getState().Pose;
-      
-      // TRIGONOMETRY BABY!!!!!!
-      double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
-      return Math.toDegrees(angleToTarget);
+    Pose2d robotPose2d = drivetrain.getState().Pose;
+    
+    // TRIGONOMETRY BABY!!!!!!
+    double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
+    return Math.toDegrees(angleToTarget);
   }
 
   /**
@@ -208,7 +199,7 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new PassCmd(drivetrain, shooterSubsystemJohn, shooterSubsystemJawbreaker, shooterSubsystemTaylor, floorFeedSubsystem)); // TODONE
     // m_driverController.rightTrigger().onTrue(new SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
     //                                  .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
-    driverController.rightTrigger().whileTrue(new SnapTowardsGoalCmd(this)); // TODO: implement shoot-to-goal
+    driverController.rightTrigger().whileTrue(new ShootAtHub(this));
 
     // Preload
     driverController.rightStick().onTrue(new InstantCommand(() -> {
@@ -237,8 +228,21 @@ public class RobotContainer {
       intakeSubsystem.updateParameters();
     }));
 
-    driverController.povLeft().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() + 4);})); // TODO: implement reset alliance - possibly reseed field-centric?
-    driverController.povRight().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() - 3);})); // TODO: implement reset facing angle
+    // Testing stuff, shooter speed or manual tilting
+    driverController.povLeft().onTrue(new InstantCommand(() -> {
+      // intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() + 4);
+      shooterSubsystemJohn.decrementShooterSpeed();
+      shooterSubsystemJawbreaker.decrementShooterSpeed();
+      shooterSubsystemTaylor.decrementShooterSpeed();
+    }));
+    driverController.povRight().onTrue(new InstantCommand(() -> {
+      // intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() - 3);
+      shooterSubsystemJohn.incrementShooterSpeed();
+      shooterSubsystemJawbreaker.incrementShooterSpeed();
+      shooterSubsystemTaylor.incrementShooterSpeed();
+    }));
+
+    // Linear actuator
     driverController.povUp().whileTrue(new InstantCommand(() -> {
         shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);
         shooterSubsystemJawbreaker.setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() + ACTUATOR_STEP);

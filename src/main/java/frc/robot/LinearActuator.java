@@ -21,7 +21,7 @@ public class LinearActuator {
      */
     public void setTargetPosition(double setpoint) {
         // clamp to [0.15, 1] because below ~15% the mechanism binds and breaks the servo
-        target = ExtraMath.clamp(setpoint, 0.15, 1);
+        target = ExtraMath.clamp(setpoint, 0.05, 1);
         servo.setPosition(target);
     }
     

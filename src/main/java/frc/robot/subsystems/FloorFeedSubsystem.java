@@ -50,7 +50,7 @@ public class FloorFeedSubsystem extends SubsystemBase {
     private static final double PARAM_MJ = 0.00;
 
     @NotLogged
-    private ShooterSubsystem[] shooters;
+    public ShooterSubsystem[] shooters;
 
     public FloorFeedSubsystem(int currentLimit, ShooterSubsystem... shooters) {
         this.shooters = shooters;

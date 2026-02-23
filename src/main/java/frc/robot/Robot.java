@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
 
   public void updateRobotPose(){
     var botState = m_robotContainer.drivetrain.getState();
-    LimelightHelpers.SetRobotOrientation_NoFlush(Constants.SHOOTER_LIMELIGHT_NAME, 
+    LimelightHelpers.SetRobotOrientation(Constants.SHOOTER_LIMELIGHT_NAME, 
         botState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
     
 
