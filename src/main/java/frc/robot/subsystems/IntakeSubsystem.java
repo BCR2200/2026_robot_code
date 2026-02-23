@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ExtraMath;
 import frc.robot.PIDMotor;
@@ -20,22 +21,18 @@ public class IntakeSubsystem extends SubsystemBase {
     public PIDMotor tiltPIDMotor;
 
     @NotLogged
-    private double tiltMaxSpeed = 140.0;
+    private double tiltMaxSpeed = 50.0;
     @NotLogged
-    private double tiltMaxAccel = 140.0 / 5.0;
+    private double tiltMaxAccel = 50.0 *2;
 
     @NotLogged
-    public static final double tiltMaxExtensionPos = -38;
+    public static final double tiltMaxExtensionPos = -39;
     @NotLogged
     public static final double tiltMinExtensionPos = 0;
 
     @Logged
     private double tiltPos = 0;
 
-    @NotLogged
-    private static final double TILT_ABSOLUTE_MAX_RPS = 140.0;
-    @NotLogged
-    private static final double TILT_ABSOLUTE_MAX_ACCEL = TILT_ABSOLUTE_MAX_RPS * 2;
     @NotLogged
     private FloorFeedSubsystem floorSubsystem;
 
@@ -60,8 +57,8 @@ public class IntakeSubsystem extends SubsystemBase {
         intakePIDMotor.setCurrentLimit(intakeCurrentLimit);
         intakePIDMotor.setIdleCoastMode();
 
-        tiltPIDMotor = PIDMotor.makeMotor(tiltMotorID, "tilt", 0.6, 0.0, 0.0,
-                0.25, 0.3, 0.01, TILT_ABSOLUTE_MAX_RPS, TILT_ABSOLUTE_MAX_ACCEL, 0.00);
+        tiltPIDMotor = PIDMotor.makeMotor(tiltMotorID, "tilt", 0.1, 0.0, 0.0,
+                0.25, 0.12, 0.00, tiltMaxSpeed, tiltMaxAccel, 0.00);
         tiltPIDMotor.setCurrentLimit(tiltCurrentLimit);
         tiltPIDMotor.setIdleCoastMode();
     }
@@ -148,6 +145,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
             // This moves the intake smoothly up and down with a sin wave
             double targetPos = tiltPos + (Math.sin(Timer.getFPGATimestamp() * speed) * amplitude);
+            SmartDashboard.putNumber("jiggle target", targetPos);
             setTiltPosition(targetPos);
         }
         

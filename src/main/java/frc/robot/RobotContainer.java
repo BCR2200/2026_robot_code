@@ -168,16 +168,16 @@ public class RobotContainer {
 
   
   public double getDistanceToTarget(Pose2d targetPose) {
-      Pose2d robotPose = drivetrain.getState().Pose;
-      return robotPose.getTranslation().getDistance(targetPose.getTranslation()); 
+    Pose2d robotPose = drivetrain.getState().Pose;
+    return robotPose.getTranslation().getDistance(targetPose.getTranslation()); 
   }
 
   public double getDegreesToTarget(Pose2d targetPose){
-      Pose2d robotPose2d = drivetrain.getState().Pose;
-      
-      // TRIGONOMETRY BABY!!!!!!
-      double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
-      return Math.toDegrees(angleToTarget);
+    Pose2d robotPose2d = drivetrain.getState().Pose;
+    
+    // TRIGONOMETRY BABY!!!!!!
+    double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
+    return Math.toDegrees(angleToTarget);
   }
 
   /**
@@ -235,8 +235,21 @@ public class RobotContainer {
       intakeSubsystem.updateParameters();
     }));
 
-    driverController.povLeft().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() + 4);})); // TODO: implement reset alliance - possibly reseed field-centric?
-    driverController.povRight().onTrue(new InstantCommand(() -> {intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() - 3);})); // TODO: implement reset facing angle
+    // Testing stuff, shooter speed or manual tilting
+    driverController.povLeft().onTrue(new InstantCommand(() -> {
+      // intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() + 4);
+      shooterSubsystemJohn.decrementShooterSpeed();
+      shooterSubsystemJawbreaker.decrementShooterSpeed();
+      shooterSubsystemTaylor.decrementShooterSpeed();
+    }));
+    driverController.povRight().onTrue(new InstantCommand(() -> {
+      // intakeSubsystem.setTiltPosition(intakeSubsystem.getTiltPosition() - 3);
+      shooterSubsystemJohn.incrementShooterSpeed();
+      shooterSubsystemJawbreaker.incrementShooterSpeed();
+      shooterSubsystemTaylor.incrementShooterSpeed();
+    }));
+
+    // Linear actuator
     driverController.povUp().whileTrue(new InstantCommand(() -> {
         shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);
         shooterSubsystemJawbreaker.setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() + ACTUATOR_STEP);
