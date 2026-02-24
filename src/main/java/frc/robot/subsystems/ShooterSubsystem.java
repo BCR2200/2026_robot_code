@@ -149,6 +149,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setActuatorTargetPosition(double position) {
         linearActuator.setTargetPosition(position);
     }
+    
     @Logged
     public double getActuatorPosition() {
         return linearActuator.getTargetPosition();

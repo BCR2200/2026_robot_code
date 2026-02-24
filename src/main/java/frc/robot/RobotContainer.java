@@ -191,7 +191,7 @@ public class RobotContainer {
           floorFeedSubsystem
   );
 
-  @NotLogged
+  @Logged
   private final CommandXboxController driverController =
           new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
@@ -203,8 +203,13 @@ public class RobotContainer {
   }
 
   public void disableMotors() {
+    shooterSubsystemJohn.setIsShooting(false);
     shooterSubsystemJawbreaker.setIsShooting(false);
+    shooterSubsystemTaylor.setIsShooting(false);
+    shooterSubsystemJohn.setIsFeeding(false);
     shooterSubsystemJawbreaker.setIsFeeding(false);
+    shooterSubsystemTaylor.setIsFeeding(false);
+    
   }
 
   
