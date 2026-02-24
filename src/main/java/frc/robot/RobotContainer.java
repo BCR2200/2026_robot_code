@@ -191,7 +191,7 @@ public class RobotContainer {
           floorFeedSubsystem
   );
 
-  @Logged
+  @NotLogged
   private final CommandXboxController driverController =
           new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
@@ -220,6 +220,9 @@ public class RobotContainer {
 
   public double getDegreesToTarget(Pose2d targetPose) {
     Pose2d robotPose2d = drivetrain.getState().Pose;
+    // Why not do this...?
+    //targetPose.relativeTo(robotPose2d);
+
     
     // TRIGONOMETRY BABY!!!!!!
     double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
