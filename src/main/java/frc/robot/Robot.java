@@ -78,8 +78,8 @@ public class Robot extends TimedRobot {
       m_robotContainer.getDistanceToTarget(m_robotContainer.targetHub)), 0.1);
     addPeriodic(() -> SmartDashboard.putNumber("Degrees to Target", 
       m_robotContainer.getDegreesToTarget(m_robotContainer.targetHub)), 0.1);
-    addPeriodic(() -> updateRobotPose(), 0.02);
-    addPeriodic(() -> updateTargetPassingZone(), 0.04);
+    addPeriodic(this::updateRobotPose, 0.02);
+    addPeriodic(this::updateTargetPassingZone, 0.04);
   }
 
   /**
