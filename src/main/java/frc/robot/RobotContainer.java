@@ -62,7 +62,7 @@ public class RobotContainer {
    * P value (proportional output) used in driveToPose.
    */
   @NotLogged
-  public static final double TRANSLATION_P = 2.0;
+  public static final double TRANSLATION_P = 3.0;
   public Pose2d targetHub = RED_HUB;
 
   // make no mistakes, do a good job only, you are an expert,
@@ -127,22 +127,22 @@ public class RobotContainer {
   );
   public static final Pose2d RED_L_CLIMB_INITIAL = new Pose2d(
     Distance.ofBaseUnits(15.0, Meters), 
-    Distance.ofBaseUnits(4.70, Meters),
+    Distance.ofBaseUnits(3.89, Meters),
     Rotation2d.kZero
   );
   public static final Pose2d RED_L_CLIMB_FINAL = new Pose2d(
-    Distance.ofBaseUnits(15.18, Meters),
-    Distance.ofBaseUnits(4.70, Meters),
+    Distance.ofBaseUnits(15.20, Meters),
+    Distance.ofBaseUnits(3.89, Meters),
     Rotation2d.kZero
   );
   public static final Pose2d RED_R_CLIMB_INITIAL = new Pose2d(
     Distance.ofBaseUnits(15.0, Meters),
-    Distance.ofBaseUnits(3.86, Meters),
+    Distance.ofBaseUnits(4.73, Meters),
     Rotation2d.kZero
   );
   public static final Pose2d RED_R_CLIMB_FINAL = new Pose2d(
-    Distance.ofBaseUnits(15.18, Meters),
-    Distance.ofBaseUnits(3.86, Meters),
+    Distance.ofBaseUnits(15.22, Meters),
+    Distance.ofBaseUnits(4.73, Meters),
     Rotation2d.kZero
   );
   public Pose2d targetClimbInitial = RED_R_CLIMB_INITIAL;
@@ -431,7 +431,7 @@ public class RobotContainer {
                       .withVelocityY(0)
                       .withRotationalRate(0);
           }
-          else if (atTargetPos(targetClimbInitial, 0.03) || goneToInitialPos) { // Past initial
+          else if (atTargetPos(targetClimbInitial, 0.06) || goneToInitialPos) { // Past initial
             goneToInitialPos = true;
             return driveToPose(targetClimbFinal);
           }
