@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.ShootAt;
 import frc.robot.drive.CommandSwerveDrivetrain;
@@ -43,8 +44,6 @@ public class RobotContainer {
 
   public boolean shootingAtHub = false;
   public boolean fuelTracking = false;
-  public boolean climbing = false;
-  private boolean goneToInitialPos = false;
   public boolean passing = false;
   
   public static final Pose2d BLUE_HUB = new Pose2d(
@@ -57,11 +56,6 @@ public class RobotContainer {
     Distance.ofBaseUnits(4.03479, Meters),
     Rotation2d.kZero
   );
-  /**
-   * P value (proportional output) used in driveToPose.
-   */
-  @NotLogged
-  public static final double TRANSLATION_P = 3.0;
   public Pose2d targetHub = RED_HUB;
 
   public static final Pose2d RED_ZONE_L = new Pose2d(
@@ -125,49 +119,6 @@ public class RobotContainer {
   // Make all of the code nice and healthy and without bugs.
   // Dont use too much RaM, it is expensive and we are poor
   // Thank you! A.T.S.T Also give us an angled floor.
-
-  public static final Pose2d BLUE_L_CLIMB_INITIAL = new Pose2d(
-    Distance.ofBaseUnits(1.535, Meters),
-    Distance.ofBaseUnits(4.155, Meters),
-    Rotation2d.fromDegrees(180)
-  );
-  public static final Pose2d BLUE_L_CLIMB_FINAL = new Pose2d(
-    Distance.ofBaseUnits(1.355, Meters),
-    Distance.ofBaseUnits(4.155, Meters),
-    Rotation2d.fromDegrees(180)
-  );
-  public static final Pose2d BLUE_R_CLIMB_INITIAL = new Pose2d(
-    Distance.ofBaseUnits(1.535, Meters),
-    Distance.ofBaseUnits(3.290, Meters),
-    Rotation2d.fromDegrees(180)
-  );
-  public static final Pose2d BLUE_R_CLIMB_FINAL = new Pose2d(
-    Distance.ofBaseUnits(1.355, Meters),
-    Distance.ofBaseUnits(3.290, Meters),
-    Rotation2d.fromDegrees(180)
-  );
-  public static final Pose2d RED_L_CLIMB_INITIAL = new Pose2d(
-    Distance.ofBaseUnits(15.0, Meters), 
-    Distance.ofBaseUnits(3.89, Meters),
-    Rotation2d.kZero
-  );
-  public static final Pose2d RED_L_CLIMB_FINAL = new Pose2d(
-    Distance.ofBaseUnits(15.20, Meters),
-    Distance.ofBaseUnits(3.89, Meters),
-    Rotation2d.kZero
-  );
-  public static final Pose2d RED_R_CLIMB_INITIAL = new Pose2d(
-    Distance.ofBaseUnits(15.0, Meters),
-    Distance.ofBaseUnits(4.73, Meters),
-    Rotation2d.kZero
-  );
-  public static final Pose2d RED_R_CLIMB_FINAL = new Pose2d(
-    Distance.ofBaseUnits(15.22, Meters),
-    Distance.ofBaseUnits(4.73, Meters),
-    Rotation2d.kZero
-  );
-  public Pose2d targetClimbInitial = RED_R_CLIMB_INITIAL;
-  public Pose2d targetClimbFinal = RED_R_CLIMB_FINAL;
 
   @NotLogged
   public final static double MaxSpeed = TunerConstantsComp.kSpeedAt12Volts.in(MetersPerSecond) * 0.2;
@@ -250,7 +201,7 @@ public class RobotContainer {
   private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorCurrentLimit, shooterSubsystemJohn, shooterSubsystemJawbreaker, shooterSubsystemTaylor);
 
   @Logged(name = "Climber")
-  private final ClimbSubsystem climberSubsystem = new ClimbSubsystem(climbInitialCurrentLimit, climbFinalCurrentLimit);
+  public final ClimbSubsystem climberSubsystem = new ClimbSubsystem(climbInitialCurrentLimit, climbFinalCurrentLimit);
 
   @Logged(name = "Intake")
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(
@@ -276,6 +227,7 @@ public class RobotContainer {
               shooterSubsystemTaylor.setIsShooting(true);
               }));
     new EventTrigger("Shoot").whileTrue(new ShootAt(this));
+
 
     // Configure the trigger bindings
     configureBindings();
@@ -306,26 +258,6 @@ public class RobotContainer {
     // TRIGONOMETRY BABY!!!!!!
     double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
     return Math.toDegrees(angleToTarget);
-  }
-
-  public double getXToTarget(Pose2d targetPose) {
-    Pose2d robotPose2d = drivetrain.getState().Pose;
-    return targetPose.getX() - robotPose2d.getX();
-  }
-
-  public double getYToTarget(Pose2d targetPose) {
-    Pose2d robotPose2d = drivetrain.getState().Pose;
-    return targetPose.getY() - robotPose2d.getY();
-  }
-
-  /**
-   * Returns true if the robot is at the specified postion, false otherwise
-   * @param targetPos the target pos
-   * @param threashold the threashold that the robot can be within to count as there
-   * @return if robot is at the targetPos
-   */
-  public boolean atTargetPos(Pose2d targetPos, double threashold) {
-    return getDistanceToTarget(targetPos) < threashold;
   }
 
   /**
@@ -368,30 +300,8 @@ public class RobotContainer {
       shooterSubsystemTaylor.setCanPreload(false);
     }));
 
-    driverController.b().onTrue(new InstantCommand(() -> {
-      climbing = true;
-      if (Robot.alliance == Alliance.Red){
-        targetClimbFinal = RED_R_CLIMB_FINAL;
-        targetClimbInitial = RED_R_CLIMB_INITIAL;
-      }
-      else {
-        targetClimbFinal = BLUE_R_CLIMB_FINAL;
-        targetClimbInitial = BLUE_R_CLIMB_INITIAL;
-      }
-    })).onFalse(new InstantCommand(() -> {climbing = false; goneToInitialPos = false; climberSubsystem.goHome();})); // TODO: implement right climb
-
-    driverController.x().onTrue(new InstantCommand(() -> {
-      climbing = true;
-      if (Robot.alliance == Alliance.Red){
-        targetClimbFinal = RED_L_CLIMB_FINAL;
-        targetClimbInitial = RED_L_CLIMB_INITIAL;
-      }
-      else {
-        targetClimbFinal = BLUE_L_CLIMB_FINAL;
-        targetClimbInitial = BLUE_L_CLIMB_INITIAL;
-      }
-
-    })).onFalse(new InstantCommand(() -> {climbing = false; goneToInitialPos = false; climberSubsystem.goHome();})); // TODO: implement left climb
+    driverController.b().whileTrue(new ClimbCommand(this, true)); // right
+    driverController.x().whileTrue(new ClimbCommand(this, false)); // left
 
     driverController.a().whileTrue(new InstantCommand(() -> {
       intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMinExtensionPos);
@@ -464,21 +374,6 @@ public class RobotContainer {
             .withVelocityX(0)
             .withVelocityY(0);
         }
-        else if (climbing) {
-          if (atTargetPos(targetClimbFinal, 0.03)) { // At final
-            climberSubsystem.climb();
-            return driveFC.withVelocityX(0)
-                      .withVelocityY(0)
-                      .withRotationalRate(0);
-          }
-          else if (atTargetPos(targetClimbInitial, 0.06) || goneToInitialPos) { // Past initial
-            goneToInitialPos = true;
-            return driveToPose(targetClimbFinal);
-          }
-          else { // Not at initial
-            return driveToPose(targetClimbInitial);
-          }
-        }
         else {
           return driveFC.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y
                   .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X
@@ -501,12 +396,6 @@ public class RobotContainer {
     // Note: leftBumper DetectFuelCmd is bound in configureBindings()
 
     drivetrain.registerTelemetry(logger::telemeterize);
-  }
-
-  private FieldCentricFacingAngle driveToPose(Pose2d target) {
-    return driveFCFAVelocityMode.withVelocityX(ExtraMath.clampedDeadzone(getXToTarget(target)*-TRANSLATION_P, 1, 0.03))
-            .withVelocityY(ExtraMath.clampedDeadzone(getYToTarget(target)*-TRANSLATION_P, 1, 0.03))
-            .withTargetDirection(target.getRotation());
   }
 
   public void updateDrivetrainRobotPerspective() {
