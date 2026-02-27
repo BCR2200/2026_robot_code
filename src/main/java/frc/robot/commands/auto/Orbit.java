@@ -23,7 +23,7 @@ public class Orbit extends AutoCommand {
         new WaitCommand(0.01),
         AutoBuildingBlocks.autoStep("PATH 1"),
         //TODO Edit Parameters once Finished
-        new MoveAndShoot(path1)
+        new MoveAndShoot(path1, drivetrain)
     );
   }
 

@@ -47,9 +47,9 @@ public class AutoBuildingBlocks {
     }
   }
 
-  public static CommandSwerveDrivetrain drivetrain;
+  // public static CommandSwerveDrivetrain drivetrain; // ?????
 
-  public static Command followPathCommand(PathPlannerPath path) {
+  public static Command followPathCommand(PathPlannerPath path, CommandSwerveDrivetrain drivetrain) {
     RobotConfig config;
     try {
       config = RobotConfig.fromGUISettings();
@@ -57,6 +57,9 @@ public class AutoBuildingBlocks {
       // TODO Auto-generated catch block
       throw new IllegalArgumentException();
     }
+
+    System.out.println("the drivetrain is...");
+    System.out.println(drivetrain);
     return new FollowPathCommand(
         path,
         () -> drivetrain.getState().Pose,

@@ -153,7 +153,7 @@ public class IntakeSubsystem extends SubsystemBase {
         isJiggling = false; // TODO: FOR NOW MUST NOT JIGGLE
 
         if (isGoingUp) {
-            tiltPos += 0.2; // TODO: tune this value
+            tiltPos += 1.0;
             setTiltPosition(tiltPos);
         }
 

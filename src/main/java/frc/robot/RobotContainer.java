@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,6 +28,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.ShootAt;
+import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.auto.TestOverrideAuto;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.drive.Telemetry;
 import frc.robot.drive.TunerConstants;
@@ -125,6 +129,12 @@ public class RobotContainer {
   public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
   @NotLogged
+  public final SwerveRequest.RobotCentric driveRC = new SwerveRequest.RobotCentric()
+          .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+
+  @NotLogged
   public final SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -144,6 +154,9 @@ public class RobotContainer {
 
   @NotLogged
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+  @NotLogged
+  final SendableChooser<AutoCommand> autoChooser;
 
   @NotLogged
   private static final double ACTUATOR_STEP = 0.05;
@@ -221,7 +234,7 @@ public class RobotContainer {
   );
 
   @NotLogged
-  private final CommandXboxController driverController =
+  public final CommandXboxController driverController =
           new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -241,6 +254,12 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     configureDrivetrainBindings();
+    
+
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("None", null);
+    autoChooser.addOption("TestOverrideAuto", new TestOverrideAuto(this, drivetrain, driveRC));
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public void disableMotors() {
@@ -312,9 +331,12 @@ public class RobotContainer {
     driverController.b().whileTrue(new ClimbCommand(this, true)); // right
     driverController.x().whileTrue(new ClimbCommand(this, false)); // left
 
-    driverController.a().whileTrue(new InstantCommand(() -> {
-      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMinExtensionPos);
+    driverController.a().onTrue(new InstantCommand(() -> {
+      intakeSubsystem.setIsGoingUp(true);
+    })).onFalse(new InstantCommand(() -> {
+      intakeSubsystem.setIsGoingUp(false);
     }));
+
     driverController.y().onTrue(new InstantCommand(() -> {
       shooterSubsystemJohn.updateParameters();
       shooterSubsystemJawbreaker.updateParameters();
@@ -350,7 +372,7 @@ public class RobotContainer {
         shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() - ACTUATOR_STEP);
     }));
 
-    driverController.start().whileTrue(new InstantCommand(() -> {})); // TODO: implement unjam
+    driverController.start().whileTrue(new InstantCommand(() -> {})); // Used in disabled for syncing autos
     driverController.back().whileTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective())); 
 
   }
@@ -429,6 +451,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
+
+
 }

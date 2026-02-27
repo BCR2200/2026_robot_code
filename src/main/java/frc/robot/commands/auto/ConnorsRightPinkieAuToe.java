@@ -21,7 +21,7 @@ public class ConnorsRightPinkieAuToe extends AutoCommand{
         addCommands(
           new WaitCommand(0.01),
           AutoBuildingBlocks.autoStep("PATH 1"),
-          AutoBuildingBlocks.followPathCommand(path1),
+          AutoBuildingBlocks.followPathCommand(path1,drivetrain),
           new WaitCommand(10)
           //TODO Add climb command
         );
