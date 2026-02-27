@@ -153,10 +153,10 @@ public class IntakeSubsystem extends SubsystemBase {
         isJiggling = false; // TODO: FOR NOW MUST NOT JIGGLE
 
         if (isGoingUp) {
-            tiltPos += 0.5; // TODO: tune this value
+            tiltPos += 0.2; // TODO: tune this value
             setTiltPosition(tiltPos);
         }
-        
+
         // Slightly less Horrible untested garbage jiggle function
         // This can be graphed as: tiltPos + amplitude * sin(speed * time)
         if (isJiggling) {
