@@ -50,9 +50,9 @@ public class ShootAt extends Command {
     taylorShooterSubsystem.setIsShooting(true);
 
     if (johnShooterSubsystem.isShooterAtSpeed()) {
-      // TODO: should we stop feeding later if no longer at speed? 
+      // TODO: should we stop feeding later if no longer at speed?
       // Maybe... but each ball will probably reduce the shooter speed enough to stop the feeder.
-      // Maybe it should only stop if it is not at speed for X time. 
+      // Maybe it should only stop if it is not at speed for X time.
       johnShooterSubsystem.setIsFeeding(true);
     }
     if (jawbreakerShooterSubsystem.isShooterAtSpeed()) {
