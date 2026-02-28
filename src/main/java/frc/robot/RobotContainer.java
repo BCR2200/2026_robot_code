@@ -60,6 +60,7 @@ public class RobotContainer {
     Rotation2d.kZero
   );
   public Pose2d targetHub = RED_HUB;
+  public Pose2d compensatedTargetHub = RED_HUB;
 
   public static final Pose2d RED_ZONE_L = new Pose2d(
     Distance.ofBaseUnits(10.0, Meters), // TODO get real
@@ -185,13 +186,17 @@ public class RobotContainer {
     driverRot = driverController.getRightX();
   }
 
-  private static final Interpolator HOOD_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
+  private static final Interpolator HOOD_INTERPOLATOR = new Interpolator(
                   new double[] {0.966, 2.01, 3.00, 4.00},
                   new double[] {0.050, 0.40, 0.65, 0.90}
   );
-  private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
+  private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator(
                   new double[] {0.966, 2.01, 3.00, 4.00},
                   new double[] {50, 54, 58, 64}
+  );
+  private static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator( // Placeholders for time of flight based on distance to target
+                  new double[] {0.966, 2.01, 3.00, 4.00},
+                  new double[] {0.5, 0.6, 0.7, 0.8}
   );
 
   // Subsystems - logged via their @Logged annotations
@@ -200,6 +205,7 @@ public class RobotContainer {
           Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
           HOOD_INTERPOLATOR,
           SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          TIME_OF_FLIGHT_INTERPOLATOR,
           false, this
   );
 
@@ -208,6 +214,7 @@ public class RobotContainer {
           Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
           HOOD_INTERPOLATOR,
           SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          TIME_OF_FLIGHT_INTERPOLATOR,
           false, this
   );
 
@@ -216,6 +223,7 @@ public class RobotContainer {
           Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
           HOOD_INTERPOLATOR,
           SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+          TIME_OF_FLIGHT_INTERPOLATOR,
           true, this
   );
 
