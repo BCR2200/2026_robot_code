@@ -45,7 +45,6 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
   public boolean shootingAtHub = false;
-  public boolean fuelTracking = false;
   public boolean passing = false;
   
   public static final Pose2d BLUE_HUB = new Pose2d(
@@ -415,12 +414,6 @@ public class RobotContainer {
               .withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(passTarget)))
               .withVelocityX(-driverY * MaxSpeed)
               .withVelocityY(-driverX * MaxSpeed);
-        }
-        else if (fuelTracking) {
-          // TODO determine velocity x and y
-          return driveFC.withRotationalRate(DetectFuelCmd.radsPerSecond)
-            .withVelocityX(0)
-            .withVelocityY(0);
         }
         else {
           return driveFC.withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y

@@ -14,7 +14,6 @@ import frc.robot.RobotContainer;
 public class DetectFuelCmd extends Command {
   /** Creates a new Drive. */
   private RobotContainer robotContainer;
-  public static double radsPerSecond;
 
   public DetectFuelCmd(RobotContainer robotContainer) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,7 +22,8 @@ public class DetectFuelCmd extends Command {
 
   /**
    * Attempts to track a piece of fuel using its detected contour.
-   * Drives forward if there is a target, and turns proportionally to its angle error.
+   * Drives forward if there is a target, and turns proportionally to its angle
+   * error.
    */
   @Override
   public void execute() {
@@ -33,21 +33,31 @@ public class DetectFuelCmd extends Command {
 
     // if there are no targets, don't do anything
     if (!contour.hasTarget()) {
-      robotContainer.fuelTracking = false;
-    } 
-    else {
+      robotContainer.drivetrain.setControl(
+          robotContainer.driveFC
+              .withRotationalRate(RobotContainer.driverRot * RobotContainer.MaxAngularRate)
+              .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed)
+              .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)
+      );
+    } else {
       // otherwise, drive towards the contour center
-      // do not rotate tiny amounts (deadzone of 1 degree), 
+      // do not rotate tiny amounts (deadzone of 1 degree),
+      // TODO determine velocity x and y
 
       double rotationalRadsWithDeadzone = Math.toRadians(ExtraMath.naiveDeadzone(contour.degreesX(), 1));
-      radsPerSecond = rotationalRadsWithDeadzone / 0.5; // takes half a second to rotate to target, TODO tune 
-      robotContainer.fuelTracking = true;
+      double radsPerSecond = rotationalRadsWithDeadzone / 0.5; // takes half a second to rotate to target, TODO tune
+      robotContainer.drivetrain.setControl(
+          robotContainer.driveRC
+              .withRotationalRate(-radsPerSecond)
+              .withVelocityX(0.1 * RobotContainer.MaxSpeed)
+              .withVelocityY(0)
+      );
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    robotContainer.fuelTracking = false;
+    // nothing to do
   }
 }
