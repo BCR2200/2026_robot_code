@@ -212,6 +212,16 @@ public class RobotContainer {
   @NotLogged
   private static final int feederCurrentLimit = 30;
 
+  public static double driverX = 0;
+  public static double driverY = 0;
+  public static double driverRot = 0;
+
+  public void updateDriverInputs() {
+    driverX = driverController.getLeftX();
+    driverY = driverController.getLeftY();
+    driverRot = driverController.getRightX();
+  }
+
   private static final Interpolator HOOD_INTERPOLATOR = new Interpolator( // Placeholders for shoot hood angles
                   new double[] {0.966, 2.01, 3.00, 4.00},
                   new double[] {0.050, 0.40, 0.65, 0.90}
@@ -449,14 +459,14 @@ public class RobotContainer {
         
         if (shootingAtHub) {
           return driveFCFA.withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(targetHub)))
-          .withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y
-          .withVelocityY(-driverController.getLeftX() * MaxSpeed); // Drive left with negative X
+          .withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
+          .withVelocityY(-driverX * MaxSpeed); // Drive left with negative X
         }
         else if (passing) {
           return driveFCFA
               .withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(passTarget)))
-              .withVelocityX(-driverController.getLeftY() * MaxSpeed)
-              .withVelocityY(-driverController.getLeftX() * MaxSpeed);
+              .withVelocityX(-driverY * MaxSpeed)
+              .withVelocityY(-driverX * MaxSpeed);
         }
         else if (fuelTracking) {
           // TODO determine velocity x and y
@@ -480,9 +490,9 @@ public class RobotContainer {
           }
         }
         else {
-          return driveFC.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y
-                  .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X
-                  .withRotationalRate(-driverController.getRightX() * MaxAngularRate); // Drive counterclockwise with negative X
+          return driveFC.withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
+                  .withVelocityY(-driverX * MaxSpeed) // Drive left with negative X
+                  .withRotationalRate(-driverRot * MaxAngularRate); // Drive counterclockwise with negative X
         }
         
       })

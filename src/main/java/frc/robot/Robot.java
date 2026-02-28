@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
       m_robotContainer.getDegreesToTarget(m_robotContainer.targetHub)), 0.1);
     addPeriodic(this::updateRobotPose, 0.02);
     addPeriodic(this::updateTargetPassingZone, 0.04);
+    addPeriodic(m_robotContainer::updateDriverInputs, 0.02);
   }
 
   /**
