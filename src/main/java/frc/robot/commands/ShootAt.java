@@ -20,7 +20,6 @@ public class ShootAt extends Command {
 
   @Override
   public void initialize() {
-    rc.shootingAtHub = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,11 +31,14 @@ public class ShootAt extends Command {
 
     if (distance > 4.625 && distance < 11.916) { // Neutral zone
       rc.passing = true;
+      rc.shootingAtHub = false;
+
       johnShooterSubsystem.setActuatorToPassPosition(distance);
       jawbreakerShooterSubsystem.setActuatorToPassPosition(distance);
       taylorShooterSubsystem.setActuatorToPassPosition(distance);
     }
     else {
+      rc.shootingAtHub = true;
       rc.passing = false;
     }
 
