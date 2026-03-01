@@ -48,12 +48,12 @@ public class DetectFuelCmd extends Command {
       // do not rotate tiny amounts (deadzone of 1 degree),
       // TODO determine velocity x and y
 
-      double rotationalRadsWithDeadzone = Math.toRadians(ExtraMath.naiveDeadzone(contour.degreesX(), 1));
+      double rotationalRadsWithDeadzone = Math.toRadians(ExtraMath.naiveDeadzone(contour.degreesX(), 0));
       double radsPerSecond = rotationalRadsWithDeadzone / 0.5; // takes half a second to rotate to target, TODO tune
       robotContainer.drivetrain.setControl(
           robotContainer.driveRC
               .withRotationalRate(-radsPerSecond)
-              .withVelocityX(0.1 * RobotContainer.MaxSpeed)
+              .withVelocityX(0.5 * RobotContainer.MaxSpeed)
               .withVelocityY(0)
       );
     }
