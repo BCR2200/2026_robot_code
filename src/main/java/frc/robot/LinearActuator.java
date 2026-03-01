@@ -6,13 +6,15 @@ public class LinearActuator {
 
     private double target;
     private final Servo servo;
+    private final Servo servo2;
 
     public LinearActuator(int channel, String name) {
 
         this.servo = new Servo(channel);
+        this.servo2 = new Servo(channel + 3); // adam mode
         // The example has setBounds(), which takes milliseconds, but this function uses microseconds, so we've converted the values
         servo.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
-
+        servo2.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
     }
 
     /**
@@ -23,6 +25,7 @@ public class LinearActuator {
         // clamp to [0.15, 1] because below ~15% the mechanism binds and breaks the servo
         target = ExtraMath.clamp(setpoint, 0.05, 0.95);
         servo.setPosition(target);
+        servo2.setPosition(target);
     }
     
     /**
