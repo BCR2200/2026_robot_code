@@ -14,6 +14,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -296,20 +297,25 @@ public class RobotContainer {
 
   public void calculateCompensatedTargetHub() {
     compensatedTargetHub = targetHub;
-    double robotVelocityX = drivetrain.getState().Speeds.vxMetersPerSecond;
-    double robotVelocityY = drivetrain.getState().Speeds.vyMetersPerSecond;
 
-    if (robotVelocityX > 0.1 || robotVelocityY > 0.1) {
-      double distance = getDistanceToTarget(compensatedTargetHub);
+    ChassisSpeeds speeds = drivetrain.getState().Speeds;
+    Rotation2d angle = drivetrain.getState().Pose.getRotation();
+    ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(speeds, angle);
 
-      for (int i = 0; i < 1; i++) {
+    double robotVelocityX = fieldSpeeds.vxMetersPerSecond;
+    double robotVelocityY = fieldSpeeds.vyMetersPerSecond;
+
+    if (Math.abs(robotVelocityX) > 0.1 || Math.abs(robotVelocityY) > 0.1) {
+      
+      for (int i = 0; i < 20; i++) {
+        double distance = getDistanceToTarget(compensatedTargetHub);
         double timeOfFlight = TIME_OF_FLIGHT_INTERPOLATOR.interpolate(distance);
         double offsetX = robotVelocityX * timeOfFlight;
         double offsetY = robotVelocityY * timeOfFlight;
 
         compensatedTargetHub = new Pose2d(
-            compensatedTargetHub.getX() - offsetX,
-            compensatedTargetHub.getY() - offsetY,
+            targetHub.getX() - offsetX,
+            targetHub.getY() - offsetY,
             Rotation2d.kZero);
       }
     }
@@ -427,7 +433,7 @@ public class RobotContainer {
         updateDriverInputs();
         
         if (shootingAtHub) {
-          return driveFCFA.withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(targetHub)))
+          return driveFCFA.withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(compensatedTargetHub)))
           .withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
           .withVelocityY(-driverX * MaxSpeed); // Drive left with negative X
         }
