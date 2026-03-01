@@ -52,6 +52,13 @@ public class Robot extends TimedRobot {
 
   private boolean forceActiveHub = false;
 
+  @Logged(name = "Odometry translation error")
+  @SuppressWarnings("unused")
+  private double translationError;
+  @Logged(name = "Odometry rotation error")
+  @SuppressWarnings("unused")
+  private double rotationError;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -159,7 +166,14 @@ public class Robot extends TimedRobot {
 
     if (poseEstimate != null && poseEstimate.pose != null) {
       m_limelightField.setRobotPose(poseEstimate.pose);
+      // push odometry error to dashboard
+      this.translationError = m_robotContainer.drivetrain.getState().Pose.getTranslation().getDistance(poseEstimate.pose.getTranslation());
+      this.rotationError = m_robotContainer.drivetrain.getState().Pose.getRotation().minus(poseEstimate.pose.getRotation()).getDegrees();
+    } else {
+      this.translationError = 0;
+      this.rotationError = 0;
     }
+
     if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
       m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
             VecBuilder.fill(.9, .9, 999999));
@@ -167,7 +181,7 @@ public class Robot extends TimedRobot {
 
     m_botField.setRobotPose(botState.Pose);
   }
-  
+
     /**
    * Determines if the hub is active based on the current shift
    * @return true if the hub is active, false otherwise
@@ -237,18 +251,18 @@ public class Robot extends TimedRobot {
         return true;
       }
     }
-    
+
 
     if (!wonAuto) {
       if (matchTime < 10.0) {
         return true;
       } else if (matchTime < 35.0 - timeOfFlight - minProcessingTime + processingTime) { // substract timeOfFlight and (2s) processing time plus 3 seconds
         return true;
-      } else if (matchTime < 60.0 - timeOfFlight - maxProcessingTime) { //minus time of flight minus (1s) processing time 
+      } else if (matchTime < 60.0 - timeOfFlight - maxProcessingTime) { //minus time of flight minus (1s) processing time
         return false;
       } else if (matchTime < 85.0 - timeOfFlight - minProcessingTime + processingTime) { // substract timeOfFlight and (2s) processing time plus 3 seconds
         return true;
-      } else if (matchTime < 110.0 - timeOfFlight - maxProcessingTime) { //minus time of flight minus (1s) processing time 
+      } else if (matchTime < 110.0 - timeOfFlight - maxProcessingTime) { //minus time of flight minus (1s) processing time
         return false;
       } else if (matchTime >= 110.0 - timeOfFlight - maxProcessingTime) {
         return true;
