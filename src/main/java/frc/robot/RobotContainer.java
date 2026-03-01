@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.events.EventTrigger;
 
 import static edu.wpi.first.units.Units.*;
@@ -294,6 +293,15 @@ public class RobotContainer {
     // TRIGONOMETRY BABY!!!!!!
     double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
     return Math.toDegrees(angleToTarget);
+  }
+
+  /**
+   * Checks if the robot is in the neutral zone, which is between 4.625 and 11.916 meters from the starting wall.
+   * @return true if the robot is in the neutral zone, false otherwise
+   */
+  public boolean isInNeutralZone() {
+    double distance = drivetrain.getState().Pose.getX();
+    return distance > 4.625 && distance < 11.916;
   }
 
   /**

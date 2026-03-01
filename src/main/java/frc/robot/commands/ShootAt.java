@@ -30,12 +30,10 @@ public class ShootAt extends Command {
   @Override
   public void execute() {
 
-    // Only allow passing when in the neutral zone
-    double distance = rc.drivetrain.getState().Pose.getX();
-
-    if (distance > 4.625 && distance < 11.916) { // Neutral zone
+    if (rc.isInNeutralZone()) { // Neutral zone
       rc.passing = true;
       rc.shootingAtHub = false;
+      double distance = rc.drivetrain.getState().Pose.getX();
 
       johnShooterSubsystem.setActuatorToPassPosition(distance);
       jawbreakerShooterSubsystem.setActuatorToPassPosition(distance);

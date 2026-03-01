@@ -78,8 +78,6 @@ public class Robot extends TimedRobot {
     // Bind Epilogue logger - runs at robot frequency, offset by half phase
     Epilogue.bind(this);
 
-    // Example of periodic task. Calls this.updateTargetHub() every 0.5 seconds
-    addPeriodic(this::updateTargetHub, 0.5);
     addPeriodic(this::sendFields, 0.080); // 80ms is every 4 loops
     addPeriodic(Robot::updateRAlliance, 0.5);
     addPeriodic(() -> SmartDashboard.putNumber("Distance to Target", 
@@ -87,9 +85,13 @@ public class Robot extends TimedRobot {
     addPeriodic(() -> SmartDashboard.putNumber("Degrees to Target", 
       m_robotContainer.getDegreesToTarget(m_robotContainer.targetHub)), 0.1);
     addPeriodic(this::updateRobotPose, 0.02);
-    addPeriodic(this::updateTargetPassingZone, 0.04);
     addPeriodic(m_robotContainer::updateDriverInputs, 0.02);
     m_robotContainer.autoChooser.onChange(this::updateFieldPaths);
+
+    // Targets
+    addPeriodic(this::updateTargetHub, 0.5);
+    addPeriodic(this::updateTargetPassingZone, 0.04);
+    addPeriodic(this::displayTarget, 0.1);
 
   }
 
@@ -109,9 +111,17 @@ public class Robot extends TimedRobot {
     alliance = DriverStation.getAlliance().orElse(Alliance.Red);
   }
 
+  private void displayTarget() {
+    if (m_robotContainer.isInNeutralZone()) {
+      m_botField.getObject("target").setPose(m_robotContainer.passTarget);
+    }
+    else {
+      m_botField.getObject("target").setPose(m_robotContainer.compensatedTargetHub);
+    }
+  }
+
   private void updateTargetHub() {
     m_robotContainer.targetHub = alliance == Alliance.Red ? RobotContainer.RED_HUB : RobotContainer.BLUE_HUB;
-    m_botField.getObject("targetHub").setPose(m_robotContainer.targetHub);
   }
 
   /**
@@ -135,8 +145,6 @@ public class Robot extends TimedRobot {
       }
     }
     m_objectField.setRobotPose(m_robotContainer.passTarget);
-    m_botField.getObject("pass target").setPose(m_robotContainer.passTarget);
-    SmartDashboard.putData("Object Field", this.m_objectField);
   }
 
   public void updateRobotPose(){
