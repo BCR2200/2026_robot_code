@@ -73,13 +73,13 @@ public class RobotContainer {
     Rotation2d.kZero
   );
   public static final Pose2d BLUE_ZONE_L = new Pose2d(
-    Distance.ofBaseUnits(3.00, Meters), // TODO get real
-    Distance.ofBaseUnits(6.0, Meters), // TODO get real
+    Distance.ofBaseUnits(2.2, Meters), 
+    Distance.ofBaseUnits(6.0, Meters), 
     Rotation2d.kZero
   );
   public static final Pose2d BLUE_ZONE_R = new Pose2d(
-    Distance.ofBaseUnits(3.00, Meters), // TODO get real
-    Distance.ofBaseUnits(3.0, Meters), // TODO get real
+    Distance.ofBaseUnits(2.2, Meters),
+    Distance.ofBaseUnits(1.5, Meters),
     Rotation2d.kZero
   );
   public Pose2d passTarget = RED_ZONE_R;
