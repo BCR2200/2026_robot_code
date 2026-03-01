@@ -4,8 +4,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -201,37 +199,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        // FIXME all three shooters run the iteration, but overwrite themselves with the same value
-        // move the logic to Robot, where we can adjust the frequency too
-        rc.compensatedTargetHub = rc.targetHub;
-
         if (isShooting) {
             if (rc.passing) {
                 setShooterSpeedViaInterpolatedValue(rc.getDistanceToTarget(rc.passTarget));
             }
             else {
-                double robotVelocityX = rc.drivetrain.getState().Speeds.vxMetersPerSecond;
-                double robotVelocityY = rc.drivetrain.getState().Speeds.vyMetersPerSecond;
-
-                // If this ends up being fast, we should refactor it outside of this subsystem, so the hoods are always correct, even when just driving
-                // If this ends up being slow, we should refactor it outside of this subsystem, and decrease # of iterations
-                // If this ends up being fine, we should refactor it outside of this subsystem, and yell at hugo anyway
-                if (robotVelocityX > 0.1 || robotVelocityY > 0.1) {
-                    double distance = rc.getDistanceToTarget(rc.compensatedTargetHub);
-
-                    for (int i = 0; i < 20; i++) {
-                        double timeOfFlight = timeOfFlightInterpolator.interpolate(distance);
-                        double offsetX = robotVelocityX * timeOfFlight;
-                        double offsetY = robotVelocityY * timeOfFlight;
-                        
-                        rc.compensatedTargetHub = new Pose2d(
-                            rc.compensatedTargetHub.getX() - offsetX,
-                            rc.compensatedTargetHub.getY() - offsetY,
-                            Rotation2d.kZero
-                        );
-                    }
-                }
                 setShooterSpeedViaInterpolatedValue(rc.getDistanceToTarget(rc.compensatedTargetHub));
             }
             shootPIDMotor.setVelocityTarget(shooterSpeed);

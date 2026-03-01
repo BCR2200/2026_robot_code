@@ -194,8 +194,8 @@ public class RobotContainer {
                   new double[] {50, 54, 58, 64, 73}
   );
   public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator( // Placeholders for time of flight based on distance to target
-                  new double[] {0.966, 2.01, 3.00, 4.00},
-                  new double[] {0.5, 0.707, 0.866, 1.0}
+                  new double[] {0.992, 2.01, 3.00, 4.00},
+                  new double[] {0.90, 0.707, 0.866, 1.0}
   );
 
   // Subsystems - logged via their @Logged annotations
@@ -294,6 +294,28 @@ public class RobotContainer {
     double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
     return Math.toDegrees(angleToTarget);
   }
+
+  public void calculateCompensatedTargetHub() {
+    compensatedTargetHub = targetHub;
+    double robotVelocityX = drivetrain.getState().Speeds.vxMetersPerSecond;
+    double robotVelocityY = drivetrain.getState().Speeds.vyMetersPerSecond;
+
+    if (robotVelocityX > 0.1 || robotVelocityY > 0.1) {
+      double distance = getDistanceToTarget(compensatedTargetHub);
+
+      for (int i = 0; i < 1; i++) {
+        double timeOfFlight = TIME_OF_FLIGHT_INTERPOLATOR.interpolate(distance);
+        double offsetX = robotVelocityX * timeOfFlight;
+        double offsetY = robotVelocityY * timeOfFlight;
+
+        compensatedTargetHub = new Pose2d(
+            compensatedTargetHub.getX() - offsetX,
+            compensatedTargetHub.getY() - offsetY,
+            Rotation2d.kZero);
+      }
+    }
+  }
+
 
   /**
    * Checks if the robot is in the neutral zone, which is between 4.625 and 11.916 meters from the starting wall.
