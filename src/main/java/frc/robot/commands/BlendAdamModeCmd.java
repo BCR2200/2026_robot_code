@@ -151,18 +151,18 @@ public class BlendAdamModeCmd extends Command {
                 || ExtraMath.within(currentPose2d.getY(), blueHUBXLine.in(Units.Meters), 0.5) && 
                 ExtraMath.within(currentPose2d.getX(), wallLFromBYLine.in(Units.Meters), 0.5) 
                 || ExtraMath.within(currentPose2d.getX(), wallRFromBYLine.in(Units.Meters), 0.5)){
-                    drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed)
+                    drivetrain.setControl(drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed)
                     .withVelocityY(-m_driverController.getLeftX() * MaxSpeed));
             }
             else if(ExtraMath.within(currentPose2d.getX(), redHUBXLine.in(Units.Meters), 0.5)
                 || ExtraMath.within(currentPose2d.getX(), blueHUBXLine.in(Units.Meters), 0.5)){
-                    drivetrain.applyRequest(() -> drive.withVelocityY(-m_driverController.getLeftX() * MaxSpeed));
+                    drivetrain.setControl(drive.withVelocityY(-m_driverController.getLeftX() * MaxSpeed));
             }
             else if(ExtraMath.within(currentPose2d.getY(), wallLFromBYLine.in(Units.Meters), 0.5) 
                 || ExtraMath.within(currentPose2d.getY(), wallRFromBYLine.in(Units.Meters), 0.5)){
-                    drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed));
+                    drivetrain.setControl(drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed));
             } else {
-                drivetrain.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed)
+                drivetrain.setControl(drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed)
                     .withVelocityY(-m_driverController.getLeftX() * MaxSpeed));
             } 
         }
@@ -170,7 +170,7 @@ public class BlendAdamModeCmd extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.applyRequest(SwerveRequest.Idle::new);
+        drivetrain.setControl(new SwerveRequest.Idle());
     }
 
     // Returns true when the command should end.

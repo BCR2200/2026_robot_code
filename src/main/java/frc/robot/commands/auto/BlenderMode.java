@@ -172,7 +172,7 @@ public class BlenderMode extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.applyRequest(SwerveRequest.Idle::new);
+        drivetrain.setControl(new SwerveRequest.Idle());
     }
 
     // Returns true when the command should end.
