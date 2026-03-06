@@ -102,6 +102,14 @@ public class Robot extends TimedRobot {
 
   }
 
+  @Logged(name = "Total ball count")
+  @SuppressWarnings("unused")
+  private int getTotalBallCount() {
+    return m_robotContainer.shooterSubsystemJohn.getBallCount() +
+            m_robotContainer.shooterSubsystemJawbreaker.getBallCount() +
+            m_robotContainer.shooterSubsystemTaylor.getBallCount();
+  }
+
   public void updateFieldPaths(AutoCommand auto) {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     if (auto != null) {

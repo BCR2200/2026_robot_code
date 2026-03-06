@@ -12,6 +12,7 @@ import frc.robot.PIDMotor;
 import frc.robot.RobotContainer;
 import frc.robot.Interpolator;
 import frc.robot.LinearActuator;
+import frc.robot.EdgeCounter;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
@@ -58,6 +59,9 @@ public class ShooterSubsystem extends SubsystemBase {
     private final Interpolator shooterVelocityInterpolator;
     @NotLogged
     private final Interpolator timeOfFlightInterpolator;
+
+    @NotLogged
+    public final EdgeCounter counter = new EdgeCounter(EdgeCounter.EdgeType.FALLING);
 
     public ShooterSubsystem(String name, int shooterMotorID, int feederMotorID, int beambreakChannel, int actuatorChannel, int shootCurrentLimit, int feedCurrentLimit, 
                             Interpolator shooterAngleInterpolator, Interpolator shooterVelocityInterpolator, Interpolator timeOfFlightInterpolator, 
@@ -197,8 +201,15 @@ public class ShooterSubsystem extends SubsystemBase {
         return !breamBake.get();
     }
 
+    @Logged(name = "Ball count")
+    public int getBallCount() {
+        return this.counter.getCount();
+    }
+
     @Override
     public void periodic() {
+
+        this.counter.update(this.isBeamBroken());
         if (isShooting) {
             if (rc.passing) {
                 setShooterSpeedViaInterpolatedValue(rc.getDistanceToTarget(rc.passTarget));
