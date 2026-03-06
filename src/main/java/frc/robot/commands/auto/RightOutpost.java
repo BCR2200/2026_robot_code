@@ -16,6 +16,7 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ShootAt;
 import frc.robot.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class RightOutpost extends AutoCommand {
   private final PathPlannerPath path1;
@@ -35,18 +36,13 @@ public class RightOutpost extends AutoCommand {
       AutoBuildingBlocks.autoStep("PATH 2"),
       AutoBuildingBlocks.followPathCommand(path2, drivetrain),
       AutoBuildingBlocks.autoStep("PATH 3"),
-      Commands.parallel(
-        AutoBuildingBlocks.followPathCommand(path3, drivetrain),
+      AutoBuildingBlocks.followPathCommand(path3, drivetrain),
+      Commands.race(
+        new ShootAt(robot),
         Commands.sequence(
-          new WaitCommand(1.5), // Wait before starting shooting while driving
-          Commands.race(
-            new ShootAt(robot),
-            Commands.sequence(
-              new WaitCommand(4), // Wait before intake up
-              new InstantCommand(() -> robot.intakeSubsystem.setIsGoingUp(true)),
-              new WaitCommand(2) // Wait to finish shooting
-            )
-          )
+          new WaitCommand(4), // Wait before intake up
+          new InstantCommand(() -> robot.intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltHalfExtensionPos)),
+          new WaitCommand(2) // Wait to finish shooting
         )
       ),
       new ClimbCommand(robot, false));

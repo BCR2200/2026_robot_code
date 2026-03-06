@@ -57,7 +57,7 @@
       },
       "nextControl": {
         "x": 0.7531295180722895,
-        "y": 1.245701807228916
+        "y": 1.2457018072289163
       },
       "isLocked": false,
       "linkedName": null
@@ -125,7 +125,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Autos",
+  "folder": "AutoIdeas",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 42.580490783343635

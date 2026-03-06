@@ -104,8 +104,8 @@
         "y": 6.526518072289157
       },
       "nextControl": {
-        "x": 0.3164882039258402,
-        "y": 6.0473938405407655
+        "x": 0.31648820392583604,
+        "y": 6.047393840540765
       },
       "isLocked": false,
       "linkedName": null
@@ -116,7 +116,7 @@
         "y": 4.8108674698795175
       },
       "prevControl": {
-        "x": 0.18349397590361383,
+        "x": 0.18349397590361338,
         "y": 4.603240963855422
       },
       "nextControl": {
@@ -157,7 +157,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Autos",
+  "folder": "AutoIdeas",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 43.19126067750791

@@ -32,6 +32,8 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.ShootAt;
 import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.auto.LeftBumpBack;
+import frc.robot.commands.auto.RightBumpBack;
 import frc.robot.commands.auto.RightOutpost;
 import frc.robot.commands.auto.TestOverrideAuto;
 import frc.robot.drive.CommandSwerveDrivetrain;
@@ -147,13 +149,12 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   @NotLogged
-  private final SwerveRequest.FieldCentricFacingAngle driveFCFA = new SwerveRequest.FieldCentricFacingAngle()
+  public final SwerveRequest.FieldCentricFacingAngle driveFCFA = new SwerveRequest.FieldCentricFacingAngle()
     .withDeadband(MaxSpeed * 0.1)
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   @NotLogged
   public final SwerveRequest.FieldCentricFacingAngle driveFCFAVelocityMode = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(MaxSpeed * 0.1)
     .withDriveRequestType(DriveRequestType.Velocity);
 
   @NotLogged
@@ -174,7 +175,7 @@ public class RobotContainer {
   @NotLogged
   private static final int floorCurrentLimit = 30;
   @NotLogged
-  private static final int intakeCurrentLimit = 60;
+  private static final int intakeCurrentLimit = 80;
   @NotLogged
   private static final int tiltCurrentLimit = 35; // Normally 25
   @NotLogged
@@ -280,6 +281,8 @@ public class RobotContainer {
     autoChooser.setDefaultOption("None", null);
     autoChooser.addOption("TestOverrideAuto", new TestOverrideAuto(this, drivetrain, driveRC));
     autoChooser.addOption("RightOutpost", new RightOutpost(this, drivetrain, driveRC));
+    autoChooser.addOption("RightBumpBack", new RightBumpBack(this, drivetrain, driveRC));
+    autoChooser.addOption("LeftBumpBack", new LeftBumpBack(this, drivetrain, driveRC));
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
@@ -457,23 +460,9 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       drivetrain.applyRequest(() -> {
         updateDriverInputs();
-        
-        if (shootingAtHub) {
-          return driveFCFA.withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(compensatedTargetHub)))
-          .withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
-          .withVelocityY(-driverX * MaxSpeed); // Drive left with negative X
-        }
-        else if (passing) {
-          return driveFCFA
-              .withTargetDirection(Rotation2d.fromDegrees(getDegreesToTarget(passTarget)))
-              .withVelocityX(-driverY * MaxSpeed)
-              .withVelocityY(-driverX * MaxSpeed);
-        }
-        else {
           return driveFC.withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
                   .withVelocityY(-driverX * MaxSpeed) // Drive left with negative X
                   .withRotationalRate(-driverRot * MaxAngularRate); // Drive counterclockwise with negative X
-        }
         
       })
     );

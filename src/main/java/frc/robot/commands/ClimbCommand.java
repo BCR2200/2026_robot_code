@@ -108,8 +108,8 @@ public class ClimbCommand extends Command {
     }
 
     private SwerveRequest.FieldCentricFacingAngle driveToPose(Pose2d target) {
-        return robot.driveFCFAVelocityMode.withVelocityX(ExtraMath.clampedDeadzone(getXToTarget(target)*-TRANSLATION_P, 1, 0.03))
-                .withVelocityY(ExtraMath.clampedDeadzone(getYToTarget(target)*-TRANSLATION_P, 1, 0.03))
+        return robot.driveFCFAVelocityMode.withVelocityX(ExtraMath.clampedDeadzone(getXToTarget(target)*-TRANSLATION_P, 1, 0.0001))
+                .withVelocityY(ExtraMath.clampedDeadzone(getYToTarget(target)*-TRANSLATION_P, 1, 0.0001))
                 .withTargetDirection(target.getRotation());
     }
 

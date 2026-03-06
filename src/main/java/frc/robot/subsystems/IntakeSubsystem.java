@@ -30,6 +30,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public static final double tiltMaxExtensionPos = -39;
     @NotLogged
     public static final double tiltMinExtensionPos = 0;
+    @NotLogged
+    public static final double tiltHalfExtensionPos = -15;
 
     @Logged
     private double tiltPos = 0;

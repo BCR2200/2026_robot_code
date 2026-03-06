@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -17,7 +18,7 @@ public class ShootAt extends Command {
     this.johnShooterSubsystem = rc.shooterSubsystemJohn;
     this.jawbreakerShooterSubsystem = rc.shooterSubsystemJawbreaker;
     this.taylorShooterSubsystem = rc.shooterSubsystemTaylor;
-    addRequirements(johnShooterSubsystem, jawbreakerShooterSubsystem, taylorShooterSubsystem);
+    addRequirements(johnShooterSubsystem, jawbreakerShooterSubsystem, taylorShooterSubsystem, rc.drivetrain);
     timer = new Timer();
   }
 
@@ -42,6 +43,18 @@ public class ShootAt extends Command {
     else {
       rc.shootingAtHub = true;
       rc.passing = false;
+    }
+    rc.updateDriverInputs();
+    if (rc.shootingAtHub) {
+      rc.drivetrain.setControl(rc.driveFCFA.withTargetDirection(Rotation2d.fromDegrees(rc.getDegreesToTarget(rc.compensatedTargetHub)))
+        .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed) // Drive forward with negative Y
+        .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)); // Drive left with negative X
+    }
+    else if (rc.passing) {
+      rc.drivetrain.setControl(rc.driveFCFA
+          .withTargetDirection(Rotation2d.fromDegrees(rc.getDegreesToTarget(rc.passTarget)))
+          .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed)
+          .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed));
     }
 
     activateShooters();
