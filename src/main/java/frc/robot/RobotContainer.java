@@ -34,6 +34,7 @@ import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.ShootAt;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.auto.LeftBumpBack;
+import frc.robot.commands.auto.LeftBumpToRight;
 import frc.robot.commands.auto.LongLeftBumpBack;
 import frc.robot.commands.auto.RightBumpBack;
 import frc.robot.commands.auto.RightOutpost;
@@ -293,6 +294,7 @@ public class RobotContainer {
     autoChooser.addOption("RightBumpBack", new RightBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LeftBumpBack", new LeftBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LongLeftBumpBack", new LongLeftBumpBack(this, drivetrain, driveRC));
+    autoChooser.addOption("LeftBumpToRight", new LeftBumpToRight(this, drivetrain, driveRC));
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
