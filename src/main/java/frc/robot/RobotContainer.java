@@ -65,7 +65,6 @@ public class RobotContainer {
   public boolean passing = false;
 
   public boolean redWonAuto = false;
-  public Optional<Boolean> redWonAutoOverride = Optional.empty();
 
   public static final Pose2d BLUE_HUB = new Pose2d(
       Distance.ofBaseUnits(4.629, Meters),
@@ -498,7 +497,6 @@ public class RobotContainer {
 
     /*
      * TODO:
-     * - Override who won auto
      * - Fixed shot
      * - re-zero intake
      * - reseed field centric zero
@@ -508,12 +506,6 @@ public class RobotContainer {
      * - manual intake tilt control
      */
 
-    // Override who won auto
-    coDriverController.y().onTrue(new InstantCommand(() -> {
-      redWonAutoOverride = Optional.of(true);
-    })).onFalse(new InstantCommand(() -> {
-      redWonAutoOverride = Optional.of(false);
-    }));
 
     // Fixed shot
 
