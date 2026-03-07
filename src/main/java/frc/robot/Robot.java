@@ -12,7 +12,6 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.commands.auto.AutoCommand;
@@ -32,7 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
   
   @NotLogged
-  private Command m_autonomousCommand;
+  private AutoCommand m_autonomousCommand;
 
   @Logged
   private final RobotContainer m_robotContainer;
@@ -94,6 +93,9 @@ public class Robot extends TimedRobot {
     addPeriodic(this::updateRobotPose, 0.02);
     addPeriodic(m_robotContainer::updateDriverInputs, 0.02);
     m_robotContainer.autoChooser.onChange(this::updateFieldPaths);
+    addPeriodic(() -> {
+      updateFieldPaths(m_autonomousCommand);
+    }, .5);
 
     // Targets
     addPeriodic(this::updateTargetHub, 0.5);
