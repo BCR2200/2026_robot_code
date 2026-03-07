@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -110,7 +112,8 @@ public class ClimbCommand extends Command {
     private SwerveRequest.FieldCentricFacingAngle driveToPose(Pose2d target) {
         return robot.driveFCFAVelocityMode.withVelocityX(ExtraMath.clampedDeadzone(getXToTarget(target)*-TRANSLATION_P, 1, 0.0001))
                 .withVelocityY(ExtraMath.clampedDeadzone(getYToTarget(target)*-TRANSLATION_P, 1, 0.0001))
-                .withTargetDirection(target.getRotation());
+                .withTargetDirection(target.getRotation())
+                .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
     }
 
     @Override

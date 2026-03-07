@@ -1,8 +1,13 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -45,16 +50,22 @@ public class ShootAt extends Command {
       rc.passing = false;
     }
     rc.updateDriverInputs();
+    Translation2d blueSpaceDriverInputs = new Translation2d(RobotContainer.driverX, RobotContainer.driverY)
+        .rotateBy(Robot.alliance == Alliance.Blue ? Rotation2d.kZero : Rotation2d.k180deg);
+
     if (rc.shootingAtHub) {
-      rc.drivetrain.setControl(rc.driveFCFA.withTargetDirection(Rotation2d.fromDegrees(rc.getDegreesToTarget(rc.compensatedTargetHub)))
-        .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed) // Drive forward with negative Y
-        .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)); // Drive left with negative X
+      rc.drivetrain.setControl(rc.driveFCFA
+          .withTargetDirection(Rotation2d.fromDegrees(rc.getDegreesToTarget(rc.compensatedTargetHub)).rotateBy(Rotation2d.k180deg))
+          .withVelocityX(-blueSpaceDriverInputs.getX() * RobotContainer.MaxSpeed)
+          .withVelocityY(-blueSpaceDriverInputs.getY() * RobotContainer.MaxSpeed)
+          .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)); // Drive left with negative X
     }
     else if (rc.passing) {
       rc.drivetrain.setControl(rc.driveFCFA
-          .withTargetDirection(Rotation2d.fromDegrees(rc.getDegreesToTarget(rc.passTarget)))
-          .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed)
-          .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed));
+          .withTargetDirection(Rotation2d.fromDegrees(rc.getDegreesToTarget(rc.passTarget)).rotateBy(Rotation2d.k180deg))
+          .withVelocityX(-blueSpaceDriverInputs.getX() * RobotContainer.MaxSpeed)
+          .withVelocityY(-blueSpaceDriverInputs.getY() * RobotContainer.MaxSpeed)
+          .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance));
     }
 
     activateShooters();

@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.events.EventTrigger;
 
@@ -457,7 +458,8 @@ public class RobotContainer {
         updateDriverInputs();
           return driveFC.withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
                   .withVelocityY(-driverX * MaxSpeed) // Drive left with negative X
-                  .withRotationalRate(-driverRot * MaxAngularRate); // Drive counterclockwise with negative X
+                  .withRotationalRate(-driverRot * MaxAngularRate) // Drive counterclockwise with negative X
+                  .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective); // With operator perspective
         
       })
     );
