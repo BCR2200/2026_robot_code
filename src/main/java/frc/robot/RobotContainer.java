@@ -9,9 +9,11 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.epilogue.Logged;
@@ -23,7 +25,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -31,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BlendAdamModeCmd;
 import frc.robot.commands.ClimbCommand;
-import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.ShootAt;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.auto.LeftBumpBack;
@@ -65,6 +65,7 @@ public class RobotContainer {
   public boolean passing = false;
 
   public boolean redWonAuto = false;
+  public Optional<Boolean> redWonAutoOverride = Optional.empty();
 
   public static final Pose2d BLUE_HUB = new Pose2d(
       Distance.ofBaseUnits(4.629, Meters),
@@ -457,9 +458,8 @@ public class RobotContainer {
       shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() - ACTUATOR_STEP);
     }));
 
-    driverController.start().whileTrue(new InstantCommand(() -> {
-    })); // Used in disabled for syncing autos
-    driverController.back().whileTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective()));
+    driverController.start().whileTrue(new InstantCommand(() -> {})); // Used in disabled for syncing autos
+    driverController.back().whileTrue(new InstantCommand(() -> {})); // Unused
   }
 
   private void configureDrivetrainBindings() {
@@ -504,9 +504,16 @@ public class RobotContainer {
      * - reseed field centric zero
      * - Just climb now
      * - disable shooter J/J/T
+     * - reset odometry
+     * - manual intake tilt control
      */
 
     // Override who won auto
+    coDriverController.y().onTrue(new InstantCommand(() -> {
+      redWonAutoOverride = Optional.of(true);
+    })).onFalse(new InstantCommand(() -> {
+      redWonAutoOverride = Optional.of(false);
+    }));
 
     // Fixed shot
 
@@ -522,6 +529,11 @@ public class RobotContainer {
     }));
 
     // Disable shooter J/J/T
+
+    // Reset odometry
+    coDriverController.back().and(coDriverController.start()).onTrue(new InstantCommand(() -> {
+      updateDrivetrainRobotPerspective();
+    }));
 
   }
 
