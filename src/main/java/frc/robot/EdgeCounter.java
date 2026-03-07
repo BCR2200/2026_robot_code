@@ -6,7 +6,7 @@ public class EdgeCounter {
         RISING, FALLING, BOTH
     }
 
-    private static final boolean INITIAL_STATE = true;
+    private boolean initialState = true;
 
     private int count;
     private boolean previousState;
@@ -16,8 +16,16 @@ public class EdgeCounter {
      * Creates a new counter, with the initial state set to true.
      */
     public EdgeCounter(EdgeType type) {
+        this(type, true);
+    }
+
+    /**
+     * Creates a new counter, with the initial state set to true.
+     */
+    public EdgeCounter(EdgeType type, boolean initialState) {
         this.reset();
         this.type = type;
+        this.initialState = initialState;
     }
 
     /**
@@ -49,6 +57,6 @@ public class EdgeCounter {
      */
     public void reset() {
         this.count = 0;
-        this.previousState = INITIAL_STATE;
+        this.previousState = initialState;
     }
 }
