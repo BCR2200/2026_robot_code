@@ -39,4 +39,15 @@ public class Interpolator {
         double ratio = (x - floorKey) / (ceilingKey - floorKey);
         return floorValue + ratio * (ceilingValue - floorValue);
     }
+
+    /**
+     * Interpolates the value at x and clamps it between min and max.
+     * @param x The input value to interpolate.
+     * @param min The minimum value to clamp the result to.
+     * @param max The maximum value to clamp the result to.
+     * @return The interpolated value at x, clamped between min and max.
+     */
+    public double clampedInterpolate(double x, double min, double max) {
+        return ExtraMath.clamp(interpolate(x), min, max);
+    }
 }
