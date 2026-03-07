@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
   }
 
   private void displayTarget() {
-    if (m_robotContainer.isInNeutralZone()) {
+    if (m_robotContainer.isOutsideAllianceZone()) {
       m_botField.getObject("target").setPose(m_robotContainer.passTarget);
     }
     else {
