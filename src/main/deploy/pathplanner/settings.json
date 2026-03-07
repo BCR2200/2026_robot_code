@@ -5,9 +5,10 @@
   "pathFolders": [
     "AutoIdeas",
     "BlendModePaths",
+    "LeftBumpToRight",
     "LeftBumpBack",
     "LongLeftBumpBack",
-    "LeftBump-Right",
+    "RightBumpToLeft",
     "RightBumpBack",
     "RightOutpost"
   ],

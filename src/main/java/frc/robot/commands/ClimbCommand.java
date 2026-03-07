@@ -48,12 +48,12 @@ public class ClimbCommand extends Command {
     );
     public static final Pose2d RED_L_CLIMB_INITIAL = new Pose2d(
             Distance.ofBaseUnits(15.0, Meters),
-            Distance.ofBaseUnits(3.89, Meters),
+            Distance.ofBaseUnits(3.91, Meters),
             Rotation2d.k180deg
     );
     public static final Pose2d RED_L_CLIMB_FINAL = new Pose2d(
-            Distance.ofBaseUnits(15.20, Meters),
-            Distance.ofBaseUnits(3.89, Meters),
+            Distance.ofBaseUnits(15.17, Meters),
+            Distance.ofBaseUnits(3.91, Meters),
             Rotation2d.k180deg
     );
     public static final Pose2d RED_R_CLIMB_INITIAL = new Pose2d(
@@ -128,7 +128,7 @@ public class ClimbCommand extends Command {
 
     @Override
     public void execute() {
-        if (atTargetPos(targetClimbFinal, 0.03)) { // At final
+        if (atTargetPos(targetClimbFinal, 0.015)) { // At final
             climberSubsystem.climb();
             drivetrain.setControl(robot.driveFC.withVelocityX(0)
                     .withVelocityY(0)

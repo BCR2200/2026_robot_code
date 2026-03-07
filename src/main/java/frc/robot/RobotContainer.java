@@ -38,6 +38,7 @@ import frc.robot.commands.auto.LeftBumpBack;
 import frc.robot.commands.auto.LeftBumpToRight;
 import frc.robot.commands.auto.LongLeftBumpBack;
 import frc.robot.commands.auto.RightBumpBack;
+import frc.robot.commands.auto.RightBumpToLeft;
 import frc.robot.commands.auto.RightOutpost;
 import frc.robot.commands.auto.TestOverrideAuto;
 import frc.robot.drive.CommandSwerveDrivetrain;
@@ -179,7 +180,7 @@ public class RobotContainer {
   @NotLogged
   private static final int climbInitialCurrentLimit = 5;
   @NotLogged
-  private static final int floorCurrentLimit = 30;
+  private static final int floorCurrentLimit = 60;
   @NotLogged
   private static final int intakeCurrentLimit = 80;
   @NotLogged
@@ -296,6 +297,7 @@ public class RobotContainer {
     autoChooser.addOption("LeftBumpBack", new LeftBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LongLeftBumpBack", new LongLeftBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LeftBumpToRight", new LeftBumpToRight(this, drivetrain, driveRC));
+    autoChooser.addOption("RightBumpToLeft", new RightBumpToLeft(this, drivetrain, driveRC));
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
