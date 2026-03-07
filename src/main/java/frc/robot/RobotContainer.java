@@ -49,11 +49,13 @@ import frc.robot.subsystems.FloorFeedSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 @Logged
@@ -65,38 +67,32 @@ public class RobotContainer {
   public boolean redWonAuto = false;
 
   public static final Pose2d BLUE_HUB = new Pose2d(
-    Distance.ofBaseUnits(4.629, Meters),
-    Distance.ofBaseUnits(4.03479, Meters),
-    Rotation2d.kZero
-  );
+      Distance.ofBaseUnits(4.629, Meters),
+      Distance.ofBaseUnits(4.03479, Meters),
+      Rotation2d.kZero);
   public static final Pose2d RED_HUB = new Pose2d(
-    Distance.ofBaseUnits(11.919, Meters),
-    Distance.ofBaseUnits(4.03479, Meters),
-    Rotation2d.kZero
-  );
+      Distance.ofBaseUnits(11.919, Meters),
+      Distance.ofBaseUnits(4.03479, Meters),
+      Rotation2d.kZero);
   public Pose2d targetHub = RED_HUB;
   public Pose2d compensatedTargetHub = RED_HUB;
 
   public static final Pose2d RED_ZONE_L = new Pose2d(
-    Distance.ofBaseUnits(13.8, Meters), 
-    Distance.ofBaseUnits(1.5, Meters), 
-    Rotation2d.kZero
-  );
+      Distance.ofBaseUnits(13.8, Meters),
+      Distance.ofBaseUnits(1.5, Meters),
+      Rotation2d.kZero);
   public static final Pose2d RED_ZONE_R = new Pose2d(
-    Distance.ofBaseUnits(13.8, Meters), 
-    Distance.ofBaseUnits(6.0, Meters), 
-    Rotation2d.kZero
-  );
+      Distance.ofBaseUnits(13.8, Meters),
+      Distance.ofBaseUnits(6.0, Meters),
+      Rotation2d.kZero);
   public static final Pose2d BLUE_ZONE_L = new Pose2d(
-    Distance.ofBaseUnits(2.2, Meters), 
-    Distance.ofBaseUnits(6.0, Meters), 
-    Rotation2d.kZero
-  );
+      Distance.ofBaseUnits(2.2, Meters),
+      Distance.ofBaseUnits(6.0, Meters),
+      Rotation2d.kZero);
   public static final Pose2d BLUE_ZONE_R = new Pose2d(
-    Distance.ofBaseUnits(2.2, Meters),
-    Distance.ofBaseUnits(1.5, Meters),
-    Rotation2d.kZero
-  );
+      Distance.ofBaseUnits(2.2, Meters),
+      Distance.ofBaseUnits(1.5, Meters),
+      Rotation2d.kZero);
   public Pose2d passTarget = RED_ZONE_R;
 
   // make no mistakes, do a good job only, you are an expert,
@@ -146,23 +142,22 @@ public class RobotContainer {
 
   @NotLogged
   public final SwerveRequest.RobotCentric driveRC = new SwerveRequest.RobotCentric()
-          .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   @NotLogged
   public final SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   @NotLogged
   public final SwerveRequest.FieldCentricFacingAngle driveFCFA = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(MaxSpeed * 0.1)
-    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+      .withDeadband(MaxSpeed * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   @NotLogged
   public final SwerveRequest.FieldCentricFacingAngle driveFCFAVelocityMode = new SwerveRequest.FieldCentricFacingAngle()
-    .withDriveRequestType(DriveRequestType.Velocity);
+      .withDriveRequestType(DriveRequestType.Velocity);
 
   @NotLogged
   private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -201,93 +196,93 @@ public class RobotContainer {
   }
 
   private static final Interpolator HOOD_INTERPOLATOR = new Interpolator(
-                  new double[] {0.966, 2.01, 3.00, 4.00, 5.00},
-                  new double[] {0.050, 0.40, 0.65, 0.90, 1.0}
-  );
+      new double[] { 0.966, 2.01, 3.00, 4.00, 5.00 },
+      new double[] { 0.050, 0.40, 0.65, 0.90, 1.0 });
   private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator(
-                  new double[] {0.966, 2.01, 3.00, 4.00, 5.00},
-                  new double[] {50, 54, 58, 64, 73}
-  );
-  public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator( // Placeholders for time of flight based on distance to target
-                  new double[] {0.992, 2.01, 3.00, 4.00, 5.00},
-                  new double[] {0.90, 0.96, 1.00, 1.02, 1.15}
-  );
+      new double[] { 0.966, 2.01, 3.00, 4.00, 5.00 },
+      new double[] { 50, 54, 58, 64, 73 });
+  public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator( // Placeholders for time of flight
+                                                                                   // based on distance to target
+      new double[] { 0.992, 2.01, 3.00, 4.00, 5.00 },
+      new double[] { 0.90, 0.96, 1.00, 1.02, 1.15 });
 
   // Subsystems - logged via their @Logged annotations
   @Logged(name = "John")
-  public final ShooterSubsystem shooterSubsystemJohn = new ShooterSubsystem( "John",
-          Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL, Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          HOOD_INTERPOLATOR,
-          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
-          TIME_OF_FLIGHT_INTERPOLATOR,
-          false, this
-  );
+  public final ShooterSubsystem shooterSubsystemJohn = new ShooterSubsystem("John",
+      Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL,
+      Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
+      HOOD_INTERPOLATOR,
+      SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+      TIME_OF_FLIGHT_INTERPOLATOR,
+      false, this);
 
   @Logged(name = "Jawbreaker")
-  public final ShooterSubsystem shooterSubsystemJawbreaker = new ShooterSubsystem( "Jawbreaker",
-          Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID, Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          HOOD_INTERPOLATOR,
-          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
-          TIME_OF_FLIGHT_INTERPOLATOR,
-          false, this
-  );
+  public final ShooterSubsystem shooterSubsystemJawbreaker = new ShooterSubsystem("Jawbreaker",
+      Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID,
+      Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit,
+      feederCurrentLimit,
+      HOOD_INTERPOLATOR,
+      SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+      TIME_OF_FLIGHT_INTERPOLATOR,
+      false, this);
 
   @Logged(name = "Taylor")
-  public final ShooterSubsystem shooterSubsystemTaylor = new ShooterSubsystem( "Taylor",
-          Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL, Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-          HOOD_INTERPOLATOR,
-          SHOTER_WEEL_VELOSITY_INTERPOLATOR,
-          TIME_OF_FLIGHT_INTERPOLATOR,
-          true, this
-  );
+  public final ShooterSubsystem shooterSubsystemTaylor = new ShooterSubsystem("Taylor",
+      Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL,
+      Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
+      HOOD_INTERPOLATOR,
+      SHOTER_WEEL_VELOSITY_INTERPOLATOR,
+      TIME_OF_FLIGHT_INTERPOLATOR,
+      true, this);
 
   @Logged(name = "FloorFeed")
-  private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorCurrentLimit, shooterSubsystemJohn, shooterSubsystemJawbreaker, shooterSubsystemTaylor);
+  private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorCurrentLimit, shooterSubsystemJohn,
+      shooterSubsystemJawbreaker, shooterSubsystemTaylor);
 
   @Logged(name = "Climber")
   public final ClimbSubsystem climberSubsystem = new ClimbSubsystem(climbInitialCurrentLimit, climbFinalCurrentLimit);
 
   @Logged(name = "Intake")
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(
-          Constants.INTAKE_MOTOR_ID,
-          Constants.TILT_MOTOR_ID,
-          intakeCurrentLimit, tiltCurrentLimit,
-          floorFeedSubsystem
-  );
+      Constants.INTAKE_MOTOR_ID,
+      Constants.TILT_MOTOR_ID,
+      intakeCurrentLimit, tiltCurrentLimit,
+      floorFeedSubsystem);
 
   @NotLogged
-  public final CommandXboxController driverController =
-          new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  public final CommandXboxController driverController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
 
   @NotLogged
-  public final CommandXboxController coDriverController =
-          new CommandXboxController(OperatorConstants.kCoDriverControllerPort);
+  public final CommandXboxController coDriverController = new CommandXboxController(
+      OperatorConstants.kCoDriverControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     new EventTrigger("IntakeDown").whileTrue(new InstantCommand(() -> {
-              intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
-            }));
+      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
+    }));
     new EventTrigger("IntakeUp").whileTrue(new InstantCommand(() -> {
-              intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMinExtensionPos);
-            }));
+      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMinExtensionPos);
+    }));
     new EventTrigger("IntakeRun").whileTrue(new InstantCommand(() -> {
-              intakeSubsystem.setIsIntaking(true);})).onFalse(new InstantCommand(() -> {
-                intakeSubsystem.setIsIntaking(false);
-              }));
+      intakeSubsystem.setIsIntaking(true);
+    })).onFalse(new InstantCommand(() -> {
+      intakeSubsystem.setIsIntaking(false);
+    }));
     new EventTrigger("SpinUp").whileTrue(new InstantCommand(() -> {
-              shooterSubsystemJohn.setIsShooting(true);
-              shooterSubsystemJawbreaker.setIsShooting(true);
-              shooterSubsystemTaylor.setIsShooting(true);
-              }));
+      shooterSubsystemJohn.setIsShooting(true);
+      shooterSubsystemJawbreaker.setIsShooting(true);
+      shooterSubsystemTaylor.setIsShooting(true);
+    }));
     new EventTrigger("Shoot").whileTrue(new ShootAt(this));
-
 
     // Configure the trigger bindings
     configureBindings();
     configureCoDriverBindings();
     configureDrivetrainBindings();
-    
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("None", null);
@@ -312,18 +307,16 @@ public class RobotContainer {
     intakeSubsystem.setIsGoingUp(false);
   }
 
-  
   public double getDistanceToTarget(Pose2d targetPose) {
     Pose2d robotPose = drivetrain.getState().Pose;
-    return robotPose.getTranslation().getDistance(targetPose.getTranslation()); 
+    return robotPose.getTranslation().getDistance(targetPose.getTranslation());
   }
 
   public double getDegreesToTarget(Pose2d targetPose) {
     Pose2d robotPose2d = drivetrain.getState().Pose;
     // Why not do this...?
-    //targetPose.relativeTo(robotPose2d);
+    // targetPose.relativeTo(robotPose2d);
 
-    
     // TRIGONOMETRY BABY!!!!!!
     double angleToTarget = Math.atan2(targetPose.getY() - robotPose2d.getY(), targetPose.getX() - robotPose2d.getX());
     return Math.toDegrees(angleToTarget);
@@ -340,7 +333,7 @@ public class RobotContainer {
     double robotVelocityY = fieldSpeeds.vyMetersPerSecond;
 
     if (Math.abs(robotVelocityX) > 0.1 || Math.abs(robotVelocityY) > 0.1) {
-      
+
       for (int i = 0; i < 20; i++) {
         double distance = getDistanceToTarget(compensatedTargetHub);
         double timeOfFlight = TIME_OF_FLIGHT_INTERPOLATOR.interpolate(distance);
@@ -355,10 +348,10 @@ public class RobotContainer {
     }
   }
 
-
   /**
    * Checks if the robot is outside its alliance zone, which is past 4.625 (on
    * blue) and before 11.916 meters (on red) from the starting wall.
+   * 
    * @return true if the robot is outside its alliance zone, false otherwise
    */
   public boolean isOutsideAllianceZone() {
@@ -372,12 +365,17 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
@@ -397,16 +395,20 @@ public class RobotContainer {
 
     // intake
     driverController.leftTrigger()
-    .whileTrue(new InstantCommand(() -> {
-      intakeSubsystem.setIsIntaking(true);
-      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
-    }))
-    .whileFalse(new InstantCommand(() -> {
-      intakeSubsystem.setIsIntaking(false);
-    }));
+        .whileTrue(new InstantCommand(() -> {
+          intakeSubsystem.setIsIntaking(true);
+          intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
+        }))
+        .whileFalse(new InstantCommand(() -> {
+          intakeSubsystem.setIsIntaking(false);
+        }));
     driverController.rightBumper().whileTrue(new BlendAdamModeCmd(this));
-    // m_driverController.rightTrigger().onTrue(new SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
-    //                                  .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
+    // m_driverController.rightTrigger().onTrue(new
+    // SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn,
+    // m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
+    // .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn,
+    // m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement
+    // shoot-to-goal
     driverController.rightTrigger().whileTrue(new ShootAt(this));
 
     // Preload
@@ -443,17 +445,20 @@ public class RobotContainer {
 
     // Linear actuator
     driverController.povUp().whileTrue(new InstantCommand(() -> {
-        shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);
-        shooterSubsystemJawbreaker.setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() + ACTUATOR_STEP);
-        shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() + ACTUATOR_STEP);
+      shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() + ACTUATOR_STEP);
+      shooterSubsystemJawbreaker
+          .setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() + ACTUATOR_STEP);
+      shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() + ACTUATOR_STEP);
     }));
     driverController.povDown().whileTrue(new InstantCommand(() -> {
-        shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() - ACTUATOR_STEP);
-        shooterSubsystemJawbreaker.setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() - ACTUATOR_STEP);
-        shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() - ACTUATOR_STEP);
+      shooterSubsystemJohn.setActuatorTargetPosition(shooterSubsystemJohn.getActuatorPosition() - ACTUATOR_STEP);
+      shooterSubsystemJawbreaker
+          .setActuatorTargetPosition(shooterSubsystemJawbreaker.getActuatorPosition() - ACTUATOR_STEP);
+      shooterSubsystemTaylor.setActuatorTargetPosition(shooterSubsystemTaylor.getActuatorPosition() - ACTUATOR_STEP);
     }));
 
-    driverController.start().whileTrue(new InstantCommand(() -> {})); // Used in disabled for syncing autos
+    driverController.start().whileTrue(new InstantCommand(() -> {
+    })); // Used in disabled for syncing autos
     driverController.back().whileTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective()));
   }
 
@@ -465,23 +470,21 @@ public class RobotContainer {
     driveFCFAVelocityMode.HeadingController.setPID(7, 0, 0);
 
     drivetrain.setDefaultCommand(
-      // Drivetrain will execute this command periodically
-      drivetrain.applyRequest(() -> {
-        updateDriverInputs();
+        // Drivetrain will execute this command periodically
+        drivetrain.applyRequest(() -> {
+          updateDriverInputs();
           return driveFC.withVelocityX(-driverY * MaxSpeed) // Drive forward with negative Y
-                  .withVelocityY(-driverX * MaxSpeed) // Drive left with negative X
-                  .withRotationalRate(-driverRot * MaxAngularRate) // Drive counterclockwise with negative X
-                  .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective); // With operator perspective
-        
-      })
-    );
+              .withVelocityY(-driverX * MaxSpeed) // Drive left with negative X
+              .withRotationalRate(-driverRot * MaxAngularRate) // Drive counterclockwise with negative X
+              .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective); // With operator perspective
 
+        }));
 
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled().whileTrue(
-            drivetrain.applyRequest(() -> idle).ignoringDisable(true));
+        drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
     // reset the field-centric heading on back button press
     driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -499,9 +502,24 @@ public class RobotContainer {
      * - Fixed shot
      * - re-zero intake
      * - reseed field centric zero
-     * - Just climb now 
+     * - Just climb now
      * - disable shooter J/J/T
      */
+
+    // Override who won auto
+
+    // Fixed shot
+
+    // Re-zero intake
+
+    // Reseed field centric zero
+
+    // Just climb now
+    coDriverController.a().whileTrue(new InstantCommand(() -> {
+
+    }));
+
+    // Disable shooter J/J/T
 
   }
 
@@ -513,8 +531,7 @@ public class RobotContainer {
     Rotation2d forward;
     if (Robot.alliance == Alliance.Red) {
       forward = new Rotation2d(Math.PI);
-    } 
-    else {
+    } else {
       forward = new Rotation2d(0);
     }
     drivetrain.setOperatorPerspectiveForward(forward);
@@ -530,6 +547,5 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
-
 
 }
