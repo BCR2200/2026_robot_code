@@ -323,6 +323,13 @@ public class Robot extends TimedRobot {
     }
   }
 
+  @Override
+  public void disabledExit() {
+    this.m_robotContainer.shooterSubsystemJohn.counter.reset();
+    this.m_robotContainer.shooterSubsystemJawbreaker.counter.reset();
+    this.m_robotContainer.shooterSubsystemTaylor.counter.reset();
+  }
+
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
