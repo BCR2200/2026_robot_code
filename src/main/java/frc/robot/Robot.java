@@ -96,6 +96,21 @@ public class Robot extends TimedRobot {
     addPeriodic(() -> {
       updateFieldPaths(m_autonomousCommand);
     }, .5);
+    addPeriodic(() -> {
+      String gameData = DriverStation.getGameSpecificMessage();
+      // If we have no game data, we cannot know who won.
+      if (gameData.isEmpty()) {
+        return;
+      }
+      
+      switch (gameData.charAt(0)) {
+        case 'R' -> m_robotContainer.redWonAuto = true;
+        case 'B' -> m_robotContainer.redWonAuto = false;
+        default -> {
+          return;
+        }
+      }
+    }, 0.2);
 
     // Targets
     addPeriodic(this::updateTargetHub, 0.5);
@@ -203,11 +218,6 @@ public class Robot extends TimedRobot {
       return true;
     }
 
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    // If we have no alliance, we cannot be enabled, therefore no hub.
-    if (alliance.isEmpty()) {
-      return false;
-    }
     // Hub is always enabled in autonomous.
     if (DriverStation.isAutonomousEnabled()) {
       return true;
@@ -219,25 +229,10 @@ public class Robot extends TimedRobot {
 
     // We're teleop enabled, compute.
     double matchTime = teleopTimer.get();
-    String gameData = DriverStation.getGameSpecificMessage();
-    // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
-    if (gameData.isEmpty()) {
-      return true;
-    }
-    boolean redInactiveFirst = false;
-    switch (gameData.charAt(0)) {
-      case 'R' -> redInactiveFirst = true;
-      case 'B' -> redInactiveFirst = false;
-      default -> {
-        // If we have invalid game data, assume hub is active. Should add manual check.
-        return true;
-      }
-    }
-
-    // Shift was is active for blue if red won auto, or red if blue won auto.
-    boolean shift1Active = switch (alliance.get()) {
-      case Red -> !redInactiveFirst;
-      case Blue -> redInactiveFirst;
+  
+    boolean shift1Active = switch (alliance) {
+      case Red -> !m_robotContainer.redWonAuto;
+      case Blue -> m_robotContainer.redWonAuto;
       default -> false;
     };
 
@@ -359,7 +354,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    teleopTimer.start();
+    teleopTimer.restart();
   }
 
   /** This function is called periodically during operator control. */

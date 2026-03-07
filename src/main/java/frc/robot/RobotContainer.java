@@ -58,6 +58,8 @@ public class RobotContainer {
 
   public boolean shootingAtHub = false;
   public boolean passing = false;
+
+  public boolean redWonAuto = false;
   
   public static final Pose2d BLUE_HUB = new Pose2d(
     Distance.ofBaseUnits(4.629, Meters),
