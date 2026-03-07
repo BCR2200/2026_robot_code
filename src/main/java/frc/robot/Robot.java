@@ -58,6 +58,8 @@ public class Robot extends TimedRobot {
   @SuppressWarnings("unused")
   private double rotationError;
 
+  private Timer resetTimer = new Timer();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -116,6 +118,7 @@ public class Robot extends TimedRobot {
     addPeriodic(this::updateTargetHub, 0.5);
     addPeriodic(this::updateTargetPassingZone, 0.04);
     addPeriodic(this::displayTarget, 0.1);
+    addPeriodic(this::checkCounterReset, 1);
 
   }
 
@@ -125,6 +128,15 @@ public class Robot extends TimedRobot {
     return m_robotContainer.shooterSubsystemJohn.getBallCount() +
             m_robotContainer.shooterSubsystemJawbreaker.getBallCount() +
             m_robotContainer.shooterSubsystemTaylor.getBallCount();
+  }
+  public void checkCounterReset() {
+    if (this.resetTimer.hasElapsed(2)) {
+      this.m_robotContainer.shooterSubsystemJohn.counter.reset();
+      this.m_robotContainer.shooterSubsystemJawbreaker.counter.reset();
+      this.m_robotContainer.shooterSubsystemTaylor.counter.reset();
+      this.resetTimer.stop();
+      this.resetTimer.reset();
+    }
   }
 
   public void updateFieldPaths(AutoCommand auto) {
@@ -281,6 +293,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    this.resetTimer.start();
   }
 
   /**
@@ -322,9 +335,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {
-    this.m_robotContainer.shooterSubsystemJohn.counter.reset();
-    this.m_robotContainer.shooterSubsystemJawbreaker.counter.reset();
-    this.m_robotContainer.shooterSubsystemTaylor.counter.reset();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
