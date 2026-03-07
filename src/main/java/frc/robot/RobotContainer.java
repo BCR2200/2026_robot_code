@@ -408,9 +408,11 @@ public class RobotContainer {
       shooterSubsystemTaylor.setCanPreload(false);
     }));
 
+    // climb
     driverController.b().whileTrue(new ClimbCommand(this, true)); // right
     driverController.x().whileTrue(new ClimbCommand(this, false)); // left
 
+    // bring intake up
     driverController.a().onTrue(new InstantCommand(() -> {
       intakeSubsystem.setIsGoingUp(true);
     })).onFalse(new InstantCommand(() -> {
@@ -492,6 +494,7 @@ public class RobotContainer {
       forward = new Rotation2d(0);
     }
     drivetrain.setOperatorPerspectiveForward(forward);
+    drivetrain.seedFieldCentric();
   }
 
   /**
