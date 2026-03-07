@@ -29,11 +29,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.BlendAdamModeCmd;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.DetectFuelCmd;
 import frc.robot.commands.ShootAt;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.auto.LeftBumpBack;
+import frc.robot.commands.auto.LeftBumpToRight;
 import frc.robot.commands.auto.LongLeftBumpBack;
 import frc.robot.commands.auto.RightBumpBack;
 import frc.robot.commands.auto.RightOutpost;
@@ -60,7 +62,7 @@ public class RobotContainer {
   public boolean passing = false;
 
   public boolean redWonAuto = false;
-  
+
   public static final Pose2d BLUE_HUB = new Pose2d(
     Distance.ofBaseUnits(4.629, Meters),
     Distance.ofBaseUnits(4.03479, Meters),
@@ -255,7 +257,7 @@ public class RobotContainer {
   @NotLogged
   public final CommandXboxController driverController =
           new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  
+
   @NotLogged
   public final CommandXboxController coDriverController =
           new CommandXboxController(OperatorConstants.kCoDriverControllerPort);
@@ -293,6 +295,7 @@ public class RobotContainer {
     autoChooser.addOption("RightBumpBack", new RightBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LeftBumpBack", new LeftBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LongLeftBumpBack", new LongLeftBumpBack(this, drivetrain, driveRC));
+    autoChooser.addOption("LeftBumpToRight", new LeftBumpToRight(this, drivetrain, driveRC));
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
@@ -399,6 +402,9 @@ public class RobotContainer {
     .whileFalse(new InstantCommand(() -> {
       intakeSubsystem.setIsIntaking(false);
     }));
+    driverController.rightBumper().whileTrue(new BlendAdamModeCmd(this));
+    // m_driverController.rightTrigger().onTrue(new SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
+    //                                  .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn, m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement shoot-to-goal
     driverController.rightTrigger().whileTrue(new ShootAt(this));
 
     // Preload
@@ -446,7 +452,7 @@ public class RobotContainer {
     }));
 
     driverController.start().whileTrue(new InstantCommand(() -> {})); // Used in disabled for syncing autos
-    driverController.back().whileTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective())); 
+    driverController.back().whileTrue(new InstantCommand(() -> updateDrivetrainRobotPerspective()));
   }
 
   private void configureDrivetrainBindings() {

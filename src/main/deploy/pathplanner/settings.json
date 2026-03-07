@@ -1,12 +1,13 @@
 {
-  "robotWidth": 0.9,
-  "robotLength": 0.9,
+  "robotWidth": 0.838,
+  "robotLength": 0.838,
   "holonomicMode": true,
   "pathFolders": [
     "AutoIdeas",
     "BlendModePaths",
     "LeftBumpBack",
     "LongLeftBumpBack",
+    "LeftBump-Right",
     "RightBumpBack",
     "RightOutpost"
   ],

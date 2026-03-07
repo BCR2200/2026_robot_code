@@ -14,12 +14,12 @@ import frc.robot.commands.ShootAt;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class LongLeftBumpBack extends AutoCommand {
+public class LeftBumpToRight extends AutoCommand {
 
     private PathPlannerPath path;
     
-    public LongLeftBumpBack(RobotContainer robot, CommandSwerveDrivetrain drivetrain, SwerveRequest.RobotCentric swerve) {
-        path = AutoBuildingBlocks.loadPathOrThrow("LongLeftBumpBack.1");
+    public LeftBumpToRight(RobotContainer robot, CommandSwerveDrivetrain drivetrain, SwerveRequest.RobotCentric swerve) {
+        path = AutoBuildingBlocks.loadPathOrThrow("LeftBumpToRight.1");
 
         addCommands(
             new WaitCommand(0.01),
