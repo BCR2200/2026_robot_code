@@ -229,7 +229,7 @@ public class ShooterSubsystem extends SubsystemBase {
         else if (isShooting) {
             setActuatorPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.compensatedTargetHub));
         }
-        else if (!rc.isInNeutralZone()) {
+        else if (!rc.isOutsideAllianceZone()) {
             setActuatorPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.targetHub));
         }
 

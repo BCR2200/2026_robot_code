@@ -31,7 +31,7 @@ public class ShootAt extends Command {
   @Override
   public void execute() {
 
-    if (rc.isInNeutralZone()) { // Neutral zone
+    if (rc.isOutsideAllianceZone()) { // Neutral zone
       rc.passing = true;
       rc.shootingAtHub = false;
       double distance = rc.drivetrain.getState().Pose.getX();

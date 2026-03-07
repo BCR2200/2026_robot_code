@@ -347,12 +347,18 @@ public class RobotContainer {
 
 
   /**
-   * Checks if the robot is in the neutral zone, which is between 4.625 and 11.916 meters from the starting wall.
-   * @return true if the robot is in the neutral zone, false otherwise
+   * Checks if the robot is outside its alliance zone, which is past 4.625 (on
+   * blue) and before 11.916 meters (on red) from the starting wall.
+   * @return true if the robot is outside its alliance zone, false otherwise
    */
-  public boolean isInNeutralZone() {
+  public boolean isOutsideAllianceZone() {
     double distance = drivetrain.getState().Pose.getX();
-    return distance > 4.625 && distance < 11.916;
+    // l = 4.625 r = 11.916
+    if (Robot.alliance == Alliance.Red) {
+      return distance < 11.916;
+    } else {
+      return distance > 4.625;
+    }
   }
 
   /**
