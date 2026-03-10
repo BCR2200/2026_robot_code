@@ -225,7 +225,12 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         if (this.isDisabled) { 
             this.shootPIDMotor.setPercentOutput(0);
-            this.feedPIDMotor.setPercentOutput(-0.2); // Run feeder backwards to eject any balls if disabled
+            if (isShooting) {
+                feedPIDMotor.setPercentOutput(-0.6);
+            }
+            else {
+                feedPIDMotor.setPercentOutput(0);
+            }
             return;
         }
 

@@ -1,10 +1,9 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ExtraMath;
@@ -30,6 +29,7 @@ public class BlendAdamModeCmd extends Command {
     private double wallRightLine = 0.319;
 
     public BlendAdamModeCmd(RobotContainer robot) {
+        addRequirements(robot.drivetrain);
         this.drivetrain = robot.drivetrain;
         this.robot = robot;
     }
@@ -54,23 +54,15 @@ public class BlendAdamModeCmd extends Command {
         var x = currentPose2d.getX();
         var y = currentPose2d.getY();
 
-        double epsilon = 0.1; // TODO: find good value for this
+        double epsilon = 0.1;
 
         // Red/blue lines are parallel to Y, compare to X
         // Side lines are parallel to X, compare to Y
-
         // wallSomethingLine is from blue's perspective
-
         boolean onRedHubLine = ExtraMath.within(x, redHUBLine, epsilon);
         boolean onBlueHubLine = ExtraMath.within(x, blueHUBLine, epsilon);
         boolean onWallLFromBlueLine = ExtraMath.within(y, wallLeftLine, epsilon);
         boolean onWallRFromBlueLine = ExtraMath.within(y, wallRightLine, epsilon);
-
-        ChassisSpeeds fieldSpeeds = 
-            ChassisSpeeds.fromRobotRelativeSpeeds(drivetrain.getState().Speeds, drivetrain.getState().Pose.getRotation());
-
-        double robotVelocityX = fieldSpeeds.vxMetersPerSecond;
-        double robotVelocityY = fieldSpeeds.vyMetersPerSecond;
 
         if ((onRedHubLine || onBlueHubLine) && (onWallLFromBlueLine || onWallRFromBlueLine)) {
 
@@ -78,23 +70,19 @@ public class BlendAdamModeCmd extends Command {
             drivetrain.setControl(robot.driveFC
                     .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed)
                     .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)
-                    .withRotationalRate(-RobotContainer.driverRot * RobotContainer.MaxAngularRate));
+                    .withRotationalRate(-RobotContainer.driverRot * RobotContainer.MaxAngularRate)
+                    .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective));
             SmartDashboard.putString("BlendState", "On Corner");
 
         } else if (onBlueHubLine || onRedHubLine) {
 
             // on a hub line (parallel to Y)
-            if (robotVelocityY > 0) {
-                robot.drivetrain.setControl(robot.driveFCFA
-                        .withTargetDirection(Rotation2d.fromDegrees(90))
-                        .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)
-                );
-            } else {
-                robot.drivetrain.setControl(robot.driveFCFA
-                        .withTargetDirection(Rotation2d.fromDegrees(-90))
-                        .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)
-                );
-            }
+            robot.drivetrain.setControl(robot.driveFC
+                    .withVelocityX(0)
+                    .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)
+                    .withRotationalRate(-RobotContainer.driverRot * RobotContainer.MaxAngularRate)
+                    .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
+            );
 
             if (onRedHubLine) {
                 SmartDashboard.putString("BlendState", "On Red Hub Line");
@@ -105,18 +93,12 @@ public class BlendAdamModeCmd extends Command {
         } else if (onWallLFromBlueLine || onWallRFromBlueLine) {
         
             // on a left/right wall line (parallel to X)
-            // TODO Is > and angle correct?
-            if (robotVelocityX > 0) {
-                robot.drivetrain.setControl(robot.driveFCFA
-                        .withTargetDirection(Rotation2d.fromDegrees(0))
-                        .withVelocityX(-RobotContainer.driverX * RobotContainer.MaxSpeed)
-                );
-            } else {
-                robot.drivetrain.setControl(robot.driveFCFA
-                        .withTargetDirection(Rotation2d.fromDegrees(180))
-                        .withVelocityX(-RobotContainer.driverX * RobotContainer.MaxSpeed)
-                );
-            }
+            robot.drivetrain.setControl(robot.driveFC
+                    .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed)
+                    .withVelocityY(0)
+                    .withRotationalRate(-RobotContainer.driverRot * RobotContainer.MaxAngularRate)
+                    .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
+            );
 
             if (onWallRFromBlueLine) {
                 SmartDashboard.putString("BlendState", "On Right From Blue Line");
@@ -132,6 +114,7 @@ public class BlendAdamModeCmd extends Command {
                     .withVelocityX(-RobotContainer.driverY * RobotContainer.MaxSpeed)
                     .withVelocityY(-RobotContainer.driverX * RobotContainer.MaxSpeed)
                     .withRotationalRate(-RobotContainer.driverRot * RobotContainer.MaxAngularRate)
+                    .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
             );
 
         }

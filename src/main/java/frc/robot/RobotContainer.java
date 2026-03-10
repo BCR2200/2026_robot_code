@@ -396,17 +396,16 @@ public class RobotContainer {
     // Start button is 3 horizontal lines
     // POV is the D-pad
 
-    // outtake
-    driverController.leftBumper().whileTrue(new InstantCommand(() -> {
-      intakeSubsystem.setIsOuttaking(true);
-      floorFeedSubsystem.setIsOuttaking(true);
-      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
-    })).whileFalse(new InstantCommand(() -> {
-      intakeSubsystem.setIsOuttaking(false);
-      floorFeedSubsystem.setIsOuttaking(false);
-    }));
-
-    // intake
+    // Blend and intake
+    driverController.leftBumper().whileTrue(new BlendAdamModeCmd(this))
+      .whileTrue(new InstantCommand(() -> {
+          intakeSubsystem.setIsIntaking(true);
+          intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
+        }))
+        .whileFalse(new InstantCommand(() -> {
+          intakeSubsystem.setIsIntaking(false);
+        }));
+    // Intake
     driverController.leftTrigger()
         .whileTrue(new InstantCommand(() -> {
           intakeSubsystem.setIsIntaking(true);
@@ -415,13 +414,16 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(() -> {
           intakeSubsystem.setIsIntaking(false);
         }));
-    driverController.rightBumper().whileTrue(new BlendAdamModeCmd(this));
-    // m_driverController.rightTrigger().onTrue(new
-    // SnapTowardsGoalCmd(drivetrain).andThen(JustShootCmd.getStartCommand(m_shooterSubsystemJohn,
-    // m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)))
-    // .onFalse(JustShootCmd.getStopCommand(m_shooterSubsystemJohn,
-    // m_shooterSubsystemJawbreaker, m_shooterSubsystemTaylor)); // TODO: implement
-    // shoot-to-goal
+    
+    // Outtake
+    driverController.rightBumper().whileTrue(new InstantCommand(() -> {
+      intakeSubsystem.setIsOuttaking(true);
+      floorFeedSubsystem.setIsOuttaking(true);
+      intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltMaxExtensionPos);
+    })).whileFalse(new InstantCommand(() -> {
+      intakeSubsystem.setIsOuttaking(false);
+      floorFeedSubsystem.setIsOuttaking(false);
+    }));
     driverController.rightTrigger().whileTrue(new ShootAt(this));
 
     // Preload
