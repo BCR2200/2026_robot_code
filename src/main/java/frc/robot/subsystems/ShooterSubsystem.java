@@ -225,7 +225,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         if (this.isDisabled) { 
             this.shootPIDMotor.setPercentOutput(0);
-            this.feedPIDMotor.setPercentOutput(0);
+            this.feedPIDMotor.setPercentOutput(-0.2); // Run feeder backwards to eject any balls if disabled
             return;
         }
 
@@ -242,19 +242,29 @@ public class ShooterSubsystem extends SubsystemBase {
             feedPIDMotor.setPercentOutput(0);
         }
 
+        // Fixed shots
         if (rc.fixedPassingShot) {
             setShooterSpeedViaInterpolatedValue(8.5);
             setActuatorPositionViaInterpolatedValue(8.5);
+            if (isShooting) {
+                shootPIDMotor.setVelocityTarget(shooterSpeed);
+            }
             return;
         }
         else if (rc.fixedShotFromHub) {
             setShooterSpeedViaInterpolatedValue(1);
             setActuatorPositionViaInterpolatedValue(1);
+            if (isShooting) {
+                shootPIDMotor.setVelocityTarget(shooterSpeed);
+            }
             return;
         }
         else if (rc.fixedShotFromClimber) {
             setShooterSpeedViaInterpolatedValue(3.5);
             setActuatorPositionViaInterpolatedValue(3.5);
+            if (isShooting) {
+                shootPIDMotor.setVelocityTarget(shooterSpeed);
+            }
             return;
         }
 
