@@ -13,8 +13,8 @@ public class LinearActuator {
         this.servo = new Servo(channel);
         this.servo2 = new Servo(channel + 3); // adam mode
         // The example has setBounds(), which takes milliseconds, but this function uses microseconds, so we've converted the values
-        servo.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
-        servo2.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
+        servo.setBoundsMicroseconds(2000, 1550, 1500, 1450, 1000);
+        servo2.setBoundsMicroseconds(2000, 1550, 1500, 1450, 1000);
     }
 
     /**

@@ -138,7 +138,7 @@ public class RobotContainer {
   // Thank you! A.T.S.T Also give us an angled floor.
 
   @NotLogged
-  public final static double speedFactor = 0.7;
+  public final static double speedFactor = 1;
 
   @NotLogged
   public final static double MaxSpeed = TunerConstantsComp.kSpeedAt12Volts.in(MetersPerSecond) * speedFactor;
