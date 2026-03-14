@@ -5,78 +5,13 @@
     {
       "name": "Shooters",
       "grid_layout": {
-        "layouts": [
-          {
-            "title": "m_robotContainer",
-            "x": 1664.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "fuelTracking",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "Telemetry/m_robotContainer/fuelTracking",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "passing",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "Telemetry/m_robotContainer/passing",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "shootingAtHub",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "Telemetry/m_robotContainer/shootingAtHub",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              }
-            ]
-          }
-        ],
+        "layouts": [],
         "containers": [
           {
             "title": "needsToRun",
-            "x": 1536.0,
-            "y": 256.0,
-            "width": 128.0,
+            "x": 1664.0,
+            "y": 0.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -104,7 +39,7 @@
             }
           },
           {
-            "title": "BeamBroken",
+            "title": "J. beam broken",
             "x": 1280.0,
             "y": 384.0,
             "width": 128.0,
@@ -121,7 +56,7 @@
             }
           },
           {
-            "title": "BeamBroken",
+            "title": "Jaw. beam broken",
             "x": 1408.0,
             "y": 384.0,
             "width": 128.0,
@@ -138,7 +73,7 @@
             }
           },
           {
-            "title": "BeamBroken",
+            "title": "T. beam broken",
             "x": 1536.0,
             "y": 384.0,
             "width": 128.0,
@@ -156,9 +91,9 @@
           },
           {
             "title": "John shooter velocity",
-            "x": 1792.0,
-            "y": 256.0,
-            "width": 128.0,
+            "x": 1664.0,
+            "y": 128.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -172,7 +107,7 @@
             "title": "shooterSpeed",
             "x": 1664.0,
             "y": 256.0,
-            "width": 128.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -194,23 +129,6 @@
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
-            }
-          },
-          {
-            "title": "isJiggling",
-            "x": 1408.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/isJiggling",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
             }
           },
           {
@@ -359,6 +277,73 @@
               "topic": "Telemetry/m_robotContainer/John/Ball count",
               "period": 0.06,
               "data_type": "int"
+            }
+          },
+          {
+            "title": "John disabled",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/John/getIsDisabled",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Jawbreaker disabled",
+            "x": 1408.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/Jawbreaker/getIsDisabled",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Taylor disabled",
+            "x": 1536.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/Taylor/getIsDisabled",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Floor Feed current",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed current",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           }
         ]
@@ -935,7 +920,7 @@
           },
           {
             "title": "getActuatorPosition",
-            "x": 128.0,
+            "x": 640.0,
             "y": 512.0,
             "width": 256.0,
             "height": 128.0,
@@ -958,15 +943,17 @@
           {
             "title": "Floor Feed current",
             "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "y": 512.0,
+            "width": 1024.0,
+            "height": 256.0,
+            "type": "Graph",
             "properties": {
               "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed current",
-              "period": 0.06,
+              "period": 0.033,
               "data_type": "double",
-              "show_submit_button": false
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           },
           {
@@ -1212,6 +1199,20 @@
               "true_icon": "None",
               "false_icon": "None"
             }
+          },
+          {
+            "title": "Floor Feed current",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed current",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
           }
         ]
       }
@@ -1404,7 +1405,7 @@
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4294901760,
-              "false_color": 4279173375,
+              "false_color": 4281674718,
               "true_icon": "None",
               "false_icon": "None"
             }
@@ -1422,20 +1423,8 @@
             }
           },
           {
-            "title": "PathPlanner",
-            "x": 1280.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Alerts",
-            "properties": {
-              "topic": "/SmartDashboard/PathPlanner",
-              "period": 0.06
-            }
-          },
-          {
             "title": "Auto Step",
-            "x": 1536.0,
+            "x": 1280.0,
             "y": 512.0,
             "width": 256.0,
             "height": 128.0,
@@ -1448,9 +1437,9 @@
             }
           },
           {
-            "title": "isHubActive",
+            "title": "Hub active?",
             "x": 1536.0,
-            "y": 640.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -1465,9 +1454,9 @@
             }
           },
           {
-            "title": "forceActiveHub",
+            "title": "Hub forced active?",
             "x": 1664.0,
-            "y": 640.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -1479,6 +1468,20 @@
               "false_color": 4294198070,
               "true_icon": "None",
               "false_icon": "None"
+            }
+          },
+          {
+            "title": "BlendState",
+            "x": 1280.0,
+            "y": 640.0,
+            "width": 512.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/BlendState",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
             }
           }
         ]
@@ -2197,6 +2200,42 @@
               "wrap_value": false,
               "show_pointer": true,
               "show_ticks": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Test Tab",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "BlendState",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/BlendState",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "robotPose",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 256.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Pose/robotPose",
+              "period": 0.06,
+              "data_type": "double[]",
+              "show_submit_button": false
             }
           }
         ]
