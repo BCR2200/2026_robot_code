@@ -181,9 +181,9 @@ public class RobotContainer {
   @NotLogged
   private static final int climbInitialCurrentLimit = 5;
   @NotLogged
-  private static final int floorStatorCurrentLimit = 110;
+  private static final int floorStatorCurrentLimit = 80;
   @NotLogged
-  private static final int floorSupplyCurrentLimit = 75;
+  private static final int floorSupplyCurrentLimit = 50;
   @NotLogged
   private static final int intakeCurrentLimit = 80;
   @NotLogged
@@ -191,7 +191,7 @@ public class RobotContainer {
   @NotLogged
   private static final int shooterCurrentLimit = 60;
   @NotLogged
-  private static final int feederCurrentLimit = 30;
+  private static final int feederCurrentLimit = 40;
 
   public static double driverX = 0;
   public static double driverY = 0;
