@@ -51,4 +51,7 @@ public final class Constants {
   // pigeon ID
   public static final int PIGEON = 23;
 
+  // Servo Hub CAN ID (used on comp bot)
+  public static final int SERVO_HUB_CAN_ID = 24;
+
 }
