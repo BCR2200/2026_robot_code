@@ -4,6 +4,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ExtraMath;
@@ -25,11 +26,12 @@ public class BlendHugoCmd extends Command {
     private static final double FIELD_LENGTH = 16.54; // X axis
     private static final double FIELD_WIDTH = 8.05;   // Y axis
 
-    // Wall positions
-    private static final double LEFT_WALL_Y = 0.0;
-    private static final double RIGHT_WALL_Y = FIELD_WIDTH;
-    private static final double NEAR_WALL_X = 0.0;
-    private static final double FAR_WALL_X = FIELD_LENGTH;
+    // Wall positions in blue field coordinates
+    // In WPILib blue alliance coords: +X is away from blue driver station, +Y is to the left
+    private static final double MIN_Y_WALL = 0.0;         // Right wall from blue operator's view
+    private static final double MAX_Y_WALL = FIELD_WIDTH; // Left wall from blue operator's view
+    private static final double MIN_X_WALL = 0.0;         // Blue alliance wall
+    private static final double MAX_X_WALL = FIELD_LENGTH; // Red alliance wall
 
     // Target distance from wall (robot center to wall)
     private static final double WALL_OFFSET = 0.5; // meters
@@ -41,10 +43,10 @@ public class BlendHugoCmd extends Command {
     private static final double MAX_CORRECTION_VELOCITY = 3.0;
 
     private enum NearestWall {
-        LEFT,   // Y = 0
-        RIGHT,  // Y = FIELD_WIDTH
-        NEAR,   // X = 0
-        FAR     // X = FIELD_LENGTH
+        MIN_Y,  // Y = 0 (right wall from blue's view)
+        MAX_Y,  // Y = FIELD_WIDTH (left wall from blue's view)
+        MIN_X,  // X = 0 (blue alliance wall)
+        MAX_X   // X = FIELD_LENGTH (red alliance wall)
     }
 
     public BlendHugoCmd(RobotContainer robot) {
@@ -62,86 +64,104 @@ public class BlendHugoCmd extends Command {
         double x = currentPose.getX();
         double y = currentPose.getY();
 
-        // Calculate perpendicular distance to each wall
-        double distToLeftWall = y - LEFT_WALL_Y;
-        double distToRightWall = RIGHT_WALL_Y - y;
-        double distToNearWall = x - NEAR_WALL_X;
-        double distToFarWall = FAR_WALL_X - x;
+        // Calculate perpendicular distance to each wall (all in blue field coordinates)
+        double distToMinY = y - MIN_Y_WALL;
+        double distToMaxY = MAX_Y_WALL - y;
+        double distToMinX = x - MIN_X_WALL;
+        double distToMaxX = MAX_X_WALL - x;
 
         // Find the nearest wall
-        double minDist = Math.min(Math.min(distToLeftWall, distToRightWall),
-                                   Math.min(distToNearWall, distToFarWall));
+        double minDist = Math.min(Math.min(distToMinY, distToMaxY),
+                                   Math.min(distToMinX, distToMaxX));
 
         NearestWall nearestWall;
-        if (minDist == distToLeftWall) {
-            nearestWall = NearestWall.LEFT;
-        } else if (minDist == distToRightWall) {
-            nearestWall = NearestWall.RIGHT;
-        } else if (minDist == distToNearWall) {
-            nearestWall = NearestWall.NEAR;
+        if (minDist == distToMinY) {
+            nearestWall = NearestWall.MIN_Y;
+        } else if (minDist == distToMaxY) {
+            nearestWall = NearestWall.MAX_Y;
+        } else if (minDist == distToMinX) {
+            nearestWall = NearestWall.MIN_X;
         } else {
-            nearestWall = NearestWall.FAR;
+            nearestWall = NearestWall.MAX_X;
         }
 
         SmartDashboard.putString("WallHug/NearestWall", nearestWall.toString());
         SmartDashboard.putNumber("WallHug/DistanceToWall", minDist);
 
-        // Calculate target position and error based on nearest wall
-        double velocityX;
-        double velocityY;
+        // Calculate P loop correction in FIELD coordinates (blue alliance reference frame)
+        // These will be transformed to operator perspective before applying
+        double correctionFieldX = 0;
+        double correctionFieldY = 0;
+
+        // Driver input components (already in operator perspective)
+        double driverVelX = -RobotContainer.driverY * RobotContainer.MaxSpeed;
+        double driverVelY = -RobotContainer.driverX * RobotContainer.MaxSpeed;
 
         switch (nearestWall) {
-            case LEFT:
-                // Target Y = WALL_OFFSET (just inside left wall)
-                // Error is positive when robot needs to move towards lower Y
-                double errorLeft = y - WALL_OFFSET;
-                double correctionLeft = -kP * errorLeft; // Negative because we want to decrease Y
-                correctionLeft = ExtraMath.clamp(correctionLeft, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
-
-                // Driver controls X, P loop controls Y
-                velocityX = -RobotContainer.driverY * RobotContainer.MaxSpeed;
-                velocityY = correctionLeft;
-                SmartDashboard.putNumber("WallHug/Error", errorLeft);
+            case MIN_Y:
+                // Target Y = WALL_OFFSET (just inside the Y=0 wall)
+                double errorMinY = y - WALL_OFFSET;
+                correctionFieldY = -kP * errorMinY; // Negative to decrease Y towards the wall
+                correctionFieldY = ExtraMath.clamp(correctionFieldY, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
+                SmartDashboard.putNumber("WallHug/Error", errorMinY);
                 break;
 
-            case RIGHT:
-                // Target Y = FIELD_WIDTH - WALL_OFFSET (just inside right wall)
-                double errorRight = (FIELD_WIDTH - WALL_OFFSET) - y;
-                double correctionRight = kP * errorRight; // Positive because we want to increase Y
-                correctionRight = ExtraMath.clamp(correctionRight, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
-
-                // Driver controls X, P loop controls Y
-                velocityX = -RobotContainer.driverY * RobotContainer.MaxSpeed;
-                velocityY = correctionRight;
-                SmartDashboard.putNumber("WallHug/Error", errorRight);
+            case MAX_Y:
+                // Target Y = FIELD_WIDTH - WALL_OFFSET (just inside the Y=8.05 wall)
+                double errorMaxY = (FIELD_WIDTH - WALL_OFFSET) - y;
+                correctionFieldY = kP * errorMaxY; // Positive to increase Y towards the wall
+                correctionFieldY = ExtraMath.clamp(correctionFieldY, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
+                SmartDashboard.putNumber("WallHug/Error", errorMaxY);
                 break;
 
-            case NEAR:
-                // Target X = WALL_OFFSET (just inside near wall)
-                double errorNear = x - WALL_OFFSET;
-                double correctionNear = -kP * errorNear; // Negative because we want to decrease X
-                correctionNear = ExtraMath.clamp(correctionNear, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
-
-                // P loop controls X, driver controls Y
-                velocityX = correctionNear;
-                velocityY = -RobotContainer.driverX * RobotContainer.MaxSpeed;
-                SmartDashboard.putNumber("WallHug/Error", errorNear);
+            case MIN_X:
+                // Target X = WALL_OFFSET (just inside the X=0 wall)
+                double errorMinX = x - WALL_OFFSET;
+                correctionFieldX = -kP * errorMinX; // Negative to decrease X towards the wall
+                correctionFieldX = ExtraMath.clamp(correctionFieldX, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
+                SmartDashboard.putNumber("WallHug/Error", errorMinX);
                 break;
 
-            case FAR:
+            case MAX_X:
             default:
-                // Target X = FIELD_LENGTH - WALL_OFFSET (just inside far wall)
-                double errorFar = (FIELD_LENGTH - WALL_OFFSET) - x;
-                double correctionFar = kP * errorFar; // Positive because we want to increase X
-                correctionFar = ExtraMath.clamp(correctionFar, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
-
-                // P loop controls X, driver controls Y
-                velocityX = correctionFar;
-                velocityY = -RobotContainer.driverX * RobotContainer.MaxSpeed;
-                SmartDashboard.putNumber("WallHug/Error", errorFar);
+                // Target X = FIELD_LENGTH - WALL_OFFSET (just inside the X=16.54 wall)
+                double errorMaxX = (FIELD_LENGTH - WALL_OFFSET) - x;
+                correctionFieldX = kP * errorMaxX; // Positive to increase X towards the wall
+                correctionFieldX = ExtraMath.clamp(correctionFieldX, -MAX_CORRECTION_VELOCITY, MAX_CORRECTION_VELOCITY);
+                SmartDashboard.putNumber("WallHug/Error", errorMaxX);
                 break;
         }
 
+        // Transform field-coordinate correction to operator perspective
+        // OperatorPerspective rotates velocities by the operator angle, so we need to
+        // pre-rotate our field corrections to cancel this out and get actual field motion
+        Rotation2d operatorAngle = robot.drivetrain.getOperatorForwardDirection();
+        double cos = operatorAngle.getCos();
+        double sin = operatorAngle.getSin();
+
+        // Rotate correction from field coords to operator coords
+        // (inverse rotation: multiply by transpose of rotation matrix)
+        double correctionOperX = correctionFieldX * cos + correctionFieldY * sin;
+        double correctionOperY = -correctionFieldX * sin + correctionFieldY * cos;
+
+        // Combine driver input (already in operator space) with transformed correction
+        // For Y-wall (MIN_Y/MAX_Y): driver controls X (along wall), P loop controls Y
+        // For X-wall (MIN_X/MAX_X): driver controls Y (along wall), P loop controls X
+        double velocityX;
+        double velocityY;
+
+        if (nearestWall == NearestWall.MIN_Y || nearestWall == NearestWall.MAX_Y) {
+            // Hugging a Y-axis wall: driver controls movement along wall (X), P loop controls perpendicular (Y)
+            velocityX = driverVelX;
+            velocityY = correctionOperY;
+        } else {
+            // Hugging an X-axis wall: driver controls movement along wall (Y), P loop controls perpendicular (X)
+            velocityX = correctionOperX;
+            velocityY = driverVelY;
+        }
+
+        SmartDashboard.putNumber("WallHug/CorrectionFieldX", correctionFieldX);
+        SmartDashboard.putNumber("WallHug/CorrectionFieldY", correctionFieldY);
         SmartDashboard.putNumber("WallHug/VelocityX", velocityX);
         SmartDashboard.putNumber("WallHug/VelocityY", velocityY);
 
