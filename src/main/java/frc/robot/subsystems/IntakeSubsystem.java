@@ -166,7 +166,7 @@ public class IntakeSubsystem extends SubsystemBase {
         isJiggling = false; // TODO: FOR NOW MUST NOT JIGGLE
 
         if (isGoingUp) {
-            tiltPos += 1.0;
+            tiltPos += 2.0;
             setTiltPosition(tiltPos);
         }
 
