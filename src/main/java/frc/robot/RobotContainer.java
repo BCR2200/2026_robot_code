@@ -139,8 +139,13 @@ public class RobotContainer {
   // Dont use too much RaM, it is expensive and we are poor
   // Thank you! A.T.S.T Also give us an angled floor.
 
+  public boolean reducedSpeed = false;
+
   @NotLogged
-  public final static double speedFactor = 1;
+  public final static double reducedSpeedFactor = 0.5; // 50% speed
+
+  @NotLogged
+  public final static double speedFactor = 1; // 100% speed
 
   @NotLogged
   public final static double MaxSpeed = TunerConstantsComp.kSpeedAt12Volts.in(MetersPerSecond) * speedFactor;
@@ -203,6 +208,10 @@ public class RobotContainer {
     driverX = driverController.getLeftX();
     driverY = driverController.getLeftY();
     driverRot = driverController.getRightX();
+    if (reducedSpeed) {
+      driverX *= reducedSpeedFactor;
+      driverY *= reducedSpeedFactor;
+    }
   }
 
   private static final Interpolator HOOD_INTERPOLATOR = new Interpolator(
@@ -453,8 +462,11 @@ public class RobotContainer {
       intakeSubsystem.setIsGoingUp(false);
     }));
 
-    driverController.y().onTrue(new InstantCommand(() -> {
-      // TODO: Set driver speed to optimal for intaking?
+    // Anti-boost mode, reduces the values of the sticks by reducedSpeedFactor
+    driverController.povLeft().onTrue(new InstantCommand(() -> {
+      reducedSpeed = true;
+    })).onFalse(new InstantCommand(() -> {
+      reducedSpeed = false;
     }));
 
     // Drive to the outpost to pickup fuel from human
