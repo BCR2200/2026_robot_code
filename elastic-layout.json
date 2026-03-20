@@ -3,7 +3,7 @@
   "grid_size": 128,
   "tabs": [
     {
-      "name": "Shooters",
+      "name": "Comp",
       "grid_layout": {
         "layouts": [],
         "containers": [
@@ -22,20 +22,6 @@
               "false_color": 4294198070,
               "true_icon": "None",
               "false_icon": "None"
-            }
-          },
-          {
-            "title": "getActuatorPosition",
-            "x": 1664.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/getActuatorPosition",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
             }
           },
           {
@@ -90,20 +76,6 @@
             }
           },
           {
-            "title": "John shooter velocity",
-            "x": 1664.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/ShootMotor/John shooter velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "shooterSpeed",
             "x": 1664.0,
             "y": 256.0,
@@ -120,7 +92,7 @@
           {
             "title": "Distance to Target",
             "x": 1664.0,
-            "y": 512.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -135,7 +107,7 @@
             "title": "John feeder current",
             "x": 0.0,
             "y": 0.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -151,7 +123,7 @@
             "title": "John shooter current",
             "x": 0.0,
             "y": 256.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -165,9 +137,9 @@
           },
           {
             "title": "Jawbreaker feeder current",
-            "x": 384.0,
+            "x": 256.0,
             "y": 0.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -181,9 +153,9 @@
           },
           {
             "title": "Jawbreaker shooter current",
-            "x": 384.0,
+            "x": 256.0,
             "y": 256.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -197,9 +169,9 @@
           },
           {
             "title": "Taylor feeder current",
-            "x": 768.0,
+            "x": 512.0,
             "y": 0.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -213,9 +185,9 @@
           },
           {
             "title": "Taylor shooter current",
-            "x": 768.0,
+            "x": 512.0,
             "y": 256.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -229,8 +201,8 @@
           },
           {
             "title": "Total ball count",
-            "x": 1408.0,
-            "y": 640.0,
+            "x": 1280.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Large Text Display",
@@ -334,7 +306,7 @@
             "title": "Floor Feed current",
             "x": 0.0,
             "y": 512.0,
-            "width": 384.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "Graph",
             "properties": {
@@ -344,874 +316,93 @@
               "time_displayed": 5.0,
               "color": 4278238420,
               "line_width": 2.0
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Shooter PID Page",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "Jawbreaker shooter P",
-            "x": 1024.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter P",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter Velocity",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 384.0,
-            "height": 256.0,
-            "type": "Graph",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter Velocity",
-              "period": 0.033,
-              "data_type": "double",
-              "time_displayed": 5.0,
-              "color": 4278238420,
-              "line_width": 2.0
-            }
-          },
-          {
-            "title": "Jawbreaker shooter MaxJ",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter MaxJ",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter MaxV",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter MaxV",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter MaxA",
-            "x": 1280.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter MaxA",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter A",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter A",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter D",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter D",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter I",
-            "x": 1280.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter I",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter S",
-            "x": 1024.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter S",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter V",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter V",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Jawbreaker shooter V",
-            "x": 768.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Jawbreaker shooter V",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Tilt PID Page",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "Target",
-            "x": 1408.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/Target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Position",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/Position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Current",
-            "x": 1152.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/Current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Velocity",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/Velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Shooter Motor Values",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "Jawbreaker feeder current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/FeedMotor/Jawbreaker feeder current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker feeder position",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/FeedMotor/Jawbreaker feeder position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker feeder target",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/FeedMotor/Jawbreaker feeder target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker feeder velocity",
-            "x": 0.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/FeedMotor/Jawbreaker feeder velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker shooter current",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/ShootMotor/Jawbreaker shooter current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker shooter position",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/ShootMotor/Jawbreaker shooter position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker shooter target",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/ShootMotor/Jawbreaker shooter target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Jawbreaker shooter velocity",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/ShootMotor/Jawbreaker shooter velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John feeder current",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/FeedMotor/John feeder current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John feeder position",
-            "x": 512.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/FeedMotor/John feeder position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John feeder target",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/FeedMotor/John feeder target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John feeder velocity",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/FeedMotor/John feeder velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John shooter current",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/ShootMotor/John shooter current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John shooter position",
-            "x": 768.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/ShootMotor/John shooter position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John shooter target",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/ShootMotor/John shooter target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "John shooter velocity",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/John/ShootMotor/John shooter velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor feeder current",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/FeedMotor/Taylor feeder current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor feeder position",
-            "x": 1024.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/FeedMotor/Taylor feeder position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor feeder target",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/FeedMotor/Taylor feeder target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor feeder velocity",
-            "x": 1024.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/FeedMotor/Taylor feeder velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor shooter current",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/ShootMotor/Taylor shooter current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor shooter position",
-            "x": 1280.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/ShootMotor/Taylor shooter position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor shooter target",
-            "x": 1280.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/ShootMotor/Taylor shooter target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Taylor shooter velocity",
-            "x": 1280.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Taylor/ShootMotor/Taylor shooter velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "getActuatorPosition",
-            "x": 640.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Jawbreaker/getActuatorPosition",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Other Motor Values",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
-          {
-            "title": "Floor Feed current",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 1024.0,
-            "height": 256.0,
-            "type": "Graph",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed current",
-              "period": 0.033,
-              "data_type": "double",
-              "time_displayed": 5.0,
-              "color": 4278238420,
-              "line_width": 2.0
-            }
-          },
-          {
-            "title": "Floor Feed position",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Floor Feed target",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Floor Feed velocity",
-            "x": 0.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
             }
           },
           {
             "title": "intake current",
             "x": 256.0,
-            "y": 0.0,
+            "y": 512.0,
             "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "height": 256.0,
+            "type": "Graph",
             "properties": {
               "topic": "Telemetry/m_robotContainer/Intake/IntakeMotor/intake current",
-              "period": 0.06,
+              "period": 0.033,
               "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "intake position",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/IntakeMotor/intake position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "intake target",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/IntakeMotor/intake target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "intake velocity",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/IntakeMotor/intake velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           },
           {
             "title": "tilt current",
             "x": 512.0,
-            "y": 0.0,
+            "y": 512.0,
             "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "height": 256.0,
+            "type": "Graph",
             "properties": {
               "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/tilt current",
-              "period": 0.06,
+              "period": 0.033,
               "data_type": "double",
-              "show_submit_button": false
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           },
           {
-            "title": "tilt position",
-            "x": 512.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/tilt position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "tilt target",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/tilt target",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "tilt velocity",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Intake/TiltMotor/tilt velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Climb current",
+            "title": "Limelight Field",
             "x": 768.0,
             "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Field",
             "properties": {
-              "topic": "Telemetry/m_robotContainer/Climber/climbMotor/Climb current",
+              "topic": "/SmartDashboard/Limelight Field",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
+              "field_game": "Rebuilt",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
             }
           },
           {
-            "title": "Climb position",
-            "x": 768.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Climber/climbMotor/Climb position",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Climb target",
+            "title": "Bot Field",
             "x": 768.0,
             "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Field",
             "properties": {
-              "topic": "Telemetry/m_robotContainer/Climber/climbMotor/Climb target",
+              "topic": "/SmartDashboard/Bot Field",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
+              "field_game": "Rebuilt",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
             }
           },
           {
-            "title": "Climb velocity",
+            "title": "Auto Chooser",
             "x": 768.0,
-            "y": 384.0,
-            "width": 256.0,
+            "y": 512.0,
+            "width": 512.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "ComboBox Chooser",
             "properties": {
-              "topic": "Telemetry/m_robotContainer/Climber/climbMotor/Climb velocity",
+              "topic": "/SmartDashboard/Auto Chooser",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "isClimbed",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Climber/isClimbed",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "isZeroed",
-            "x": 1024.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/Climber/isZeroed",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Floor Feed current",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Telemetry/m_robotContainer/FloorFeed/Motor/Floor Feed current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
+              "sort_options": false
             }
           }
         ]
