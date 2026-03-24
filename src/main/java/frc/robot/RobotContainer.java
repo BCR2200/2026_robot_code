@@ -513,11 +513,6 @@ public class RobotContainer {
     RobotModeTriggers.disabled().whileTrue(
         drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    // reset the field-centric heading on back button press
-    driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-    // Note: leftBumper DetectFuelCmd is bound in configureBindings()
-
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
