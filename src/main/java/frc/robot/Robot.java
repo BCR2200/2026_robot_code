@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
   private final Field2d m_objectField;
   @NotLogged
   private final Field2d m_limelightField;
+  @NotLogged
+  private final Field2d m_limelightField2;
 
   // Logged - current alliance
   public static Alliance alliance = Alliance.Red;
@@ -76,6 +78,7 @@ public class Robot extends TimedRobot {
     updateRAlliance();
     this.m_botField = new Field2d();
     this.m_limelightField = new Field2d();
+    this.m_limelightField2 = new Field2d();
     this.m_objectField = new Field2d();
 
     // Configure Epilogue
@@ -201,6 +204,7 @@ public class Robot extends TimedRobot {
     // Getting the robot's angular velocity in rotations per second
     double omegarps = Units.radiansToRotations(botState.Speeds.omegaRadiansPerSecond);
     PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.SHOOTER_LIMELIGHT_NAME);
+    PoseEstimate poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.SIDE_LIMELIGHT_NAME);
 
     if (poseEstimate != null && poseEstimate.pose != null) {
       m_limelightField.setRobotPose(poseEstimate.pose);
@@ -214,8 +218,25 @@ public class Robot extends TimedRobot {
       }
     }
 
+    if (poseEstimate2 != null && poseEstimate2.pose != null) {
+      m_limelightField2.setRobotPose(poseEstimate2.pose);
+      //TODO Look at if we need?
+      // // push odometry error to dashboard
+      // if (poseEstimate2.tagCount > 0) {
+      //   this.translationError = m_robotContainer.drivetrain.getState().Pose.getTranslation().getDistance(poseEstimate2.pose.getTranslation());
+      //   this.rotationError = m_robotContainer.drivetrain.getState().Pose.getRotation().minus(poseEstimate2.pose.getRotation()).getDegrees();
+      // } else {
+      //   this.translationError = 0;
+      //   this.rotationError = 0;
+      // }
+    }
+
     if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {
       m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
+            VecBuilder.fill(.9, .9, 999999));
+    }
+    if (poseEstimate2 != null && poseEstimate2.tagCount > 0 && Math.abs(omegarps) < 1.0) {
+      m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate2.pose, poseEstimate2.timestampSeconds,
             VecBuilder.fill(.9, .9, 999999));
     }
 
@@ -317,6 +338,7 @@ public class Robot extends TimedRobot {
   public void sendFields() {
     SmartDashboard.putData("Bot Field", m_botField);
     SmartDashboard.putData("Limelight Field", m_limelightField);
+    SmartDashboard.putData("Limelight Field 2", m_limelightField2);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
