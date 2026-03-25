@@ -21,13 +21,13 @@ public class OURLimelightHelpers {
      * Gets the coordnates of the box of the largest countour
      * @return LimelightContour which hasTarget, offsetX, offsetY
      */
-    public static LimelightContour getContour() {
-        double[] limelightData = NetworkTableInstance.getDefault().getTable(Constants.FEEDER_LIMELIGHT_NAME).getEntry("llpython").getDoubleArray(new double[8]);
-        boolean hasTarget = limelightData[0] == 1;
-        double degreesX = limelightData[1];
-        double degreesY = limelightData[2];
-        return new LimelightContour(hasTarget, degreesX, degreesY);
-    }
+    // public static LimelightContour getContour() {
+    //     double[] limelightData = NetworkTableInstance.getDefault().getTable(Constants.FEEDER_LIMELIGHT_NAME).getEntry("llpython").getDoubleArray(new double[8]);
+    //     boolean hasTarget = limelightData[0] == 1;
+    //     double degreesX = limelightData[1];
+    //     double degreesY = limelightData[2];
+    //     return new LimelightContour(hasTarget, degreesX, degreesY);
+    // }
 
     public static Pose2d betterGetPose2d(String primaryCam, String fallBackCam) {
         Pose2d primaryBotPose = LimelightHelpers.getBotPose2d(primaryCam);
