@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BlendAdamModeCmd;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DriveAlongDriverWallCmd;
 import frc.robot.commands.DriveToOutpostCmd;
 import frc.robot.commands.ShootAt;
 import frc.robot.commands.auto.AutoCommand;
@@ -483,6 +484,9 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> 
           intakeSubsystem.setIsIntaking(false)
         ));
+    
+    // ALL of the poses here are guesses, USE AT YOUR OWN RISK!
+    driverController.povDown().whileTrue(new DriveAlongDriverWallCmd(this));
 
     driverController.start().whileTrue(new InstantCommand(() -> {})); // Used in disabled for syncing autos
     driverController.back().whileTrue(new InstantCommand(() -> {})); // Unused

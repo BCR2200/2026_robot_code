@@ -5,16 +5,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.ExtraMath;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.drive.CommandSwerveDrivetrain;
-
-import static edu.wpi.first.units.Units.*;
 
 public class DriveToOutpostCmd extends Command {
 
@@ -27,26 +24,6 @@ public class DriveToOutpostCmd extends Command {
     public Pose2d finalTarget;
     public Pose2d initialTarget;
     public boolean goneToInitialPos = false;
-
-    public static final Pose2d OUTPOST_RED_INITIAL = new Pose2d(
-        Distance.ofBaseUnits(15.5, Meters),
-        Distance.ofBaseUnits(7.67, Meters),
-        Rotation2d.kZero
-    );public static final Pose2d OUTPOST_RED_FINAL = new Pose2d(
-        Distance.ofBaseUnits(15.85, Meters),
-        Distance.ofBaseUnits(7.67, Meters),
-        Rotation2d.kZero
-    );
-    public static final Pose2d OUTPOST_BLUE_INITIAL = new Pose2d(
-        Distance.ofBaseUnits(1.2, Meters),
-        Distance.ofBaseUnits(0.42, Meters),
-        Rotation2d.k180deg
-    );
-    public static final Pose2d OUTPOST_BLUE_FINAL = new Pose2d(
-        Distance.ofBaseUnits(0.70, Meters),
-        Distance.ofBaseUnits(0.42, Meters),
-        Rotation2d.k180deg
-    );
 
     private final CommandSwerveDrivetrain drivetrain;
     private final RobotContainer robotContainer;
@@ -93,12 +70,12 @@ public class DriveToOutpostCmd extends Command {
     public void initialize() {
         goneToInitialPos = false;
         if (Robot.alliance == DriverStation.Alliance.Red) {
-            initialTarget = OUTPOST_RED_INITIAL;
-            finalTarget = OUTPOST_RED_FINAL;
+            initialTarget = Constants.OUTPOST_RED_INITIAL;
+            finalTarget = Constants.OUTPOST_RED_FINAL;
         }
         else {
-            initialTarget = OUTPOST_BLUE_INITIAL;
-            finalTarget = OUTPOST_BLUE_FINAL;
+            initialTarget = Constants.OUTPOST_BLUE_INITIAL;
+            finalTarget = Constants.OUTPOST_BLUE_FINAL;
         }
     }
 
