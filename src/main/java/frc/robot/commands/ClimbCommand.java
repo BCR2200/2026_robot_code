@@ -27,42 +27,42 @@ public class ClimbCommand extends Command {
 
     public static final Pose2d BLUE_L_CLIMB_INITIAL = new Pose2d(
             Distance.ofBaseUnits(1.535, Meters),
-            Distance.ofBaseUnits(4.24, Meters),
+            Distance.ofBaseUnits(4.23, Meters),
             Rotation2d.kZero
     );
     public static final Pose2d BLUE_L_CLIMB_FINAL = new Pose2d(
-            Distance.ofBaseUnits(1.34, Meters),
-            Distance.ofBaseUnits(4.24, Meters),
+            Distance.ofBaseUnits(1.36, Meters),
+            Distance.ofBaseUnits(4.23, Meters),
             Rotation2d.kZero
     );
     public static final Pose2d BLUE_R_CLIMB_INITIAL = new Pose2d(
             Distance.ofBaseUnits(1.535, Meters),
-            Distance.ofBaseUnits(3.38, Meters),
+            Distance.ofBaseUnits(3.382, Meters),
             Rotation2d.kZero
     );
     public static final Pose2d BLUE_R_CLIMB_FINAL = new Pose2d(
-            Distance.ofBaseUnits(1.32, Meters),
-            Distance.ofBaseUnits(3.38, Meters),
+            Distance.ofBaseUnits(1.346, Meters),
+            Distance.ofBaseUnits(3.382, Meters),
             Rotation2d.kZero
     );
     public static final Pose2d RED_L_CLIMB_INITIAL = new Pose2d(
-            Distance.ofBaseUnits(15.0, Meters),
-            Distance.ofBaseUnits(3.84, Meters),
+            Distance.ofBaseUnits(14.9, Meters),
+            Distance.ofBaseUnits(3.79, Meters),
             Rotation2d.k180deg
     );
     public static final Pose2d RED_L_CLIMB_FINAL = new Pose2d(
-            Distance.ofBaseUnits(15.20, Meters),
-            Distance.ofBaseUnits(3.84, Meters),
+            Distance.ofBaseUnits(15.16, Meters),
+            Distance.ofBaseUnits(3.79, Meters),
             Rotation2d.k180deg
     );
     public static final Pose2d RED_R_CLIMB_INITIAL = new Pose2d(
-            Distance.ofBaseUnits(15.0, Meters),
-            Distance.ofBaseUnits(4.69, Meters),
+            Distance.ofBaseUnits(14.9, Meters),
+            Distance.ofBaseUnits(4.64, Meters),
             Rotation2d.k180deg
     );
     public static final Pose2d RED_R_CLIMB_FINAL = new Pose2d(
-            Distance.ofBaseUnits(15.22, Meters),
-            Distance.ofBaseUnits(4.69, Meters),
+            Distance.ofBaseUnits(15.16, Meters),
+            Distance.ofBaseUnits(4.64, Meters),
             Rotation2d.k180deg
     );
 
