@@ -237,7 +237,8 @@ public class Robot extends TimedRobot {
       m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds,
             VecBuilder.fill(.9, .9, 999999));
     }
-    if (poseEstimate2 != null && poseEstimate2.tagCount > 0 && Math.abs(omegarps) < 1.0) {
+    // Only add second data if the primary limelight is blind
+    else if (poseEstimate2 != null && poseEstimate2.tagCount > 0 && Math.abs(omegarps) < 1.0) {
       m_robotContainer.drivetrain.addVisionMeasurement(poseEstimate2.pose, poseEstimate2.timestampSeconds,
             VecBuilder.fill(.9, .9, 999999));
     }
