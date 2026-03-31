@@ -60,14 +60,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // John shooter (top left)
         johnShootPIDMotor = PIDMotor.makeMotor(Constants.JOHN_SHOOTER_MOTOR_ID, "john shooter", 0.1, 0.0, 0.0,
-                0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
+                0.22, 0.11, 0.0, MAX_RPS, MAX_RPS, 0.00);
         johnShootPIDMotor.setInverted(InvertedValue.Clockwise_Positive);
         johnShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
         johnShootPIDMotor.setIdleCoastMode();
 
         // Jawbreaker shooter (top right)
         jawbreakerShootPIDMotor = PIDMotor.makeMotor(Constants.JAWBREAKER_SHOOTER_MOTOR_ID, "jawbreaker shooter", 0.1, 0.0, 0.0,
-                0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
+                0.22, 0.11, 0.0, MAX_RPS, MAX_RPS, 0.00);
         jawbreakerShootPIDMotor.setInverted(InvertedValue.CounterClockwise_Positive); // The one on the other side is flipped
         jawbreakerShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
         jawbreakerShootPIDMotor.setIdleCoastMode();
@@ -75,7 +75,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Taylor shooter (middle left)
         taylorShootPIDMotor = PIDMotor.makeMotor(Constants.TAYLOR_SHOOTER_MOTOR_ID, "taylor shooter", 0.1, 0.0, 0.0,
-                0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
+                0.22, 0.11, 0.0, MAX_RPS, MAX_RPS, 0.00);
         taylorShootPIDMotor.setInverted(InvertedValue.Clockwise_Positive);
         taylorShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
         taylorShootPIDMotor.setIdleCoastMode();
@@ -97,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
         hoekFeedPIDMotor.follow(erikFeedPIDMotor, true); // Inverted follower
 
         // Vant hood (middle right)
-        vantHoodPIDMotor = PIDMotor.makeMotor(Constants.VANT_HOOD_MOTOR_ID, "vant hood", 0.1, 0.0, 0.0,
+        vantHoodPIDMotor = PIDMotor.makeMotor(Constants.VANT_HOOD_MOTOR_ID, "vant hood", 12.5, 0.0, 0.0,
                 0.2, 0.1, 0.0, MAX_RPS, MAX_RPS, 0.00);
         vantHoodPIDMotor.setStatorCurrentLimit(hoodCurrentLimit);
         vantHoodPIDMotor.setIdleBrakeMode();
@@ -140,7 +140,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param distance in m
      */
     public void setHoodPositionViaInterpolatedValue(double distance) {
-        this.shooterSpeed = shooterAngleInterpolator.clampedInterpolate(distance, 0, 0); // in rotations
+        this.shooterSpeed = shooterAngleInterpolator.clampedInterpolate(distance, 0, -7); // in rotations
     }
 
     /**
@@ -175,7 +175,7 @@ public class ShooterSubsystem extends SubsystemBase {
             erikFeedPIDMotor.setPercentOutput(0);
         }
 
-        if (isManualMode) {
+        if (isManualMode && isShooting) {
             johnShootPIDMotor.setVelocityTarget(manualShooterSpeed);
             vantHoodPIDMotor.setTarget(manualTagetHoodPosition);
             return;

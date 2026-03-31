@@ -13,7 +13,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private boolean isClimbed = false;
     private boolean isZeroed = false;
-    private PIDMotor climbMotor;
+    // private PIDMotor climbMotor;
     private Timer timer;
 
     @NotLogged
@@ -27,13 +27,13 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public ClimbSubsystem(int initialCurrentLimit, int finalCurrentLimit) {
         // only driven in abs position mode
-        climbMotor = PIDMotor.makeMotor(Constants.CLIMB_MOTOR_ID, "Climb", 0.3, 0.0, 0.0,
-                0.6, 0.1, 0.0, MAX_VELOCITY, MAX_VELOCITY / 0.25, 0.00);
+        // climbMotor = PIDMotor.makeMotor(Constants.CLIMB_MOTOR_ID, "Climb", 0.3, 0.0, 0.0,
+                // 0.6, 0.1, 0.0, MAX_VELOCITY, MAX_VELOCITY / 0.25, 0.00);
 
-        climbMotor.setCurrentLimit(initialCurrentLimit);
+        // climbMotor.setCurrentLimit(initialCurrentLimit);
         currentLimit = finalCurrentLimit;
 
-        climbMotor.setIdleBrakeMode();
+        // climbMotor.setIdleBrakeMode();
         timer = new Timer();
     }
 
@@ -42,16 +42,16 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void updateParameters() {
-        climbMotor.fetchPIDFFromDashboard();
+        // climbMotor.fetchPIDFFromDashboard();
     }
 
     public void goHome() {
-        this.climbMotor.setTarget(HOME_POSITION);
+        // this.climbMotor.setTarget(HOME_POSITION);
         this.isClimbed = false;
     }
 
     public void climb() {
-        this.climbMotor.setTarget(CLIMB_POSITION);
+        // this.climbMotor.setTarget(CLIMB_POSITION);
         this.isClimbed = true;
     }
 
@@ -62,12 +62,12 @@ public class ClimbSubsystem extends SubsystemBase {
                 timer.restart();
             }
             if (timer.get() < 5.0) {
-                climbMotor.setPercentOutput(0.2);
+                // climbMotor.setPercentOutput(0.2);
             } 
             else if (timer.get() > 5.0) {
-                climbMotor.setPercentOutput(0);
-                climbMotor.setCurrentLimit(currentLimit);
-                climbMotor.resetEncoder();
+                // climbMotor.setPercentOutput(0);
+                // climbMotor.setCurrentLimit(currentLimit);
+                // climbMotor.resetEncoder();
                 isZeroed = true;
             }
         }

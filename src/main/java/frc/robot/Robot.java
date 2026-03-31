@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
   public static Alliance alliance = Alliance.Red;
 
   // Is the robot the competiton bot, determines drivetrain constants and beam break channels
-  public static final boolean isCompBot = true;
+  public static final boolean isCompBot = false;
 
   @NotLogged
   private final Timer teleopTimer = new Timer();

@@ -203,7 +203,7 @@ public class RobotContainer {
   @NotLogged
   private static final int feederCurrentLimit = 40;
   @NotLogged
-  private static final int hoodCurrentLimit = 2;
+  private static final int hoodCurrentLimit = 20;
 
   public static double driverX = 0;
   public static double driverY = 0;
@@ -221,10 +221,10 @@ public class RobotContainer {
 
   private static final Interpolator HOOD_INTERPOLATOR = new Interpolator(
       new double[] { 0.966, 2.01, 3.00, 4.00, 5.00 },
-      new double[] { 0.050, 0.40, 0.65, 0.90, 1.0 });
+      new double[] { 0.050 * -7, 0.40 * -7, 0.65 * -7, 0.90 * -7, 1.0 * -7}); // The new hood range is 0-(-7) rotations
   private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator(
       new double[] { 0.966, 2.01, 3.00, 4.00, 5.00 },
-      new double[] { 50, 54, 58, 64, 73 });
+      new double[] { 50 * 0.8, 54 * 0.8, 58 * 0.8, 64 * 0.8, 73 * 0.8 }); // The new shooter spins at about 80% at the same distance
   public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator( // Placeholders for time of flight
                                                                                    // based on distance to target
       new double[] { 0.992, 2.01, 3.00, 4.00, 5.00 },
@@ -506,8 +506,8 @@ public class RobotContainer {
     coDriverController.leftBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(false)));
     coDriverController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed += 5));
     coDriverController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed -= 5));
-    coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 1));
-    coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 1));
+    coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 0.5));
+    coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 0.5));
 
     // Reset odometry
     coDriverController.back().and(coDriverController.start()).onTrue(new InstantCommand(() -> {
