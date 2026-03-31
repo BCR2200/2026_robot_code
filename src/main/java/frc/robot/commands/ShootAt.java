@@ -34,7 +34,7 @@ public class ShootAt extends Command {
   @Override
   public void execute() {
 
-    if (!rc.fixedPassingShot && !rc.fixedShotFromClimber && !rc.fixedShotFromHub) {
+    if (!rc.fixedPassingShot && !rc.fixedShotFromClimber && !rc.fixedShotFromHub && !rc.shooterSubsystem.isManualMode) {
       if (rc.isOutsideAllianceZone()) { // We want to pass
         rc.passing = true;
         rc.shootingAtHub = false;

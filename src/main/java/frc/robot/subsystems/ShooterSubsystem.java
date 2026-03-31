@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double shooterSpeed = 54; // in rps
     private boolean isFeeding = false;
 
-    private boolean isManualMode = true;
+    public boolean isManualMode = true;
     public double manualShooterSpeed = 0;
     public double manualTagetHoodPosition = 0;
 
