@@ -283,6 +283,12 @@ public class PIDMotor {
         }
     }
 
+    /**
+     * Makes this motor follow another motor, meaning it will mimic the output of the other motor.
+     * This only needs to be called once per motor on creation, not periodically.
+     * @param other
+     * @param inverted
+     */
     public void follow(PIDMotor other, boolean inverted) {
         StatusCode code;
         if (inverted) {

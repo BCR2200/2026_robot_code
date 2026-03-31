@@ -4,21 +4,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ExtraMath;
+import frc.robot.Constants;
+import frc.robot.Interpolator;
 import frc.robot.PIDMotor;
 import frc.robot.RobotContainer;
-import frc.robot.Interpolator;
-import frc.robot.LinearActuator;
-import frc.robot.EdgeCounter;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
-
-    @NotLogged
-    private static final double PRELOAD_SPEED_PERCENT = 0.5;
 
     @NotLogged
     private static final double RPS_STEP = 4.0; // rps
@@ -27,32 +20,32 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Logged automatically by Epilogue
     private boolean isShooting = false;
-    private double shooterSpeed = 54; // in rps. TODO: remove and use the shooterVelocityInterpolator instead
-
+    private double shooterSpeed = 54; // in rps
     private boolean isFeeding = false;
-    private double feederSpeed = 100; // in rps
 
-    private boolean canPreload = false;
+    private boolean isManualMode = true;
+    public double manualShooterSpeed = 0;
+    public double manualTagetHoodPosition = 0;
 
     @NotLogged
     private RobotContainer rc;
 
     // Logged via PIDMotorLogger
-    @Logged(name = "ShootMotor")
-    public PIDMotor shootPIDMotor;
-    @Logged(name = "FeedMotor")
-    public PIDMotor feedPIDMotor;
+    @Logged(name = "JohnShootMotor")
+    public PIDMotor johnShootPIDMotor;
+    @Logged(name = "JawbreakerShootMotor")
+    public PIDMotor jawbreakerShootPIDMotor;
+    @Logged(name = "TaylorShootMotor")
+    public PIDMotor taylorShootPIDMotor;
 
-    @NotLogged
-    public LinearActuator linearActuator;
+    @Logged(name = "ErikFeedMotor")
+    public PIDMotor erikFeedPIDMotor;
+    @Logged(name = "HoekFeedMotor")
+    public PIDMotor hoekFeedPIDMotor;
 
-    /**
-     * Sensor for the beam break.
-     * Returns {@code true} if the beam is unbroken, {@code false} if something is
-     * present.
-     */
-    @NotLogged
-    private final DigitalInput breamBake; // No emojis (encoding errors)
+    @Logged(name = "VantHoodMotor")
+    public PIDMotor vantHoodPIDMotor;
+
 
     @NotLogged
     private final Interpolator shooterAngleInterpolator;
@@ -61,39 +54,58 @@ public class ShooterSubsystem extends SubsystemBase {
     @NotLogged
     private final Interpolator timeOfFlightInterpolator;
 
-    @NotLogged
-    public final EdgeCounter counter = new EdgeCounter(EdgeCounter.EdgeType.FALLING, false);
-
-    private boolean isDisabled = false;
-
-    public ShooterSubsystem(String name, int shooterMotorID, int feederMotorID, int beambreakChannel,
-            int actuatorChannel, int shootCurrentLimit, int feedCurrentLimit,
+    public ShooterSubsystem(int shootCurrentLimit, int feedCurrentLimit, int hoodCurrentLimit,
             Interpolator shooterAngleInterpolator, Interpolator shooterVelocityInterpolator,
-            Interpolator timeOfFlightInterpolator,
-            boolean isMountedIncorrectly, RobotContainer rc) {
-        breamBake = new DigitalInput(beambreakChannel);
+            Interpolator timeOfFlightInterpolator, RobotContainer rc) {
 
-        // These numbers are placeholders, we don't actually know what they should be
-        // yet
-        shootPIDMotor = PIDMotor.makeMotor(shooterMotorID, name + " shooter", 0.1, 0.0, 0.0,
+        // John shooter (top left)
+        johnShootPIDMotor = PIDMotor.makeMotor(Constants.JOHN_SHOOTER_MOTOR_ID, "john shooter", 0.1, 0.0, 0.0,
                 0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
-        shootPIDMotor.setInverted(
-                isMountedIncorrectly ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive);
-        shootPIDMotor.setCurrentLimit(shootCurrentLimit);
-        shootPIDMotor.setIdleCoastMode();
+        johnShootPIDMotor.setInverted(InvertedValue.Clockwise_Positive);
+        johnShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
+        johnShootPIDMotor.setIdleCoastMode();
 
-        feedPIDMotor = PIDMotor.makeMotor(feederMotorID, name + " feeder", 0.10, 0.0, 0.0,
-                0.25, 0.1, 100.0, MAX_RPS, MAX_RPS * 10, 0.00);
-        feedPIDMotor.setCurrentLimit(feedCurrentLimit);
-        feedPIDMotor.setIdleBrakeMode();
+        // Jawbreaker shooter (top right)
+        jawbreakerShootPIDMotor = PIDMotor.makeMotor(Constants.JAWBREAKER_SHOOTER_MOTOR_ID, "jawbreaker shooter", 0.1, 0.0, 0.0,
+                0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
+        jawbreakerShootPIDMotor.setInverted(InvertedValue.CounterClockwise_Positive); // The one on the other side is flipped
+        jawbreakerShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
+        jawbreakerShootPIDMotor.setIdleCoastMode();
+        jawbreakerShootPIDMotor.follow(johnShootPIDMotor, true); // Inverted follower
+
+        // Taylor shooter (middle left)
+        taylorShootPIDMotor = PIDMotor.makeMotor(Constants.TAYLOR_SHOOTER_MOTOR_ID, "taylor shooter", 0.1, 0.0, 0.0,
+                0.2, 0.0957, 0.0, MAX_RPS, MAX_RPS, 0.00);
+        taylorShootPIDMotor.setInverted(InvertedValue.Clockwise_Positive);
+        taylorShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
+        taylorShootPIDMotor.setIdleCoastMode();
+        taylorShootPIDMotor.follow(johnShootPIDMotor, false); // Not inverted follower
+
+        // Erik feed (bottom left)
+        erikFeedPIDMotor = PIDMotor.makeMotor(Constants.ERIK_FEED_MOTOR_ID,"erik feeder", 0.10, 0.0, 0.0,
+                0.25, 0.1, 0.0, MAX_RPS, MAX_RPS * 10, 0.00);
+        erikFeedPIDMotor.setStatorCurrentLimit(feedCurrentLimit);
+        erikFeedPIDMotor.setInverted(InvertedValue.CounterClockwise_Positive);
+        erikFeedPIDMotor.setIdleCoastMode();
+
+        // Hoek feed (bottom right)
+        hoekFeedPIDMotor = PIDMotor.makeMotor(Constants.HOEK_FEED_MOTOR_ID,"hoek feeder", 0.10, 0.0, 0.0,
+                0.25, 0.1, 0.0, MAX_RPS, MAX_RPS * 10, 0.00);
+        hoekFeedPIDMotor.setStatorCurrentLimit(feedCurrentLimit);
+        hoekFeedPIDMotor.setInverted(InvertedValue.Clockwise_Positive); // The one on the other side is flipped
+        hoekFeedPIDMotor.setIdleCoastMode();
+        hoekFeedPIDMotor.follow(erikFeedPIDMotor, true); // Inverted follower
+
+        // Vant hood (middle right)
+        vantHoodPIDMotor = PIDMotor.makeMotor(Constants.VANT_HOOD_MOTOR_ID, "vant hood", 0.1, 0.0, 0.0,
+                0.2, 0.1, 0.0, MAX_RPS, MAX_RPS, 0.00);
+        vantHoodPIDMotor.setStatorCurrentLimit(hoodCurrentLimit);
+        vantHoodPIDMotor.setIdleBrakeMode();
 
         this.shooterAngleInterpolator = shooterAngleInterpolator;
         this.shooterVelocityInterpolator = shooterVelocityInterpolator;
         this.timeOfFlightInterpolator = timeOfFlightInterpolator;
 
-        this.linearActuator = new LinearActuator(actuatorChannel, name + " linear actuator");
-        setActuatorTargetPosition(0.35d);
-        shootPIDMotor.putPIDF();
         this.rc = rc;
     }
 
@@ -113,21 +125,6 @@ public class ShooterSubsystem extends SubsystemBase {
         isFeeding = feeding;
     }
 
-    public boolean getCanPreload() {
-        return canPreload;
-    }
-
-    public void setCanPreload(boolean canPreload) {
-        this.canPreload = canPreload;
-    }
-
-    public void setIsDisabled(boolean disabled) {
-        this.isDisabled = disabled;
-    }
-    public boolean getIsDisabled() {
-        return this.isDisabled;
-    }
-
     /**
      * Interpolate the shooter speed given a distance from the target
      * 
@@ -137,53 +134,13 @@ public class ShooterSubsystem extends SubsystemBase {
         this.shooterSpeed = shooterVelocityInterpolator.clampedInterpolate(distance, 0, 95); // In rps
     }
 
-    /**
-     * will increase speed by the constant value RPS_STEP up to max of MAX_RPS
+     /**
+     * Interpolate the shooter hood positon given a distance from the target
+     * 
+     * @param distance in m
      */
-    public void incrementShooterSpeed() {
-        shooterSpeed = ExtraMath.clamp(shooterSpeed + RPS_STEP, -MAX_RPS, MAX_RPS);
-    }
-
-    /**
-     * will decrease speed by the constant value RPS_STEP up to max of MAX_RPS
-     */
-    public void decrementShooterSpeed() {
-        shooterSpeed = ExtraMath.clamp(shooterSpeed - RPS_STEP, -MAX_RPS, MAX_RPS);
-    }
-
-    /**
-     * will increase speed by the constant value RPS_STEP up to max of MAX_RPS
-     */
-    public void incrementFeederSpeed() {
-        feederSpeed = ExtraMath.clamp(feederSpeed + RPS_STEP, -MAX_RPS, MAX_RPS);
-    }
-
-    /**
-     * will decrease speed by the constant value RPS_STEP up to max of MAX_RPS
-     */
-    public void decrementFeederSpeed() {
-        feederSpeed = ExtraMath.clamp(feederSpeed - RPS_STEP, -MAX_RPS, MAX_RPS);
-    }
-
-    public void setActuatorTargetPosition(double position) {
-        linearActuator.setTargetPosition(position);
-    }
-
-    @Logged
-    public double getActuatorPosition() {
-        return linearActuator.getTargetPosition();
-    }
-
-    public void setActuatorPositionViaInterpolatedValue(double distance) {
-        linearActuator.setTargetPosition(shooterAngleInterpolator.interpolate(distance));
-    }
-
-    public void updateParameters() {
-        shooterSpeed = SmartDashboard.getNumber("Shooter Speed", shooterSpeed);
-        shootPIDMotor.fetchPIDFFromDashboard();
-
-        feederSpeed = SmartDashboard.getNumber("Feeder Speed", feederSpeed);
-        feedPIDMotor.fetchPIDFFromDashboard();
+    public void setHoodPositionViaInterpolatedValue(double distance) {
+        this.shooterSpeed = shooterAngleInterpolator.clampedInterpolate(distance, 0, 0); // in rotations
     }
 
     /**
@@ -192,113 +149,92 @@ public class ShooterSubsystem extends SubsystemBase {
      *
      * @return if the shooter motor is at or above the expected speed
      */
-    public boolean isShooterAtSpeed() {
+    public boolean isShooterAtSpeed() { // TODO: MAKE THIS WORK WITH THE OTHER MOTORS???
         // Why >5? Because we only set a velocity target in periodic, but
         // isShooterAtSpeed is called when target is still 0,
         // atVelocity() can return true unexpectedly, because its velocity is really 0.
-        return shootPIDMotor.getVelocity() > 5 && shootPIDMotor.atVelocity(3);
+        return johnShootPIDMotor.getVelocity() > 5 && johnShootPIDMotor.atVelocity(3);
     }
 
     public boolean needsFloorFeed() {
-        return isFeeding || wantsToPreload();
+        return isFeeding;
     }
 
-    public boolean wantsToPreload() {
-        return !isBeamBroken() && canPreload;
-    }
-
-    /**
-     * Returns true if beam is broken (ball present).
-     * Logged by Epilogue.
-     */
-    @Logged(name = "BeamBroken")
-    public boolean isBeamBroken() {
-        return !breamBake.get();
-    }
-
-    @Logged(name = "Ball count")
-    public int getBallCount() {
-        return this.counter.getCount();
+    public void setManualMode(boolean isManualMode) {
+        this.isManualMode = isManualMode;
     }
 
     @Override
     public void periodic() {
-        if (this.isDisabled) { 
-            this.shootPIDMotor.setPercentOutput(0);
-            if (isShooting) {
-                feedPIDMotor.setPercentOutput(-0.6);
-            }
-            else {
-                feedPIDMotor.setPercentOutput(0);
-            }
-            return;
-        }
-
-        this.counter.update(this.isBeamBroken());
-
         // Feed at full speed first,
         // then try to preload (until beam break is broken),
         // then stop
         if (isFeeding) {
-            feedPIDMotor.setPercentOutput(1);
-        } else if (wantsToPreload()) {
-            feedPIDMotor.setPercentOutput(PRELOAD_SPEED_PERCENT);
+            erikFeedPIDMotor.setPercentOutput(1);
         } else {
-            feedPIDMotor.setPercentOutput(0);
+            erikFeedPIDMotor.setPercentOutput(0);
+        }
+
+        if (isManualMode) {
+            johnShootPIDMotor.setVelocityTarget(manualShooterSpeed);
+            vantHoodPIDMotor.setTarget(manualTagetHoodPosition);
+            return;
         }
 
         // Fixed shots
         if (rc.fixedPassingShot) {
             setShooterSpeedViaInterpolatedValue(8.5);
-            setActuatorPositionViaInterpolatedValue(8.5);
+            setHoodPositionViaInterpolatedValue(8.5);
             if (isShooting) {
-                shootPIDMotor.setVelocityTarget(shooterSpeed);
+                johnShootPIDMotor.setVelocityTarget(shooterSpeed);
             }
             else {
-                shootPIDMotor.setPercentOutput(0);
+                johnShootPIDMotor.setPercentOutput(0);
             }
             return;
         }
         else if (rc.fixedShotFromHub) {
             setShooterSpeedViaInterpolatedValue(1);
-            setActuatorPositionViaInterpolatedValue(1);
+            setHoodPositionViaInterpolatedValue(1);
             if (isShooting) {
-                shootPIDMotor.setVelocityTarget(shooterSpeed);
+                johnShootPIDMotor.setVelocityTarget(shooterSpeed);
             }
             else {
-                shootPIDMotor.setPercentOutput(0);
+                johnShootPIDMotor.setPercentOutput(0);
             }
             return;
         }
         else if (rc.fixedShotFromClimber) {
             setShooterSpeedViaInterpolatedValue(3.5);
-            setActuatorPositionViaInterpolatedValue(3.5);
+            setHoodPositionViaInterpolatedValue(3.5);
             if (isShooting) {
-                shootPIDMotor.setVelocityTarget(shooterSpeed);
+                johnShootPIDMotor.setVelocityTarget(shooterSpeed);
             }
             else {
-                shootPIDMotor.setPercentOutput(0);
+                johnShootPIDMotor.setPercentOutput(0);
             }
             return;
         }
 
+        // Shoot
         if (isShooting) {
             if (rc.passing) {
                 setShooterSpeedViaInterpolatedValue(rc.getDistanceToTarget(rc.passTarget));
             } else {
                 setShooterSpeedViaInterpolatedValue(rc.getDistanceToTarget(rc.compensatedTargetHub));
             }
-            shootPIDMotor.setVelocityTarget(shooterSpeed);
+            johnShootPIDMotor.setVelocityTarget(shooterSpeed);
         } else {
-            shootPIDMotor.setPercentOutput(0);
+            johnShootPIDMotor.setPercentOutput(0);
         }
 
+        // Move the hood
         if (rc.passing) {
-            setActuatorPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.passTarget));
+            setHoodPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.passTarget));
         } else if (isShooting) {
-            setActuatorPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.compensatedTargetHub));
+            setHoodPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.compensatedTargetHub));
         } else if (!rc.isOutsideAllianceZone()) {
-            setActuatorPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.targetHub));
+            setHoodPositionViaInterpolatedValue(rc.getDistanceToTarget(rc.targetHub));
         }
     }
 }

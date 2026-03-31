@@ -122,26 +122,9 @@ public class Robot extends TimedRobot {
     addPeriodic(this::updateTargetHub, 0.5);
     addPeriodic(this::updateTargetPassingZone, 0.04);
     addPeriodic(this::displayTarget, 0.1);
-    addPeriodic(this::checkCounterReset, 1);
 
   }
 
-  @Logged(name = "Total ball count")
-  @SuppressWarnings("unused")
-  public int getTotalBallCount() {
-    return m_robotContainer.shooterSubsystemJohn.getBallCount() +
-            m_robotContainer.shooterSubsystemJawbreaker.getBallCount() +
-            m_robotContainer.shooterSubsystemTaylor.getBallCount();
-  }
-  public void checkCounterReset() {
-    if (this.resetTimer.hasElapsed(2)) {
-      this.m_robotContainer.shooterSubsystemJohn.counter.reset();
-      this.m_robotContainer.shooterSubsystemJawbreaker.counter.reset();
-      this.m_robotContainer.shooterSubsystemTaylor.counter.reset();
-      this.resetTimer.stop();
-      this.resetTimer.reset();
-    }
-  }
 
   public void updateFieldPaths(AutoCommand auto) {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();

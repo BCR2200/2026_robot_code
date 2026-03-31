@@ -49,9 +49,9 @@ import frc.robot.drive.Telemetry;
 import frc.robot.drive.TunerConstantsComp;
 import frc.robot.drive.TunerConstantsPrac;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.FloorFeedSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -202,6 +202,8 @@ public class RobotContainer {
   private static final int shooterCurrentLimit = 60;
   @NotLogged
   private static final int feederCurrentLimit = 40;
+  @NotLogged
+  private static final int hoodCurrentLimit = 2;
 
   public static double driverX = 0;
   public static double driverY = 0;
@@ -229,37 +231,12 @@ public class RobotContainer {
       new double[] { 0.90, 0.96, 1.00, 1.02, 1.15 });
 
   // Subsystems - logged via their @Logged annotations
-  @Logged(name = "John")
-  public final ShooterSubsystem shooterSubsystemJohn = new ShooterSubsystem("John",
-      Constants.JOHN_SHOOTER_MOTOR_ID, Constants.JOHN_FEEDER_MOTOR_ID, Constants.JOHN_BEAMBREAK_CHANNEL,
-      Constants.JOHN_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-      HOOD_INTERPOLATOR,
-      SHOTER_WEEL_VELOSITY_INTERPOLATOR,
-      TIME_OF_FLIGHT_INTERPOLATOR,
-      false, this);
-
-  @Logged(name = "Jawbreaker")
-  public final ShooterSubsystem shooterSubsystemJawbreaker = new ShooterSubsystem("Jawbreaker",
-      Constants.JAWBREAKER_SHOOTER_MOTOR_ID, Constants.JAWBREAKER_FEEDER_MOTOR_ID,
-      Constants.JAWBREAKER_BEAMBREAK_CHANNEL, Constants.JAWBREAKER_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit,
-      feederCurrentLimit,
-      HOOD_INTERPOLATOR,
-      SHOTER_WEEL_VELOSITY_INTERPOLATOR,
-      TIME_OF_FLIGHT_INTERPOLATOR,
-      false, this);
-
-  @Logged(name = "Taylor")
-  public final ShooterSubsystem shooterSubsystemTaylor = new ShooterSubsystem("Taylor",
-      Constants.TAYLOR_SHOOTER_MOTOR_ID, Constants.TAYLOR_FEEDER_MOTOR_ID, Constants.TAYLOR_BEAMBREAK_CHANNEL,
-      Constants.TAYLOR_LINEAR_ACTUATOR_CHANNEL, shooterCurrentLimit, feederCurrentLimit,
-      HOOD_INTERPOLATOR,
-      SHOTER_WEEL_VELOSITY_INTERPOLATOR,
-      TIME_OF_FLIGHT_INTERPOLATOR,
-      true, this);
+  @Logged(name = "Shooter")
+  public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(shooterCurrentLimit, feederCurrentLimit, hoodCurrentLimit,
+      HOOD_INTERPOLATOR, SHOTER_WEEL_VELOSITY_INTERPOLATOR, TIME_OF_FLIGHT_INTERPOLATOR, this);
 
   @Logged(name = "FloorFeed")
-  private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorStatorCurrentLimit, floorSupplyCurrentLimit,
-      shooterSubsystemJohn, shooterSubsystemJawbreaker, shooterSubsystemTaylor);
+  private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorStatorCurrentLimit, floorSupplyCurrentLimit, shooterSubsystem);
 
   @Logged(name = "Climber")
   public final ClimbSubsystem climberSubsystem = new ClimbSubsystem(climbInitialCurrentLimit, climbFinalCurrentLimit);
@@ -302,9 +279,7 @@ public class RobotContainer {
       intakeSubsystem.setIsIntaking(false);
     }));
     new EventTrigger("SpinUp").whileTrue(new InstantCommand(() -> {
-      shooterSubsystemJohn.setIsShooting(true);
-      shooterSubsystemJawbreaker.setIsShooting(true);
-      shooterSubsystemTaylor.setIsShooting(true);
+      shooterSubsystem.setIsShooting(true);
     }));
     new EventTrigger("Shoot").whileTrue(new ShootAt(this));
 
@@ -334,12 +309,8 @@ public class RobotContainer {
   }
 
   public void disableMotors() {
-    shooterSubsystemJohn.setIsShooting(false);
-    shooterSubsystemJawbreaker.setIsShooting(false);
-    shooterSubsystemTaylor.setIsShooting(false);
-    shooterSubsystemJohn.setIsFeeding(false);
-    shooterSubsystemJawbreaker.setIsFeeding(false);
-    shooterSubsystemTaylor.setIsFeeding(false);
+    shooterSubsystem.setIsShooting(false);
+    shooterSubsystem.setIsFeeding(false);
     intakeSubsystem.setIsIntaking(false);
     intakeSubsystem.setIsGoingUp(false);
   }
@@ -449,18 +420,6 @@ public class RobotContainer {
     }));
     driverController.rightTrigger().whileTrue(new ShootAt(this));
 
-    // Preload
-    driverController.rightStick().onTrue(new InstantCommand(() -> {
-      shooterSubsystemJohn.setCanPreload(true);
-      shooterSubsystemJawbreaker.setCanPreload(true);
-      shooterSubsystemTaylor.setCanPreload(true);
-    }));
-    driverController.rightStick().onFalse(new InstantCommand(() -> {
-      shooterSubsystemJohn.setCanPreload(false);
-      shooterSubsystemJawbreaker.setCanPreload(false);
-      shooterSubsystemTaylor.setCanPreload(false);
-    }));
-
     // climb
     driverController.b().whileTrue(new ClimbCommand(this, true)); // right
     driverController.x().whileTrue(new ClimbCommand(this, false)); // left
@@ -535,7 +494,6 @@ public class RobotContainer {
     coDriverController.b().and(coDriverController.x().negate()).and(coDriverController.y().negate())
       .whileTrue(new InstantCommand(() -> {fixedShotFromClimber = true;}))
       .whileFalse(new InstantCommand(() -> {fixedShotFromClimber = false;})); // climb shot
-
     
     // Just climb now
     coDriverController.a().whileTrue(new InstantCommand(() -> {
@@ -544,19 +502,12 @@ public class RobotContainer {
       climberSubsystem.goHome();
     }));
 
-    // Disable shooter J/J/T
-    // John is on the "left", but is bound to dpad right, because if the shooters are the front it's on the right
-    coDriverController.povLeft().and(coDriverController.start())
-        .onTrue(new InstantCommand(() -> this.shooterSubsystemTaylor.setIsDisabled(true)));
-    coDriverController.povDown().and(coDriverController.start())
-        .onTrue(new InstantCommand(() -> this.shooterSubsystemJawbreaker.setIsDisabled(true)));
-    coDriverController.povRight().and(coDriverController.start())
-        .onTrue(new InstantCommand(() -> this.shooterSubsystemJohn.setIsDisabled(true)));
-    coDriverController.povUp().onTrue(new InstantCommand(() -> {
-      this.shooterSubsystemJohn.setIsDisabled(false);
-      this.shooterSubsystemJawbreaker.setIsDisabled(false);
-      this.shooterSubsystemTaylor.setIsDisabled(false);
-    }));
+    coDriverController.rightBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(true)));
+    coDriverController.leftBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(false)));
+    coDriverController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed += 5));
+    coDriverController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed -= 5));
+    coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 1));
+    coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 1));
 
     // Reset odometry
     coDriverController.back().and(coDriverController.start()).onTrue(new InstantCommand(() -> {

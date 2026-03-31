@@ -15,17 +15,13 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootAt extends Command {
   RobotContainer rc;
-  ShooterSubsystem johnShooterSubsystem;
-  ShooterSubsystem jawbreakerShooterSubsystem;
-  ShooterSubsystem taylorShooterSubsystem;
+  ShooterSubsystem shooterSubsystem;
   Timer timer;
 
   public ShootAt (RobotContainer rc){
     this.rc = rc;
-    this.johnShooterSubsystem = rc.shooterSubsystemJohn;
-    this.jawbreakerShooterSubsystem = rc.shooterSubsystemJawbreaker;
-    this.taylorShooterSubsystem = rc.shooterSubsystemTaylor;
-    addRequirements(johnShooterSubsystem, jawbreakerShooterSubsystem, taylorShooterSubsystem, rc.drivetrain);
+    this.shooterSubsystem = rc.shooterSubsystem;
+    addRequirements(shooterSubsystem, rc.drivetrain);
     timer = new Timer();
   }
 
@@ -90,25 +86,9 @@ public class ShootAt extends Command {
   }
 
   private void activateShooters() {
-    johnShooterSubsystem.setIsShooting(true);
-    if (timer.hasElapsed(0.2)) {
-      jawbreakerShooterSubsystem.setIsShooting(true);
-    }
-    if (timer.hasElapsed(0.4)) {
-      taylorShooterSubsystem.setIsShooting(true);
-    }
-
-    if (johnShooterSubsystem.isShooterAtSpeed()) {
-      // TODO: should we stop feeding later if no longer at speed?
-      // Maybe... but each ball will probably reduce the shooter speed enough to stop the feeder.
-      // Maybe it should only stop if it is not at speed for X time.
-      johnShooterSubsystem.setIsFeeding(true);
-    }
-    if (jawbreakerShooterSubsystem.isShooterAtSpeed()) {
-      jawbreakerShooterSubsystem.setIsFeeding(true);
-    }
-    if (taylorShooterSubsystem.isShooterAtSpeed()) {
-      taylorShooterSubsystem.setIsFeeding(true);
+    shooterSubsystem.setIsShooting(true);
+    if (shooterSubsystem.isShooterAtSpeed()) {
+      shooterSubsystem.setIsFeeding(true);
     }
   }
 
@@ -117,12 +97,8 @@ public class ShootAt extends Command {
   public void end(boolean interrupted) {
     rc.shootingAtHub = false;
     rc.passing = false;
-    johnShooterSubsystem.setIsShooting(false);
-    jawbreakerShooterSubsystem.setIsFeeding(false);
-    taylorShooterSubsystem.setIsShooting(false);
-    johnShooterSubsystem.setIsFeeding(false);
-    jawbreakerShooterSubsystem.setIsShooting(false);
-    taylorShooterSubsystem.setIsFeeding(false);
+    shooterSubsystem.setIsShooting(false);
+    shooterSubsystem.setIsFeeding(false);
   }
 
   // Returns true when the command should end.
