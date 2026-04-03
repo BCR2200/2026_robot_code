@@ -13,11 +13,6 @@ import frc.robot.RobotContainer;
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
 
-    @NotLogged
-    private static final double RPS_STEP = 4.0; // rps
-    @NotLogged
-    private static final double MAX_RPS = 140.0; // 5000 rpm in rps is 84. Max the motors can go is ~140 rps
-
     // Logged automatically by Epilogue
     private boolean isShooting = false;
     private double shooterSpeed = 54; // in rps
@@ -58,39 +53,47 @@ public class ShooterSubsystem extends SubsystemBase {
             Interpolator shooterAngleInterpolator, Interpolator shooterVelocityInterpolator,
             Interpolator timeOfFlightInterpolator, RobotContainer rc) {
 
+        double maxRps = 90; // On an X60
+        double shootP = 0.4; // Done
+        double shootI = 0;
+        double shootD = 0;
+        double shootS = 0.25; // Done
+        double shootV = 0.115; // Done
+        double shootA = 0;
+
         // John shooter (top left)
-        johnShootPIDMotor = PIDMotor.makeMotor(Constants.JOHN_SHOOTER_MOTOR_ID, "john shooter", 0.1, 0.0, 0.0,
-                0.22, 0.11, 0.0, MAX_RPS, MAX_RPS, 0.00);
+        johnShootPIDMotor = PIDMotor.makeMotor(Constants.JOHN_SHOOTER_MOTOR_ID, "john shooter", shootP, shootI, shootD,
+                shootS, shootV, shootA, maxRps, maxRps, 0.00);
         johnShootPIDMotor.setInverted(InvertedValue.Clockwise_Positive);
         johnShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
         johnShootPIDMotor.setIdleCoastMode();
 
         // Jawbreaker shooter (top right)
-        jawbreakerShootPIDMotor = PIDMotor.makeMotor(Constants.JAWBREAKER_SHOOTER_MOTOR_ID, "jawbreaker shooter", 0.1, 0.0, 0.0,
-                0.22, 0.11, 0.0, MAX_RPS, MAX_RPS, 0.00);
+        jawbreakerShootPIDMotor = PIDMotor.makeMotor(Constants.JAWBREAKER_SHOOTER_MOTOR_ID, "jawbreaker shooter", shootP, shootI, shootD,
+                shootS, shootV, shootA, maxRps, maxRps, 0.00);
         jawbreakerShootPIDMotor.setInverted(InvertedValue.CounterClockwise_Positive); // The one on the other side is flipped
         jawbreakerShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
         jawbreakerShootPIDMotor.setIdleCoastMode();
         jawbreakerShootPIDMotor.follow(johnShootPIDMotor, true); // Inverted follower
 
         // Taylor shooter (middle left)
-        taylorShootPIDMotor = PIDMotor.makeMotor(Constants.TAYLOR_SHOOTER_MOTOR_ID, "taylor shooter", 0.1, 0.0, 0.0,
-                0.22, 0.11, 0.0, MAX_RPS, MAX_RPS, 0.00);
+        taylorShootPIDMotor = PIDMotor.makeMotor(Constants.TAYLOR_SHOOTER_MOTOR_ID, "taylor shooter", shootP, shootI, shootD,
+                shootS, shootV, shootA, maxRps, maxRps, 0.00);
         taylorShootPIDMotor.setInverted(InvertedValue.Clockwise_Positive);
         taylorShootPIDMotor.setStatorCurrentLimit(shootCurrentLimit);
         taylorShootPIDMotor.setIdleCoastMode();
         taylorShootPIDMotor.follow(johnShootPIDMotor, false); // Not inverted follower
 
         // Erik feed (bottom left)
-        erikFeedPIDMotor = PIDMotor.makeMotor(Constants.ERIK_FEED_MOTOR_ID,"erik feeder", 0.10, 0.0, 0.0,
-                0.25, 0.1, 0.0, MAX_RPS, MAX_RPS * 10, 0.00);
+        erikFeedPIDMotor = PIDMotor.makeMotor(Constants.ERIK_FEED_MOTOR_ID,"erik feeder", 0.0, 0.0, 0.0,
+                0.25, 0.1, 0.0, 140, 1400, 0.00);
         erikFeedPIDMotor.setStatorCurrentLimit(feedCurrentLimit);
         erikFeedPIDMotor.setInverted(InvertedValue.CounterClockwise_Positive);
         erikFeedPIDMotor.setIdleCoastMode();
 
         // Hoek feed (bottom right)
-        hoekFeedPIDMotor = PIDMotor.makeMotor(Constants.HOEK_FEED_MOTOR_ID,"hoek feeder", 0.10, 0.0, 0.0,
-                0.25, 0.1, 0.0, MAX_RPS, MAX_RPS * 10, 0.00);
+        hoekFeedPIDMotor = PIDMotor.makeMotor(Constants.HOEK_FEED_MOTOR_ID,"hoek feeder", 0.0, 0.0, 0.0,
+                0.25, 0.1, 0.0, 140, 1400, 0.00);
         hoekFeedPIDMotor.setStatorCurrentLimit(feedCurrentLimit);
         hoekFeedPIDMotor.setInverted(InvertedValue.Clockwise_Positive); // The one on the other side is flipped
         hoekFeedPIDMotor.setIdleCoastMode();
@@ -98,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Vant hood (middle right)
         vantHoodPIDMotor = PIDMotor.makeMotor(Constants.VANT_HOOD_MOTOR_ID, "vant hood", 12.5, 0.0, 0.0,
-                0.2, 0.1, 0.0, MAX_RPS, MAX_RPS, 0.00);
+                0.2, 0.1, 0.0, 140, 140, 0.00);
         vantHoodPIDMotor.setStatorCurrentLimit(hoodCurrentLimit);
         vantHoodPIDMotor.setIdleBrakeMode();
 

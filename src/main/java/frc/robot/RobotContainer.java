@@ -185,8 +185,6 @@ public class RobotContainer {
   final SendableChooser<AutoCommand> autoChooser;
 
   @NotLogged
-  private static final double ACTUATOR_STEP = 0.05;
-  @NotLogged
   private static final int climbFinalCurrentLimit = 20;
   @NotLogged
   private static final int climbInitialCurrentLimit = 5;
@@ -197,9 +195,9 @@ public class RobotContainer {
   @NotLogged
   private static final int intakeCurrentLimit = 100;
   @NotLogged
-  private static final int tiltCurrentLimit = 35; // Normally 25
+  private static final int tiltCurrentLimit = 35;
   @NotLogged
-  private static final int shooterCurrentLimit = 60;
+  private static final int shooterCurrentLimit = 80;
   @NotLogged
   private static final int feederCurrentLimit = 60;
   @NotLogged
@@ -220,15 +218,14 @@ public class RobotContainer {
   }
 
   private static final Interpolator HOOD_INTERPOLATOR = new Interpolator(
-      new double[] { 0.966, 2.01, 3.00, 4.00, 5.00 },
-      new double[] { 0.050 * -7, 0.40 * -7, 0.65 * -7, 0.90 * -7, 1.0 * -7}); // The new hood range is 0-(-7) rotations
+      new double[] { 2.0,  3.0,   4.0,  5.0 },
+      new double[] { -2.5, -4.25, -5.5, -5.25 }); // The hood range is 0 to (-7) rotations
   private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator(
-      new double[] { 0.966, 2.01, 3.00, 4.00, 5.00 },
-      new double[] { 50 * 0.8, 54 * 0.8, 58 * 0.8, 64 * 0.8, 73 * 0.8 }); // The new shooter spins at about 80% at the same distance
-  public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator( // Placeholders for time of flight
-                                                                                   // based on distance to target
-      new double[] { 0.992, 2.01, 3.00, 4.00, 5.00 },
-      new double[] { 0.90, 0.96, 1.00, 1.02, 1.15 });
+      new double[] { 2.0, 3.0, 4.0, 5.0 },
+      new double[] { 40,  45,  48,  56 });
+  public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator(
+      new double[] { 2.0, 3.0, 4.0, 5.0 },
+      new double[] { 0.96, 1.00, 1.02, 1.15 });
 
   // Subsystems - logged via their @Logged annotations
   @Logged(name = "Shooter")
@@ -504,10 +501,10 @@ public class RobotContainer {
 
     coDriverController.rightBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(true)));
     coDriverController.leftBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(false)));
-    coDriverController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed += 5));
-    coDriverController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed -= 5));
-    coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 0.5));
-    coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 0.5));
+    coDriverController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed += 1));
+    coDriverController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed -= 1));
+    coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 0.25));
+    coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 0.25));
 
     // Reset odometry
     coDriverController.back().and(coDriverController.start()).onTrue(new InstantCommand(() -> {
