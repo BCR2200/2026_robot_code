@@ -205,15 +205,6 @@ public class Robot extends TimedRobot {
 
     if (poseEstimate2 != null && poseEstimate2.pose != null) {
       m_limelightField2.setRobotPose(poseEstimate2.pose);
-      //TODO Look at if we need?
-      // // push odometry error to dashboard
-      // if (poseEstimate2.tagCount > 0) {
-      //   this.translationError = m_robotContainer.drivetrain.getState().Pose.getTranslation().getDistance(poseEstimate2.pose.getTranslation());
-      //   this.rotationError = m_robotContainer.drivetrain.getState().Pose.getRotation().minus(poseEstimate2.pose.getRotation()).getDegrees();
-      // } else {
-      //   this.translationError = 0;
-      //   this.rotationError = 0;
-      // }
     }
 
     if (poseEstimate != null && poseEstimate.tagCount > 0 && Math.abs(omegarps) < 1.0) {

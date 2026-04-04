@@ -18,13 +18,13 @@ public class BlendAdamModeCmd extends Command {
     private CommandSwerveDrivetrain drivetrain;
     private Pose2d currentPose2d;
 
-    // TODO correct these values for the errors on the blue side, and for a rotation buffer
+    // correct these values for the errors on the blue side, and for a rotation buffer
 
     // in meters
     private final double blueHUBLine = 5.7;
     private final double redHUBLine = 11.6;
 
-    // TODO FIND VALUES
+    // FIND VALUES
     private final double REDDRIVERLINE = 0;
     private final double BLUEDRIVERLINE = 0;
 

@@ -142,7 +142,7 @@ public class BlenderMode extends Command {
                 closestPoint,
                 endPoint);
 
-        // TODO FOR GRAHAM
+        // FOR GRAHAM
         PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for
                                                                                                // this path.
         // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); //
@@ -155,7 +155,7 @@ public class BlenderMode extends Command {
                 constraints,
                 null, // The ideal starting state, this is only relevant for pre-planned paths, so can
                       // be null for on-the-fly paths.
-                // TODO put case to change the ending angle depending on path to match
+                // put case to change the ending angle depending on path to match
                 new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation
                                                                    // here. If using a differential drivetrain, the
                                                                    // rotation will have no effect.

@@ -43,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Functions:
     // 1. Feed - boolean, speed profile
-    // 2. Tilt - servo
+    // 2. Tilt
 
     /**
      * Creates a new IntakeSubsystem, using the given motor IDs for the intake
@@ -138,10 +138,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setIsGoingUp(boolean isGoingUp) {
         this.isGoingUp = isGoingUp;
-    }
-
-    public void updateParameters() {
-        // TODO: tilt motor
     }
 
     @Override
