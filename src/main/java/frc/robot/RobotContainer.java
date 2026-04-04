@@ -39,6 +39,7 @@ import frc.robot.commands.auto.LongLeftBumpBack;
 import frc.robot.commands.auto.LongRightBumpBack;
 import frc.robot.commands.auto.LongerLeftBumpBack;
 import frc.robot.commands.auto.LongerRightBumpBack;
+import frc.robot.commands.auto.LongestLeftBumpBack;
 import frc.robot.commands.auto.RightBumpBack;
 import frc.robot.commands.auto.RightBumpToLeft;
 import frc.robot.commands.auto.RightOutpost;
@@ -293,6 +294,7 @@ public class RobotContainer {
     autoChooser.addOption("LeftBump", new LeftBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LongLeftBump", new LongLeftBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LongerLeftBump", new LongerLeftBumpBack(this, drivetrain, driveRC));
+    autoChooser.addOption("LongestLeftBump", new LongestLeftBumpBack(this, drivetrain, driveRC));
 
     autoChooser.addOption("RightBump", new RightBumpBack(this, drivetrain, driveRC));
     autoChooser.addOption("LongRightBump", new LongRightBumpBack(this, drivetrain, driveRC));
