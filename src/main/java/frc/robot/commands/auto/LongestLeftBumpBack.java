@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.ShootAt;
+import frc.robot.commands.ShootAtuo;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -24,28 +24,33 @@ public class LongestLeftBumpBack extends AutoCommand {
 
         addCommands(
             new WaitCommand(0.01),
-            AutoBuildingBlocks.autoStep("PATH 1"),
-            AutoBuildingBlocks.followPathCommand(path1, drivetrain),
-            AutoBuildingBlocks.autoStep("Shoot 1"),
-            Commands.race(
-                new ShootAt(robot),
-                Commands.sequence(
-                    new WaitCommand(4), // Wait before intake up
-                    new InstantCommand(() -> robot.intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltHalfExtensionPos)),
-                    new WaitCommand(2.5) // Wait to finish shooting
-                )
+            AutoBuildingBlocks.autoStep("PATH 1 AND AIM"),
+            
+            // Run the path and the aiming/shooting logic simultaneously.
+            // The deadline is the path; once the path is done, AutoAimAndShoot ends.
+            Commands.deadline(
+                AutoBuildingBlocks.followPathCommand(path1, drivetrain),
+                new ShootAtuo(robot)
+            ),
+
+            AutoBuildingBlocks.autoStep("Intake Sequence 1"),
+            Commands.sequence(
+                new WaitCommand(4), // Wait before intake up
+                new InstantCommand(() -> robot.intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltHalfExtensionPos)),
+                new WaitCommand(2.5) // Wait to finish shooting
             ),
             
-            AutoBuildingBlocks.autoStep("PATH 2"),
-            AutoBuildingBlocks.followPathCommand(path2, drivetrain),
-            AutoBuildingBlocks.autoStep("Shoot 2"),
-            Commands.race(
-                new ShootAt(robot),
-                Commands.sequence(
-                    new WaitCommand(4), // Wait before intake up
-                    new InstantCommand(() -> robot.intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltHalfExtensionPos)),
-                    new WaitCommand(2.5) // Wait to finish shooting
-                )
+            AutoBuildingBlocks.autoStep("PATH 2 AND AIM"),
+            Commands.deadline(
+                AutoBuildingBlocks.followPathCommand(path2, drivetrain),
+                new ShootAtuo(robot)
+            ),
+
+            AutoBuildingBlocks.autoStep("Intake Sequence 2"),
+            Commands.sequence(
+                new WaitCommand(4), 
+                new InstantCommand(() -> robot.intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltHalfExtensionPos)),
+                new WaitCommand(2.5) 
             )
         );
     }
@@ -59,5 +64,4 @@ public class LongestLeftBumpBack extends AutoCommand {
     Pose2d getRawStartingPose() {
         return path1.getStartingHolonomicPose().orElseThrow();
     }
-
 }

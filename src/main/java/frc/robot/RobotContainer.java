@@ -9,9 +9,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.epilogue.Logged;
@@ -307,6 +310,18 @@ public class RobotContainer {
     autoChooser.addOption("RightBumpToLeft", new RightBumpToLeft(this, drivetrain, driveRC));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    PPHolonomicDriveController.setRotationTargetOverride(() -> {
+    // When this flag is true, PathPlanner will ignore the path's rotation 
+    // and use the Rotation2d you provide here instead.
+    if (this.shootingAtHub) {
+        double degrees = getDegreesToTarget(this.compensatedTargetHub);
+        return Optional.of(Rotation2d.fromDegrees(degrees));
+    }
+    
+    // Returning empty tells PathPlanner to use the rotation programmed in the GUI
+    return Optional.empty(); 
+    });
   }
 
   public void disableMotors() {

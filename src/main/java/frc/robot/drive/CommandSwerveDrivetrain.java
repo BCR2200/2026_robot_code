@@ -229,12 +229,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     () -> Robot.alliance == Alliance.Red,
                     this // Subsystem for requirements
             );
-            // PPHolonomicDriveController.overrideRotationFeedback(() -> {
-            //     return 42.0;
-            // });
-            // PPHolonomicDriveController.setRotationTargetOverride(null);
-            //     return Math.toRadians(42.0);
-            // });
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",
                     ex.getStackTrace());
