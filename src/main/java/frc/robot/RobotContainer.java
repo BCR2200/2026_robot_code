@@ -62,6 +62,18 @@ import frc.robot.subsystems.IntakeSubsystem;
 @Logged
 public class RobotContainer {
 
+  public enum PowerSavingState {
+    NONE(0),
+    LOW_FLOOR_CURRENT(1),
+    NO_FLOOR(2),
+    HALF_FEED(3);
+
+    public final int priority;
+    private PowerSavingState(int priority) {
+      this.priority = priority;
+    }
+  }
+
   public boolean shootingAtHub = false;
   public boolean passing = false;
   public boolean fixedPassingShot = false;
@@ -186,6 +198,10 @@ public class RobotContainer {
   @NotLogged
   private static final int floorSupplyCurrentLimit = 50;
   @NotLogged
+  private static final int lowFloorStatorCurrentLimit = 100;
+  @NotLogged
+  private static final int lowFloorSupplyCurrentLimit = 20;
+  @NotLogged
   private static final int intakeCurrentLimit = 70;
   @NotLogged
   private static final int tiltCurrentLimit = 35;
@@ -228,7 +244,7 @@ public class RobotContainer {
       feederCurrentLimit, hoodCurrentLimit, HOOD_INTERPOLATOR, SHOTER_WEEL_VELOSITY_INTERPOLATOR, TIME_OF_FLIGHT_INTERPOLATOR, this);
 
   @Logged(name = "FloorFeed")
-  private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorStatorCurrentLimit, floorSupplyCurrentLimit, shooterSubsystem);
+  private final FloorFeedSubsystem floorFeedSubsystem = new FloorFeedSubsystem(floorStatorCurrentLimit, floorSupplyCurrentLimit, lowFloorStatorCurrentLimit, lowFloorSupplyCurrentLimit, shooterSubsystem, this);
 
   @Logged(name = "Intake")
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeCurrentLimit, tiltCurrentLimit, floorFeedSubsystem);
@@ -240,6 +256,9 @@ public class RobotContainer {
   @NotLogged
   public final CommandXboxController coDriverController = new CommandXboxController(
       OperatorConstants.kCoDriverControllerPort);
+
+  @Logged
+  public PowerSavingState powerSavingState = PowerSavingState.NONE;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -521,13 +540,19 @@ public class RobotContainer {
     // coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 0.25));
     // coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 0.25));
 
-    // Disables the floor and intake
-    coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.powerSavingMode = true));
-    coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.powerSavingMode = false));
+    // No power savings mode
+    coDriverController.povUp().onTrue(new InstantCommand(() -> {
+      this.powerSavingState = PowerSavingState.NONE;
+      this.floorFeedSubsystem.setLowCurrentMode(false);
+    }));
 
-    // Disables only the intake
-    coDriverController.povUp().onTrue(new InstantCommand(() -> intakeSubsystem.powerSavingMode = true));
-    coDriverController.povDown().onTrue(new InstantCommand(() -> intakeSubsystem.powerSavingMode = false));
+    // in order: slow floor, no floor, half feed
+    coDriverController.povLeft().onTrue(new InstantCommand(() -> {
+      this.powerSavingState = PowerSavingState.LOW_FLOOR_CURRENT;
+      this.floorFeedSubsystem.setLowCurrentMode(true);
+    }));
+    coDriverController.povDown().onTrue(new InstantCommand(() -> this.powerSavingState = PowerSavingState.NO_FLOOR));
+    coDriverController.povRight().onTrue(new InstantCommand(() -> this.powerSavingState = PowerSavingState.HALF_FEED));
 
     // Reset odometry
     coDriverController.back().and(coDriverController.start()).onTrue(new InstantCommand(() -> {

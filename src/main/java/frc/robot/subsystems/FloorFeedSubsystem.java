@@ -8,14 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.PIDMotor;
+import frc.robot.RobotContainer;
 
 @Logged
 public class FloorFeedSubsystem extends SubsystemBase {
 
-    // Logged automatically by Epilogue
-    private double motorSpeedTop = 100; // in rps
     // If you want sawtooth, top and bottom speeds need to be different. ex: 100 and 70. Currently disabled.
-    private double motorSpeedBottom = 100; 
+    private final double motorSpeedTop = 100; // in rps
+    // private final double motorSpeedBottom = 100; 
+
     private boolean isFeeding = false;
     private boolean isOuttaking = false;
     private double secondsToHighPoint = 0.001;
@@ -54,9 +55,20 @@ public class FloorFeedSubsystem extends SubsystemBase {
 
     @NotLogged
     public ShooterSubsystem shooterSubsystem;
+    @NotLogged
+    public RobotContainer robotContainer;
+    private int statorCurrentLimit;
+    private int supplyCurrentLimit;
+    private int lowStatorCurrentLimit;
+    private int lowSupplyCurrentLimit;
 
-    public FloorFeedSubsystem(int statorCurrentLimit, int supplyCurrentLimit, ShooterSubsystem shooterSubsystem) {
+    public FloorFeedSubsystem(int statorCurrentLimit, int supplyCurrentLimit, int lowStatorCurrentLimit, int lowSupplyCurrentLimit, ShooterSubsystem shooterSubsystem, RobotContainer robotContainer) {
+        this.statorCurrentLimit = statorCurrentLimit;
+        this.supplyCurrentLimit = supplyCurrentLimit;
+        this.lowStatorCurrentLimit = lowStatorCurrentLimit;
+        this.lowSupplyCurrentLimit = lowSupplyCurrentLimit;
         this.shooterSubsystem = shooterSubsystem;
+        this.robotContainer = robotContainer;
         motor = PIDMotor.makeMotor(Constants.FLOOR_FEED_MOTOR_ID, "Floor Feed",
                 PARAM_P, PARAM_I, PARAM_D, PARAM_S, PARAM_V, PARAM_A, PARAM_MV, PARAM_MA, PARAM_MJ);
         motor.setInverted(InvertedValue.Clockwise_Positive);
@@ -79,38 +91,6 @@ public class FloorFeedSubsystem extends SubsystemBase {
         isOuttaking = outtaking;
     }
 
-    public double getMotorSpeedTop() {
-        return motorSpeedTop;
-    }
-    public void setMotorSpeedTop(double speed) {
-        motorSpeedTop = speed;
-    }
-
-    public void incrementMotorSpeedTop() {
-        motorSpeedTop += RPS_STEP;
-        motorSpeedTop = Math.min(motorSpeedTop, MAX_RPS);
-    }
-    public void decrementMotorSpeedTop() {
-        motorSpeedTop -= RPS_STEP;
-        motorSpeedTop = Math.max(motorSpeedTop, -MAX_RPS);
-    }
-
-    public double getMotorSpeedBottom() {
-        return motorSpeedTop;
-    }
-    public void setMotorSpeedBottom(double speed) {
-        motorSpeedBottom = speed;
-    }
-
-    public void incrementMotorSpeedBottom() {
-        motorSpeedBottom += RPS_STEP;
-        motorSpeedBottom = Math.min(motorSpeedBottom, MAX_RPS);
-    }
-    public void decrementMotorSpeedBottom() {
-        motorSpeedBottom -= RPS_STEP;
-        motorSpeedBottom = Math.max(motorSpeedBottom, -MAX_RPS);
-    }
-
     public boolean getNeedToRun() {
         return needsToRun;
     }
@@ -120,8 +100,6 @@ public class FloorFeedSubsystem extends SubsystemBase {
     }
 
     public void updateParameters(){
-        motorSpeedBottom = SmartDashboard.getNumber("motorSpeedBottom", motorSpeedBottom);
-        motorSpeedTop = SmartDashboard.getNumber("motorSpeedTop", motorSpeedTop);
         motor.fetchPIDFFromDashboard();
         this.secondsToHighPoint = SmartDashboard.getNumber("secondsToHighPoint", secondsToHighPoint);
         this.secondsToLowPoint = SmartDashboard.getNumber("secondsToLowPoint", secondsToLowPoint);
@@ -129,23 +107,26 @@ public class FloorFeedSubsystem extends SubsystemBase {
     }
 
     private double getVelocityAtTime(double t) {
-        double highSlope, lowSlope, speedDelta;
 
-        // find parameters
-        speedDelta = motorSpeedTop - motorSpeedBottom;
+        return motorSpeedTop;
 
-        highSlope = speedDelta / secondsToHighPoint;
-        lowSlope = -(speedDelta / secondsToLowPoint);
+        // double highSlope, lowSlope, speedDelta;
 
-        double x = t % (secondsToHighPoint + secondsToLowPoint);
-        // find value
-        if (x < secondsToHighPoint) {
-            // upwards slope
-            return highSlope * x + motorSpeedBottom;
-        } else {
-            // downwards slope
-            return lowSlope * (x - secondsToHighPoint) + motorSpeedTop;
-        }
+        // // find parameters
+        // speedDelta = motorSpeedTop - motorSpeedBottom;
+
+        // highSlope = speedDelta / secondsToHighPoint;
+        // lowSlope = -(speedDelta / secondsToLowPoint);
+
+        // double x = t % (secondsToHighPoint + secondsToLowPoint);
+        // // find value
+        // if (x < secondsToHighPoint) {
+        //     // upwards slope
+        //     return highSlope * x + motorSpeedBottom;
+        // } else {
+        //     // downwards slope
+        //     return lowSlope * (x - secondsToHighPoint) + motorSpeedTop;
+        // }
 
     }
 
@@ -166,11 +147,21 @@ public class FloorFeedSubsystem extends SubsystemBase {
 
         if (isOuttaking) {
             motor.setVelocityTarget(-getVelocityAtTime(Timer.getFPGATimestamp()));
-        } else if (needsToRun) {
+        } else if (needsToRun && this.robotContainer.powerSavingState.priority < RobotContainer.PowerSavingState.NO_FLOOR.priority) {
             // Use FPGA timestamp for consistent timing
             motor.setVelocityTarget(getVelocityAtTime(Timer.getFPGATimestamp()));
         } else {
             motor.setPercentOutput(0);
+        }
+    }
+
+    public void setLowCurrentMode(boolean lowCurrent) {
+        if (lowCurrent) {
+            motor.setStatorCurrentLimit(this.lowStatorCurrentLimit);
+            motor.setSupplyCurrentLimit(this.lowSupplyCurrentLimit);
+        } else {
+            motor.setStatorCurrentLimit(this.statorCurrentLimit);
+            motor.setSupplyCurrentLimit(this.supplyCurrentLimit);
         }
     }
 

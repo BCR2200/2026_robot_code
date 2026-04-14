@@ -181,7 +181,9 @@ public class ShooterSubsystem extends SubsystemBase {
         // Feed at full speed first,
         // then try to preload (until beam break is broken),
         // then stop
-        if (isFeeding) {
+        if (isFeeding && rc.powerSavingState.priority >= RobotContainer.PowerSavingState.HALF_FEED.priority) {
+            erikFeedPIDMotor.setPercentOutput(0.5);
+        } else if (isFeeding) {
             erikFeedPIDMotor.setPercentOutput(1);
         } else {
             erikFeedPIDMotor.setPercentOutput(0);
