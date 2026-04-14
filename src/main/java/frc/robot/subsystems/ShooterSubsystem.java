@@ -21,6 +21,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean powerSavingMode = false;
 
     public boolean isManualMode = false;
+    @Logged(name = "ZeroingTheHood")
+    public boolean isZeroing = false;
     public double manualShooterSpeed = 0;
     public double manualTagetHoodPosition = 0;
 
@@ -148,7 +150,8 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param distance in m
      */
     public void setHoodPositionViaInterpolatedValue(double distance) {
-        vantHoodPIDMotor.setTarget(shooterAngleInterpolator.clampedInterpolate(distance, -7, 0)); // in rotations
+        if (!isZeroing)
+            vantHoodPIDMotor.setTarget(shooterAngleInterpolator.clampedInterpolate(distance, -7, 0)); // in rotations
     }
 
     /**
@@ -189,7 +192,7 @@ public class ShooterSubsystem extends SubsystemBase {
             erikFeedPIDMotor.setPercentOutput(0);
         }
 
-        if (isManualMode && isShooting) {
+        if (isManualMode && isShooting && !isZeroing) {
             johnShootPIDMotor.setVelocityTarget(manualShooterSpeed);
             vantHoodPIDMotor.setTarget(manualTagetHoodPosition);
             return;

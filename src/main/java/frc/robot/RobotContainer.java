@@ -31,7 +31,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.BlendAdamModeCmd;
 import frc.robot.commands.DriveToOutpostCmd;
 import frc.robot.commands.ShootAt;
+import frc.robot.commands.ZeroTheHood;
 import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.auto.LeftBumpCrisisDouble;
 import frc.robot.commands.auto.LeftBumpToRight;
 import frc.robot.commands.auto.LongLeftBumpBack;
 import frc.robot.commands.auto.LongRightBumpBack;
@@ -532,14 +534,6 @@ public class RobotContainer {
       .whileTrue(new InstantCommand(() -> {fixedShotFromClimber = true;}))
       .whileFalse(new InstantCommand(() -> {fixedShotFromClimber = false;})); // climb shot
 
-    // Manual shooter controls for testing and fine-tuning
-    // coDriverController.rightBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(true)));
-    // coDriverController.leftBumper().onTrue(new InstantCommand(() -> shooterSubsystem.setManualMode(false)));
-    // coDriverController.povUp().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed += 1));
-    // coDriverController.povDown().onTrue(new InstantCommand(() -> shooterSubsystem.manualShooterSpeed -= 1));
-    // coDriverController.povRight().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition += 0.25));
-    // coDriverController.povLeft().onTrue(new InstantCommand(() -> shooterSubsystem.manualTagetHoodPosition -= 0.25));
-
     // No power savings mode
     coDriverController.povUp().onTrue(new InstantCommand(() -> {
       this.powerSavingState = PowerSavingState.NONE;
@@ -553,6 +547,8 @@ public class RobotContainer {
     }));
     coDriverController.povDown().onTrue(new InstantCommand(() -> this.powerSavingState = PowerSavingState.NO_FLOOR));
     coDriverController.povRight().onTrue(new InstantCommand(() -> this.powerSavingState = PowerSavingState.HALF_FEED));
+
+    coDriverController.a().whileTrue(new ZeroTheHood(shooterSubsystem, hoodCurrentLimit));
 
     // Reset odometry
     coDriverController.back().and(coDriverController.start()).onTrue(new InstantCommand(() -> {
