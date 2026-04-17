@@ -31,8 +31,10 @@ public class RightBumpCrisis extends AutoCommand {
                 new ShootAt(robot),
                 Commands.sequence(
                     new WaitCommand(4), // Wait before intake up
+                    new InstantCommand(() -> robot.intakeSubsystem.setIsIntaking(true)),
                     new InstantCommand(() -> robot.intakeSubsystem.setTiltPosition(IntakeSubsystem.tiltHalfExtensionPos)),
-                    new WaitCommand(2) // Wait to finish shooting
+                    new WaitCommand(2), // Wait to finish shooting
+                    new InstantCommand(() -> robot.intakeSubsystem.setIsIntaking(false))
                 )
             ),
             
