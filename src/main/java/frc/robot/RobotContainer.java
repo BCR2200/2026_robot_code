@@ -157,7 +157,7 @@ public class RobotContainer {
   public boolean reducedSpeed = false;
 
   @NotLogged
-  public final static double reducedSpeedFactor = 0.5; // 50% speed
+  public final static double reducedSpeedFactor = 0.7; // 70% speed
 
   @NotLogged
   public final static double speedFactor = 1; // 100% speed
