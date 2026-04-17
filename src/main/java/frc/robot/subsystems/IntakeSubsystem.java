@@ -168,7 +168,7 @@ public class IntakeSubsystem extends SubsystemBase {
         isJiggling = false; // FOR NOW MUST NOT JIGGLE
 
         if (isGoingUp) {
-            tiltPos += 2.0;
+            tiltPos += 1.5;
             setTiltPosition(tiltPos);
             intakeMotor1.setPercentOutput(1);
         }
