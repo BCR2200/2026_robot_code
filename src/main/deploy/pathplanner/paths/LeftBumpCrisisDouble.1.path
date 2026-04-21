@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 2.4217261055634807,
-        "y": 5.257703281027104
+        "x": 2.7,
+        "y": 5.322396576319543
       },
       "prevControl": {
-        "x": 2.400964735600044,
-        "y": 5.5068397205883235
+        "x": 2.6792386300365636,
+        "y": 5.571533015880762
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Crisis1-2"
+      "linkedName": "LongLeftBumpBack1-3"
     }
   ],
   "rotationTargets": [
@@ -170,7 +170,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 141.34019174590995
+    "rotation": 136.27303002005672
   },
   "reversed": false,
   "folder": "LeftBumpCrisis",

@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 2.4217261055634807,
-        "y": 2.792296718972896
+        "y": 2.952296718972896
       },
       "prevControl": {
         "x": 2.400964735600044,
-        "y": 2.5431602794116763
+        "y": 2.703160279411676
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Crisis1-2"
+      "linkedName": "LongRightBumpBack1-3"
     }
   ],
   "rotationTargets": [
@@ -170,7 +170,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -141.34019174590995
+    "rotation": -143.39292518739254
   },
   "reversed": false,
   "folder": "RightBumpCrisis",
