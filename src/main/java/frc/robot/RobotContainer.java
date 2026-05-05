@@ -237,7 +237,7 @@ public class RobotContainer {
       new double[] { -2.5, -4.25, -5.5, -5.25, -5.5 }); // The hood range is 0 to (-7) rotations
   private static final Interpolator SHOTER_WEEL_VELOSITY_INTERPOLATOR = new Interpolator(
       new double[] { 2.0, 3.0, 4.0, 5.0 },
-      new double[] { 40,  45,  48,  54 });
+      new double[] { 42,  47,  50,  56 });
   public static final Interpolator TIME_OF_FLIGHT_INTERPOLATOR = new Interpolator(
       new double[] { 2.0, 3.0, 4.0, 5.0 },
       new double[] { 0.96, 1.00, 1.02, 1.15 });
