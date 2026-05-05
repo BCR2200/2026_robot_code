@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7,
-        "y": 5.322396576319543
+        "x": 2.4217261055634807,
+        "y": 4.416690442225392
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4763195435092737,
-        "y": 5.34827389443652
+        "x": 3.1980456490727542,
+        "y": 4.44256776034237
       },
       "isLocked": false,
       "linkedName": "LongLeftBumpBack1-3"
@@ -172,7 +172,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 136.27303002005672
+    "rotation": 172.64762064010753
   },
   "useDefaultConstraints": false
 }

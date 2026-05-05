@@ -80,12 +80,28 @@
     },
     {
       "anchor": {
-        "x": 2.7,
-        "y": 5.322396576319543
+        "x": 3.767346647646219,
+        "y": 5.257703281027104
       },
       "prevControl": {
-        "x": 2.6792386300365636,
-        "y": 5.571533015880762
+        "x": 4.3898044059012715,
+        "y": 5.4989646052110555
+      },
+      "nextControl": {
+        "x": 3.144888889391167,
+        "y": 5.016441956843153
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4217261055634807,
+        "y": 4.416690442225392
+      },
+      "prevControl": {
+        "x": 2.400964735600044,
+        "y": 4.665826881786612
       },
       "nextControl": null,
       "isLocked": false,
@@ -122,11 +138,11 @@
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 4.1,
+      "waypointRelativePos": 4.2,
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 4.4,
+      "waypointRelativePos": 4.8,
       "rotationDegrees": 180.0
     }
   ],
@@ -170,7 +186,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 136.27303002005672
+    "rotation": 172.64762064010753
   },
   "reversed": false,
   "folder": "Crisis",
